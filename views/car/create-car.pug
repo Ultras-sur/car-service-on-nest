@@ -1,0 +1,32 @@
+extends ../layouts/layout.pug
+
+block content
+    div
+    form(method="POST" action="/car/new" name='carForm')
+      p2 Brand:
+      div
+        select#brand-selection(autofocus='' required='' size='10' name='brand')
+          option(value='SUZUKI') Suzuki
+          option(value='TOYOTA') Toyota
+          option(value='NISSAN') Nissan
+          option(value='BMW') BMW
+          option(value='VOLVO') Volvo
+          option(value='MITSUBISHI') Mitsubishi
+          option(value='HYUNDAI') Hyundai
+          option(value='KIA') Kia
+          option(value='VOLKSWAGEN') Volkswagen
+          option(value='ВАЗ') &Vcy;&Acy;&Zcy;
+      p2 Model:
+      div
+        select#model-selection(autofocus='' required='' name='model')
+          option
+      p2 Release year:
+      div
+        input(type="number" name="releaseYear" required)
+      p2 VIN:
+      div
+        input(type="text" name="vin" required)
+      div
+        input(type="hidden" name="owner" value=`${client._id}`)
+      button(type="submit") Добавить
+    script(src='/script.js')

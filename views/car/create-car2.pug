@@ -1,0 +1,34 @@
+doctype html
+html
+  head
+    title Добавление нового авто для клиента #{client.name}
+  body
+    div
+    form(method="POST" action="/car/new" name='carForm')
+      p2 Brand:
+      div
+        select#brand-selection(autofocus='' required='' size='10' name='brand')
+          option(value='suzuki') Suzuki
+          option(value='toyota') Toyota
+          option(value='nissan') Nissan
+          option(value='bmw') BMW
+          option(value='volvo') Volvo
+          option(value='mitsubishi') Mitsubishi
+          option(value='hyundai') Hyundai
+          option(value='kia') Kia
+          option(value='volkswagen') Volkswagen
+          option(value='ваз') &Vcy;&Acy;&Zcy;
+      p2 Model2:
+      div
+        select#model-selection(autofocus='' required='' name='model')
+          option
+      p2 Release year:
+      div
+        input(type="text" name="releaseYear")
+      p2 VIN:
+      div
+        input(type="text" name="vin")
+      div
+        input(type="hidden" name="owner" value=`${client._id}`)
+      button(type="submit") Добавить
+  script(src='/script.js')

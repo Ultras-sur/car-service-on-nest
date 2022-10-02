@@ -1,0 +1,18 @@
+doctype html
+html(lang="en")
+  include ../includes/head.pug
+  body
+    h1 Create new order
+    h3 Car: #{car.brand} #{car.model} (#{car.releaseYear}) vin: #{car.vin}
+    h3 Owner: #{client.name} (#{client.licensNumber}) 
+
+    h3 Order information:
+    div
+    form(method="POST" action="/client/new")
+      p2 Name:
+      div
+        input(type="text" name="name" disabled)
+      p2 Licens number:
+      div
+        input(type="text" name="licensNumber")
+      button(type="submit") Save

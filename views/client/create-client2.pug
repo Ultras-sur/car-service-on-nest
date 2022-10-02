@@ -1,0 +1,16 @@
+doctype html
+html
+  head
+    title Создание нового клиента
+  style
+  body
+    h1 New Client
+    div
+    form(method="POST" action="/client/new")
+      p2 Name:
+      div
+        input(type="text" name="name")
+      p2 Licens number:
+      div
+        input(type="text" name="licensNumber")
+      button(type="submit") Создать

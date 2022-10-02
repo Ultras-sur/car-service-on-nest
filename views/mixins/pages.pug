@@ -1,0 +1,7 @@
+mixin pages(page, totalPages, link)
+  - var n = 1;
+      while n <= totalPages
+        if n === Number(page)
+          a= `[ ${n++} ]`
+        else
+          a(href=`${link}?page=${n}`)= `[${n++}]`

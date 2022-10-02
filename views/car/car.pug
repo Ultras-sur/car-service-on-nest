@@ -1,0 +1,44 @@
+extends ../layouts/layout.pug
+
+block content
+    
+
+    div
+     table#car-table(border='2'  width='20%' cellpadding='4' cellspacing='1')
+      tbody
+        tr
+          td(colspan='6')
+            strong Car: 
+            p3 #{car.brand} #{car.model}
+        tr
+          td(colspan='6')
+            strong VIN: 
+            p3 #{car.vin}
+        tr
+          td(colspan='6')
+            strong Owner: 
+            p3
+              a(href=`/client/${client._id}`) #{client.name} 
+        tr
+          td(colspan='6')
+            strong Orders:
+        tr
+          td №
+          td
+            srong Date
+          td
+            srong Number 
+          td   
+            srong Status
+           
+      if orders 
+        each order, index in orders
+          tr
+              td #{index + 1}
+              td #{new Date(order.createdAt).toLocaleString('en-US', {day: 'numeric', month: 'numeric', year: 'numeric'})}
+              td 
+                a(href=`/order/${order._id}`) #{order.number}
+              td #{order.orderStatus}
+    div
+      button 
+        a(href=`/order/create/${client._id}/${car._id}`) Создать заказ

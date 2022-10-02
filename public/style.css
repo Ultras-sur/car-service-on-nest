@@ -1,0 +1,144 @@
+body
+{
+  padding: 1px;
+  background-color: #f3f3f3;
+}
+
+input.jobcost {
+   width: 100px;
+}
+
+select.jobselection {
+   width: 270px;
+}
+
+
+h1 {
+    margin: 1em 0 0.5em 0;
+    font-weight: 100;
+    text-transform: uppercase;
+    color: #00caa6;
+    font-style: italic;
+    font-family: "Lucida Sans Unicode", "Lucida Grande";
+    font-size: 30px;
+  
+    text-align: center;
+    width: 600px;
+}
+
+h3 {
+    margin: 1em 0 0.5em 0;
+    font-weight: 100;
+    text-transform: uppercase;
+    color: #00caa6;
+    font-style: italic;
+    font-family: "Lucida Sans Unicode", "Lucida Grande";
+    font-size: 20px;
+    line-height: 24px;
+    text-align: left;
+}
+/*.jobtable 
+{
+    display: table;
+    border-collapse: separate;
+    box-sizing: border-box;
+    text-indent: initial;
+    white-space: normal;
+    line-height: normal;
+    font-weight: normal;
+    font-size: medium;
+    font-style: normal;
+    color: -internal-quirk-inherit;
+    text-align: start;
+    border-spacing: 2px;
+    border-color: gray;
+    font-variant: normal;
+    border: 1px solid grey;
+}*/
+
+table {
+  font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
+  font-size: 14px;
+  background: white;
+  max-width: 600px;
+  width: 600px;
+  border-collapse: collapse;
+  text-align: left;
+}
+th {
+  font-weight: normal;
+  color: #039;
+  border-bottom: 2px solid #6678b1;
+  padding: 10px 8px;
+}
+td {
+  color: #669;
+  padding: 9px 8px;
+  transition: .3s linear;
+}
+tr:hover td {
+  color: #6699ff;
+}
+
+div.inner {
+    display: flex;
+    justify-content: center; /*Центрирование по горизонтали*/
+    align-items: center;     /*Центрирование по вертикали */
+}
+div.h1 {
+    display: flex;
+    justify-content: center; /*Центрирование по горизонтали*/
+    align-items: center;     /*Центрирование по вертикали */
+}
+
+a {
+  font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
+  outline: none;
+  text-decoration: none;
+  display: inline-block;
+  margin-right: 0.625%;
+  text-align: center;
+  line-height: 1;
+  color: #039;
+}
+
+
+a.menu {
+  font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
+  outline: none;
+  text-decoration: none;
+  display: inline-block;
+  margin-right: 0.625%;
+  text-align: center;
+  line-height: 3;
+  color: #039;
+}
+
+li:last-child a.menu {
+  margin-right: 0;
+}
+
+a.menu:link, a.menu:visited, a.menu:focus {
+  background: #bae8d3;
+}
+
+a.menu:hover {
+  background: #bae8d3;
+}
+
+a.menu:active {
+  background: #bae8d3;
+  color: white;
+}
+
+input[type="number"] {
+	-moz-appearance: textfield;
+	-webkit-appearance: textfield;
+	appearance: textfield;
+}
+ 
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+	display: none;
+}
+// 8ED9B6

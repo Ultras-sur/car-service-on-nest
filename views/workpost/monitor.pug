@@ -1,0 +1,53 @@
+extends ../layouts/layout.pug
+include ../mixins/pages
+
+block content
+  div
+   table#workposts-table(border='2'  width='20%' cellpadding='4' cellspacing='1')
+    tbody
+      tr
+        td(colspan='4')
+          strong Work Posts:  
+      tr
+        td
+          strong №
+        td
+          srong Order №
+        td
+          srong Car
+        td   
+          srong Status  
+    if workPosts 
+      each workPost in workPosts
+         tr
+            td #{workPost.number}
+            td 
+              a(href=`/order/${workPost.order.id}`) #{workPost.order.number}
+            td #{workPost.car.brand} #{workPost.car.model} #{workPost.car.releaseYear}
+            td #{workPost.status}
+  div
+   table#queuestatus-table(border='2'  width='20%' cellpadding='4' cellspacing='1')
+    tbody
+      tr
+        td(colspan='6')
+          strong Queue:  
+      tr
+        td
+          strong №
+        td
+          srong Order
+        td   
+          srong Car
+        
+ 
+           
+    if ordersInQueue 
+      each order, index in ordersInQueue.orders
+         tr
+            td #{ordersInQueue.step * (Number(ordersInQueue.page) - 1) + (index + 1)}
+            td 
+              a(href=`/order/${order._id}`) #{order.number}
+            td #{order.car.brand} #{order.car.model} #{order.car.releaseYear}
+  div
+    if ordersInQueue
+      +pages(ordersInQueue.page, ordersInQueue.totalPages, '')         

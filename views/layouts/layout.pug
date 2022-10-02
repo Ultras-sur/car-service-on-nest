@@ -1,0 +1,20 @@
+doctype html
+head
+  meta(charset='UTF-8')
+  title Document
+.conteiner
+  .header
+    block head
+      include ../includes/head.pug
+
+  .left-sidebar#left-div
+    block menu
+      include ../includes/menu.pug
+  .content#content-div
+    block content
+  
+  .right-sidebar#right-div
+  
+  .footer
+     block foot  
+      include ../includes/foot.pug

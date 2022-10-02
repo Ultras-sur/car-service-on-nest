@@ -1,0 +1,6 @@
+h1 Orders:
+if orders
+      ul
+        each order in orders
+          li #{order.number} #{new Date(order.date).toLocaleString('en-US')}  
+            a(href=`/order/${order._id}`) Инфо

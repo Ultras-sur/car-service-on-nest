@@ -1,0 +1,53 @@
+body {
+    max-width: 900px; /* ограничение максимальной ширины  */
+    margin: 0 auto;
+}
+
+/* для всех блоков внутри body изменяем алгоритм расчета ширины блоков и добавляем все блокам поля 10px */
+body div {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    padding: 10px;
+}
+
+.header {
+    background: #CCA69E;
+    padding: 10px;
+    min-height: 100px;
+}
+
+.left-sidebar {
+    width: 20%;
+    background: #bae8d3;
+    float: left;
+    min-height: 600px;
+}
+
+/*.left-sidebar {
+    width: 20%;
+    background: #8ED9B6;
+    float: left;
+    min-height: 600px;
+}*/
+
+.content {
+    float: left;
+    width: 70%; 
+    background: #ffffff;
+    min-height: 600px;
+}
+
+.right-sidebar {
+    width: 10%;
+    background: #FF9282;
+    float: left;
+    min-height: 600px;
+}
+
+.footer {
+    background: #bae8d3;
+    clear: both; /* запрещаем обтекание с обоих сторон, блок выводится с новой строки */
+    color: #413e3e;
+    text-align: center;
+}

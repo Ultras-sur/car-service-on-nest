@@ -1,0 +1,309 @@
+const jobs = {
+  malar: {
+    dver: 'Покраска двери',
+    kapot: 'Покраска капота',
+    roof: 'Покраска крыши',
+    bamper: 'Покраска бампера',
+  },
+  slesar: {
+    oil: 'Замена масла',
+    kolodki: 'Замена колодок',
+    filter: 'Замена фильтра',
+    enginedefense: 'Снятие и установка защиты двигателя',
+  },
+  diagnostic: {
+    engine: 'Диагностика двигателя',
+    transmission: 'Диагностика коробки передач',
+    electric: 'Диагностика электрической системы',
+  },
+  insurance: {
+    policy: 'Оформление страхового полиса',
+  }
+}
+
+const startJobSelection = {
+  slesar: 'Слесарные работы',
+  malar: 'Малярные работы',
+  diagnostic: 'Диагностика',
+  insurance: 'Страховая поддержка',
+}
+
+function removeOptions(selectElement) {
+  var i, L = selectElement.options.length - 1;
+  for (i = L; i >= 0; i--) {
+    selectElement.remove(i);
+  }
+}
+
+const findKey = (targetKey, collection) => {
+  let result = {};
+  if (typeof collection === 'object') {
+    const keys = Object.keys(collection);
+    if (keys.includes(targetKey)) {
+      result[targetKey] = collection[targetKey];
+    } else {
+      result = keys.reduce((acc, key) => {
+        acc = { ...acc, ...findKey(targetKey, collection[key]) };
+        return acc;
+      }, {});
+    }
+  }
+  return result;
+}
+
+function getJobMenu(menu, selection) {
+  Object.entries(menu).forEach(([value, text]) => {
+    const newOption = new Option(text, value);
+    selection.add(newOption);
+  })
+}
+
+
+
+function changeOption(selectorId) {
+  console.log('cahnge')
+  const jobSelectionMenu = document.querySelector(`#${selectorId}`)
+  const selectedIndex = jobSelectionMenu.options.selectedIndex;
+  const selectedJob = jobSelectionMenu.options[selectedIndex].value;
+  if (selectedJob === 'exit') {
+    removeOptions(jobSelectionMenu);
+    jobSelectionMenu.add(new Option(), null);
+    getJobMenu(startJobSelection, jobSelectionMenu);
+  }
+  const newJobs = findKey(selectedJob, jobs);
+  if (typeof newJobs[selectedJob] === 'object') {
+    removeOptions(jobSelectionMenu);
+    getJobMenu(newJobs[selectedJob], jobSelectionMenu)
+    const exitOption = new Option('▲', 'exit');
+    jobSelectionMenu.add(exitOption);
+  }
+}
+
+function addJobSelection() {
+  const jobTable = document.querySelector('#jobtable');
+  const newRow = jobTable.insertRow(-1);
+  const numberOfRow = jobTable.rows.length - 2;
+  newRow.insertCell(-1).innerHTML = numberOfRow;
+  const rowId = `jobrow${numberOfRow}`;
+  newRow.setAttribute("id", rowId);
+  newRow.setAttribute("class", 'jobrows');
+  const newSelect = document.createElement('select');
+  const newInput = document.createElement('input');
+  const selectId = `job-selection${numberOfRow}`;
+  const costId = `job-cost${numberOfRow}`;
+  newSelect.setAttribute("id", selectId);
+  newSelect.setAttribute("name", 'job');
+  newSelect.setAttribute("autofocus", '');
+  newSelect.setAttribute("required", '');
+  newSelect.setAttribute("class", 'jobselection');
+  newInput.setAttribute('type', 'number');
+  newInput.setAttribute("name", 'cost');
+  newInput.setAttribute("class", 'jobcost');
+  newInput.setAttribute("id", costId);
+  newInput.setAttribute("min", 0);
+  newInput.setAttribute("value", 0);
+  newRow.insertCell(-1).appendChild(newSelect);
+  newRow.insertCell(-1).appendChild(newInput);
+  newSelect.add(new Option(), null);
+  getJobMenu(startJobSelection, newSelect);
+  // if (numberOfRow !== 1) {
+  const newDeleteButton = document.createElement('input');
+  newDeleteButton.setAttribute('type', 'button');
+  newDeleteButton.setAttribute('style', 'color: red;');
+  newDeleteButton.setAttribute('value', 'X');
+  const buttonId = `delete-selection${numberOfRow}`;
+  newDeleteButton.setAttribute('id', buttonId);
+  newRow.insertCell(-1).appendChild(newDeleteButton);
+  //}
+  resetEvents();
+}
+
+function resetAttributes() {
+  const jobTable = document.querySelector('#jobtable').querySelectorAll('tr');
+  jobTable.forEach((row, index) => {
+    if (row.className === 'jobrows') {
+      const numberOfRow = row.querySelectorAll('td')[0].innerHTML;
+      row.querySelector(`#job-selection${numberOfRow}`).setAttribute("id", `job-selection${index - 1}`);
+      row.querySelector(`#job-cost${numberOfRow}`).setAttribute("id", `job-cost${index - 1}`);
+
+      if (numberOfRow !== '1') {
+        row.querySelector(`#delete-selection${numberOfRow}`).setAttribute("id", `delete-selection${index - 1}`);
+      }
+      row.querySelectorAll('td')[0].innerHTML = `${index - 1}`;
+      row.setAttribute('id', `jobrow${index - 1}`)
+    }
+  })
+}
+
+function resetEvents() {
+  const jobTable = document.querySelector('#jobtable');
+  const tableRows = jobTable.querySelectorAll('tr');
+  tableRows.forEach((row, index) => {
+    // const numberOfRow = row.querySelectorAll('td')[0].innerHTML;
+    if (row.className === 'jobrows') {
+      const select = row.querySelector(`#job-selection${index - 1}`);
+      select.onchange = function() {
+        changeOption(this.id);
+      }
+      const jobCost = row.querySelector(`#job-cost${index - 1}`);
+      jobCost.addEventListener('change', calculateTotal);
+
+      // if (numberOfRow !== '1') {
+      const input = row.querySelector(`#delete-selection${index - 1}`);
+      input.onclick = function() {
+        jobTable.deleteRow(index);
+        resetAttributes();
+        resetEvents();
+        calculateTotal();
+      }
+      // }
+    }
+  })
+}
+
+
+function resetSelectorNames() {
+  const jobTable = document.querySelector('#jobtable');
+  const tableRows = jobTable.querySelectorAll('tr');
+  tableRows.forEach((row, index) => {
+    if (row.className === 'jobrows') {
+      const numberOfRow = row.querySelectorAll('td')[0].innerHTML;
+      row.querySelector(`#job-selection${numberOfRow}`).setAttribute("name", `jobs[${numberOfRow}]`);
+      row.querySelector(`#job-cost${numberOfRow}`).setAttribute("name", `jobs[${numberOfRow}]`);
+    }
+  });
+}
+
+function calculateTotal() {
+  const jobTable = document.querySelector('#jobtable');
+  const tableRows = jobTable.querySelectorAll('tr');
+  let result = 0;
+  tableRows.forEach((row) => {
+    if (row.className === 'jobrows') {
+      const numberOfRow = row.querySelectorAll('td')[0].innerHTML;
+      result += Number(row.querySelector(`#job-cost${numberOfRow}`).value);
+    }
+  })
+  document.querySelector('#jobcost').querySelector('#total')
+    .setAttribute('value', result);
+}
+
+
+async function getOrderJobs() {
+  const orderId = document.getElementById('orderid').value;
+  const response = await fetch(`https://Nest.gigantgiga.repl.co/order/res/${orderId}`);
+  const order = await response.json();
+  const jobs = order.jobs;
+  // console.log(jobs)
+  return jobs;
+}
+
+function getJobsPart(job, collection) {
+  let result = {};
+  Object.keys(collection).forEach(part => {
+    if (collection[part].hasOwnProperty(job)) {
+      result = collection[part];
+    }
+  })
+  return result;
+}
+
+async function loadSelectedJobs() {
+  const orderJobs = await getOrderJobs();
+  orderJobs.forEach(([job, cost]) => {
+    const jobsPart = getJobsPart(job, jobs); // jobs is full collection of jobs 
+    const jobTable = document.querySelector('#jobtable');
+    const newRow = jobTable.insertRow(-1);
+    const numberOfRow = jobTable.rows.length - 2;
+    newRow.insertCell(-1).innerHTML = numberOfRow;
+    const rowId = `jobrow${numberOfRow}`;
+    newRow.setAttribute("id", rowId);
+    newRow.setAttribute("class", 'jobrows');
+    const newSelect = document.createElement('select');
+    const newInput = document.createElement('input');
+    const selectId = `job-selection${numberOfRow}`;
+    const costId = `job-cost${numberOfRow}`;
+    newSelect.setAttribute("id", selectId);
+    newSelect.setAttribute("name", 'job');
+    newSelect.setAttribute("autofocus", '');
+    newSelect.setAttribute("required", '');
+    newSelect.setAttribute("class", 'jobselection');
+    newInput.setAttribute('type', 'number');
+    newInput.setAttribute("name", 'cost');
+    newInput.setAttribute("class", 'jobcost');
+    newInput.setAttribute("id", costId);
+    newInput.setAttribute("min", 0);
+    newInput.setAttribute("value", cost);
+    newRow.insertCell(-1).appendChild(newSelect);
+    newRow.insertCell(-1).appendChild(newInput);
+    getJobMenu(jobsPart, newSelect);
+    const exitOption = new Option('▲', 'exit');
+    newSelect.add(exitOption);
+    const arrayOfNewSelectOptions = Array.from(newSelect.options);
+    arrayOfNewSelectOptions.forEach(option => {
+      if (option.value === job) {
+        option.selected = true;
+      }
+    })
+    // if (numberOfRow !== '1') {
+    const newDeleteButton = document.createElement('input');
+    newDeleteButton.setAttribute('type', 'button');
+    newDeleteButton.setAttribute('style', 'color: red;');
+    newDeleteButton.setAttribute('value', 'X');
+    const buttonId = `delete-selection${numberOfRow}`;
+    newDeleteButton.setAttribute('id', buttonId);
+    newRow.insertCell(-1).appendChild(newDeleteButton);
+    // }
+  })
+  resetEvents();
+  calculateTotal();
+}
+
+//DOM elements
+const addJobButton = document.querySelector('#addjob');
+const submitButton = document.querySelector('#submit-button');
+
+
+// Listeners
+document.addEventListener("DOMContentLoaded", () => {
+  // addJobSelection();
+  // resetEvents();
+  // resetSelectorNames();
+  loadSelectedJobs();
+});
+addJobButton.addEventListener('click', addJobSelection);
+
+addJobButton.addEventListener('click', resetSelectorNames);
+
+submitButton.onclick = async () => {
+  const jobRows = Array.from(document.getElementsByClassName('jobrows'));
+  const updatedJobs = [];
+  jobRows.forEach((jobRow, index) => {
+    const jobSelectionOptions = jobRow
+      .querySelector(`#job-selection${index + 1}`).options;
+    const selectedJobIndex = jobSelectionOptions.selectedIndex;
+    const jobName = jobSelectionOptions[selectedJobIndex].value;
+    const jobCost = jobRow.querySelector(`#job-cost${index + 1}`).value;
+    updatedJobs.push([jobName, jobCost]);
+  })
+  const orderId = document.getElementById('orderid').value;
+  try {
+    const response = await fetch(`/order/update/${orderId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json;charset=utf-8'
+      },
+      body: JSON.stringify({ jobs: updatedJobs })
+    });
+    const result = await response.json();
+    location.href = `/order/${orderId}`;
+    return;
+  } catch (e) {
+    console.log('Request failed', e);
+  }
+}
+
+
+
+
+

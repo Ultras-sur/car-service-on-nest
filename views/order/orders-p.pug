@@ -1,0 +1,34 @@
+extends ../layouts/layout.pug
+include ../mixins/pages
+
+block content
+  h1 Orders
+  div
+   table#orderstatuses-table(border='2'  width='20%' cellpadding='4' cellspacing='1')
+    tbody 
+      tr
+        td
+          strong №
+        td
+          srong Date
+        td
+          srong Number
+        td   
+          srong Car 
+        td   
+          srong Status
+           
+    if orders 
+      each order, index in orders
+         tr
+            td #{step * (Number(page) - 1) + (index + 1)}
+            td #{new Date(order.createdAt).toLocaleString('en-US', {day: 'numeric', month: 'numeric', year: 'numeric'})}
+            td 
+              a(href=`/order/${order._id}`) #{order.number}
+            td #{order.car.brand} #{order.car.model} #{order.car.releaseYear}
+            td #{order.orderStatus}
+  div
+    if orders
+      +pages(page, totalPages, '/order/all')
+     
+              
