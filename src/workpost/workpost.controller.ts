@@ -15,7 +15,7 @@ export class WorkPostController {
       workPost: newWorkPost,
     })
   }*/
-  
+
   @Get('/workposts')
   async getWorkPosts(@Res() res) {
     const workPosts = await this.workPostService.getWorkPosts();
@@ -24,48 +24,38 @@ export class WorkPostController {
 
   @Get('/workpoststatus')
   @Render('workpost/workposts')
-  async getStatus(@Res() res) {
-    const getWorkPosts = await this.workPostService.getWorkPosts();
-    const workPosts = await getWorkPosts.reduce(async (prev, workPost) => {
-      const acc = await prev;
+  async getStatus() {
+    const workPostsStatus = await this.workPostService.getWorkPosts();
+    const workPosts = await Promise.all(workPostsStatus.map(async workPost => {
       if (workPost.car) {
         const car = await this.carService.findCar(workPost.car);
         const orderInfo = await this.orderService.findOrder(workPost.order);
-        acc.push({
+        return {
           number: workPost.number,
           car,
           status: 'working',
           order: { number: orderInfo.number, jobs: orderInfo.jobs, id: orderInfo['_id'] }
-        });
-        return acc;
+        };
       } else {
-        acc.push({
+        return {
           number: workPost.number,
           car: { model: '', brand: '' },
           status: 'free',
           order: { number: '' }
-        });
-        return acc;
+        }
       }
-    }, Promise.resolve([]));
-
-    const openedOrders = await this.orderService.findOrders({ status: 'opened' });
-    const ordersInQueue = await openedOrders.reduce(async (prev, order) => {
-      const acc = await prev;
-      if (order.workPost === 'queue') {
-        const car = await this.carService.findCar(order.car);
-        order.car = car;
-        acc.push(order);
-      }
-      return acc;
-    }, Promise.resolve([]));
+    }));
+    const ordersInQueue = await this.orderService
+      .findOrdersByConditionPopulate({ orderStatus: 'opened', workPost: 'queue' });
     return { workPosts, ordersInQueue };
   }
 
   @Post('/unset')
   async unset(@Res() res, @Body() workPostData, @Req() req) {
     const { order, workPost } = workPostData;
-    const unsetedOrder = await this.orderService.update(order, { workPost: 'queue' });
+    const completeCondition = workPostData.complete === 'true' ? { orderStatus: 'closed' } : {};
+    const unsetedOrder =
+      await this.orderService.update(order, { ...{ workPost: 'queue' }, ...completeCondition });
     const workPostToUnset = await this.workPostService.unsetWorkPost(workPost);
     return res.redirect('workpoststatus');
   }
