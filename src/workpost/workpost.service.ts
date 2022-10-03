@@ -20,13 +20,11 @@ export class WorkPostService {
   }
 
   async setToWorkPost(order) {
-    console.log(order.workPost, order.car, order._id)
     const setedWorkPost = await this.workPostModel.findOneAndUpdate({ number: order.workPost }, { car: order.car, order: order._id });
     return setedWorkPost;
   }
 
   async unsetWorkPost(workpostNumber): Promise<any> {
-    //console.log(order.workPost, order.car, order._id)
     const unSetedWorkPost = await this.workPostModel.findOneAndReplace({ number: workpostNumber }, { number: workpostNumber });
     return unSetedWorkPost;
   }

@@ -77,7 +77,6 @@ export class AppController {
 
     const ordersInQueue = await this.orderService
       .findOrdersByConditionPaginate({ orderStatus: 'opened', workPost: 'queue' }, currentpage);
-    
     return { workPosts, ordersInQueue };
   }  
 }

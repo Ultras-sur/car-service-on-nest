@@ -18,7 +18,7 @@ export class ClientService {
       limit: step,
       skip: step * (page - 1)
     }) // : Promise<Client[]>
-    const totalDocuments = await this.clientModel.find().estimatedDocumentCount();
+    const totalDocuments = await this.clientModel.find().countDocuments();
     const totalPages = Math.ceil(totalDocuments / step);
     return { clients, totalPages, page, step };
   }

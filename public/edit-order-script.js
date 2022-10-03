@@ -139,7 +139,6 @@ function resetEvents() {
   const jobTable = document.querySelector('#jobtable');
   const tableRows = jobTable.querySelectorAll('tr');
   tableRows.forEach((row, index) => {
-    // const numberOfRow = row.querySelectorAll('td')[0].innerHTML;
     if (row.className === 'jobrows') {
       const select = row.querySelector(`#job-selection${index - 1}`);
       select.onchange = function() {
@@ -147,16 +146,17 @@ function resetEvents() {
       }
       const jobCost = row.querySelector(`#job-cost${index - 1}`);
       jobCost.addEventListener('change', calculateTotal);
-
-      // if (numberOfRow !== '1') {
       const input = row.querySelector(`#delete-selection${index - 1}`);
       input.onclick = function() {
+        const numberOfRow = jobTable.rows.length - 2;
         jobTable.deleteRow(index);
+        if (numberOfRow === 1) {
+          addJobSelection();
+        }
         resetAttributes();
         resetEvents();
         calculateTotal();
       }
-      // }
     }
   })
 }
@@ -191,10 +191,9 @@ function calculateTotal() {
 
 async function getOrderJobs() {
   const orderId = document.getElementById('orderid').value;
-  const response = await fetch(`https://Nest.gigantgiga.repl.co/order/res/${orderId}`);
+  const response = await fetch(`/order/res/${orderId}`);
   const order = await response.json();
   const jobs = order.jobs;
-  // console.log(jobs)
   return jobs;
 }
 
@@ -244,8 +243,7 @@ async function loadSelectedJobs() {
       if (option.value === job) {
         option.selected = true;
       }
-    })
-    // if (numberOfRow !== '1') {
+    })// if (numberOfRow !== '1') {
     const newDeleteButton = document.createElement('input');
     newDeleteButton.setAttribute('type', 'button');
     newDeleteButton.setAttribute('style', 'color: red;');
@@ -253,7 +251,6 @@ async function loadSelectedJobs() {
     const buttonId = `delete-selection${numberOfRow}`;
     newDeleteButton.setAttribute('id', buttonId);
     newRow.insertCell(-1).appendChild(newDeleteButton);
-    // }
   })
   resetEvents();
   calculateTotal();
@@ -266,13 +263,9 @@ const submitButton = document.querySelector('#submit-button');
 
 // Listeners
 document.addEventListener("DOMContentLoaded", () => {
-  // addJobSelection();
-  // resetEvents();
-  // resetSelectorNames();
   loadSelectedJobs();
 });
 addJobButton.addEventListener('click', addJobSelection);
-
 addJobButton.addEventListener('click', resetSelectorNames);
 
 submitButton.onclick = async () => {

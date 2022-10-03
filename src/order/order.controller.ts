@@ -12,24 +12,14 @@ import { createOrderNumber } from '../../helpers/number-generator';
 export class OrderController {
   constructor(private orderService: OrderService, private carService: CarService, private clientService: ClientService, private workPostService: WorkPostService) { }
 
-  /*@Get('all')
-  @Render('order/orders')
-  async getAllOrders() {
-    const statusOrders = await this.orderService.findOrders();
-    const orders = await statusOrders.reduce(async (prev, order) => {
-      const acc = await prev;
-      const car = await this.carService.findCar(order.car);
-      acc.push({ car, order });
-      return acc;
-    }, Promise.resolve([]));
-    return { orders };
-  }*/
 
   @Get('all')
   @Render('order/orders-p')
-  async getOrder2(@Query('page') page: number) {
+  async getOrders(@Query('page') page: number) {
     const currentPage = page ?? 1;
-    const orders = await this.orderService.showAll(currentPage);
+    const step = 12;
+    const sortCondition = { createdAt: 'desc' };
+    const orders = await this.orderService.showAll(currentPage, step, sortCondition);
     return { ...orders };
   };
 

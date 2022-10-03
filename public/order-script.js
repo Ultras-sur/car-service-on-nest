@@ -109,7 +109,6 @@ function addJobSelection() {
   newRow.insertCell(-1).appendChild(newInput);
   newSelect.add(new Option(), null);
   getJobMenu(startJobSelection, newSelect);
-  //if (numberOfRow !== 1) {
   const newDeleteButton = document.createElement('input');
   newDeleteButton.setAttribute('type', 'button');
   newDeleteButton.setAttribute('style', 'color: red;');
@@ -117,7 +116,6 @@ function addJobSelection() {
   const buttonId = `delete-selection${numberOfRow}`;
   newDeleteButton.setAttribute('id', buttonId);
   newRow.insertCell(-1).appendChild(newDeleteButton);
-  //}
   resetEvents();
 }
 
@@ -151,15 +149,17 @@ function resetEvents() {
       const jobCost = row.querySelector(`#job-cost${index - 1}`);
       jobCost.addEventListener('change', calculateTotal);
 
-      // if (numberOfRow !== '1') {
       const input = row.querySelector(`#delete-selection${index - 1}`);
       input.onclick = function() {
+        const numberOfRow = jobTable.rows.length - 2;
         jobTable.deleteRow(index);
+        if (numberOfRow === 1) {
+          addJobSelection();
+        }
         resetAttributes();
         resetEvents();
         calculateTotal();
       }
-      //  }
     }
   })
 }

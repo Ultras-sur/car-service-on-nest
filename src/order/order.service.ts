@@ -46,9 +46,9 @@ export class OrderService {
       limit: step,
       skip: step * (page - 1)
     }).populate('car');
-    const totalDocuments = await this.orderModel.find(condition).estimatedDocumentCount();
+    const totalDocuments = await this.orderModel.find(condition).countDocuments();
     const totalPages = Math.ceil(totalDocuments / step);
-    return { orders, totalPages, page, step };
+    return { orders, totalPages, page, step, totalDocuments };
   }
 
   async findOrders(condition = {}): Promise<Order[]> {
@@ -71,15 +71,15 @@ export class OrderService {
     return deletedOrder;
   }
 
-  async showAll(page: number, step = 12, dateCondition = 'desc') {
+  async showAll(page: number, step, sortCondition) {
     const orders = await this.orderModel.find({}, null, {
       limit: step,
       skip: step * (page - 1),
     })
       .populate('car')
       .populate('client')
-      .sort({ createdAt: dateCondition });
-    const totalDocuments = await this.orderModel.find().estimatedDocumentCount();
+      .sort(sortCondition);
+    const totalDocuments = await this.orderModel.find().countDocuments();
     const totalPages = Math.ceil(totalDocuments / step);
     return { orders, totalPages, page, step };
   }
