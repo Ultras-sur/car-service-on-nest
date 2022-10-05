@@ -7,7 +7,7 @@ import { CarModule } from './car/car.module';
 import { OrderModule } from './order/order.module';
 import { WorkPostModule } from './workpost/workpost.module';
 import { UsersModule } from './users/users.module';
-import { AuthenticationService } from './authentication/authentication.service';
+import { AuthenticationModule } from './authentication/authentication.module';
 
 
 @Module({
@@ -16,9 +16,10 @@ import { AuthenticationService } from './authentication/authentication.service';
     CarModule,
     OrderModule,
     WorkPostModule,
-    UsersModule],
+    UsersModule,
+    AuthenticationModule],
   controllers: [AppController],
-  providers: [AppService, AuthenticationService],
+  providers: [AppService],
 })
 export class AppModule { }
 
