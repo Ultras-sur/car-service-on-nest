@@ -37,24 +37,6 @@ h3 {
     line-height: 24px;
     text-align: left;
 }
-/*.jobtable 
-{
-    display: table;
-    border-collapse: separate;
-    box-sizing: border-box;
-    text-indent: initial;
-    white-space: normal;
-    line-height: normal;
-    font-weight: normal;
-    font-size: medium;
-    font-style: normal;
-    color: -internal-quirk-inherit;
-    text-align: start;
-    border-spacing: 2px;
-    border-color: gray;
-    font-variant: normal;
-    border: 1px solid grey;
-}*/
 
 table {
   font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
@@ -85,6 +67,13 @@ div.inner {
     justify-content: center; /*Центрирование по горизонтали*/
     align-items: center;     /*Центрирование по вертикали */
 }
+
+div.auth-inner {
+    display: flex;
+    justify-content: center; /*Центрирование по горизонтали*/
+    align-items: center;     /*Центрирование по вертикали */
+}
+
 div.h1 {
     display: flex;
     justify-content: center; /*Центрирование по горизонтали*/
@@ -140,5 +129,13 @@ input[type="number"] {
 input[type="number"]::-webkit-outer-spin-button,
 input[type="number"]::-webkit-inner-spin-button {
 	display: none;
+}
+
+input#login {
+  padding:7px;
+  border:0;
+  box-shadow:0 0 15px 4px rgba(0,0,0,0.06);
+  margin:2px 0;
+  border-radius:7px;    
 }
 // 8ED9B6

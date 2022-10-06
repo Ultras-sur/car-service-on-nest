@@ -1,0 +1,13 @@
+.auth-outer
+  .auth-inner
+    form#login(name='auth' method='POST' action='/login')
+      p
+        | Email:
+        br
+        input#login(type='text' size='20' name='email')
+      p
+        | Password:
+        br
+        input#login(type='text' name='password' cols='20' rows='1')
+      p(align='center')
+        input(type='submit' value='Login')

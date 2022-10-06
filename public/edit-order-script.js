@@ -59,7 +59,6 @@ function getJobMenu(menu, selection) {
 }
 
 
-
 function changeOption(selectorId) {
   console.log('cahnge')
   const jobSelectionMenu = document.querySelector(`#${selectorId}`)
