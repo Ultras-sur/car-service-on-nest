@@ -3,6 +3,9 @@ import { AppModule } from './app.module';
 import { join } from 'path';
 import { resolve } from 'path';
 import { NestExpressApplication } from '@nestjs/platform-express';
+import * as session from 'express-session';
+import flash = require('connect-flash');
+import passport = require("passport");
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
@@ -10,6 +13,18 @@ async function bootstrap() {
   app.setBaseViewsDir(resolve('./views'));
   app.useStaticAssets(resolve('./public'));
   app.setViewEngine('pug');
+
+  app.use(
+    session({
+      secret: 'key',
+      resave: false,
+      saveUninitialized: false,
+    }),
+  );
+  app.use(passport.initialize());
+  app.use(passport.session());
+  app.use(flash());
+
   await app.listen(5000);
 }
 bootstrap();

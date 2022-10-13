@@ -1,7 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
-import { ExtractJwt, VerifiedCallback } from 'passport-jwt';
-import { Strategy } from 'passport-jwt';
+import { ExtractJwt, VerifiedCallback, Strategy } from 'passport-jwt';
 
 
 import { AuthenticationService } from './authentication.service';
@@ -11,7 +10,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(private authenticationService: AuthenticationService) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-      secretOrKey: process.env.SECRET_KEY,
+      secretOrKey: process.env.JWT_SECRET_KEY,
     });
   }
 
@@ -19,7 +18,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     const user = await this.authenticationService.validateUser(payload);
     if (!user) {
       return done(
-        new HttpException('Unauthorized access', HttpStatus.UNAUTHORIZED),
+        new HttpException('Вы не авторизованы', HttpStatus.UNAUTHORIZED),
         false,
       );
     }

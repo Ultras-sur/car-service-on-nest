@@ -67,9 +67,12 @@ div.inner {
     justify-content: center; /*Центрирование по горизонтали*/
     align-items: center;     /*Центрирование по вертикали */
 }
-
+div.auth-outer{
+  display: flex;
+  height: 600px;
+}
 div.auth-inner {
-    display: flex;
+    margin: auto;
     justify-content: center; /*Центрирование по горизонтали*/
     align-items: center;     /*Центрирование по вертикали */
 }
