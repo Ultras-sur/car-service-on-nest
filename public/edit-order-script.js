@@ -60,7 +60,6 @@ function getJobMenu(menu, selection) {
 
 
 function changeOption(selectorId) {
-  console.log('cahnge')
   const jobSelectionMenu = document.querySelector(`#${selectorId}`)
   const selectedIndex = jobSelectionMenu.options.selectedIndex;
   const selectedJob = jobSelectionMenu.options[selectedIndex].value;
@@ -255,6 +254,11 @@ async function loadSelectedJobs() {
   calculateTotal();
 }
 
+function haveEmptySelections(jobSelections) {
+  const emptySelection = jobSelections.filter(selection => selection.value.length === 0);
+  return emptySelection.length !== 0;
+}
+
 //DOM elements
 const addJobButton = document.querySelector('#addjob');
 const submitButton = document.querySelector('#submit-button');
@@ -269,6 +273,10 @@ addJobButton.addEventListener('click', resetSelectorNames);
 
 submitButton.onclick = async (event) => {
   event.preventDefault();
+  const jobSelections = Array.from(document.getElementsByClassName('jobselection'));
+  if (haveEmptySelections(jobSelections)) {
+    return null;
+  }
   const jobRows = Array.from(document.getElementsByClassName('jobrows'));
   const updatedJobs = [];
   jobRows.forEach((jobRow, index) => {
@@ -279,6 +287,7 @@ submitButton.onclick = async (event) => {
     const jobCost = jobRow.querySelector(`#job-cost${index + 1}`).value;
     updatedJobs.push([jobName, jobCost]);
   })
+
   const orderId = document.getElementById('orderid').value;
   try {
     const response = await fetch(`/order/update/${orderId}`, {
