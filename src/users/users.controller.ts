@@ -8,16 +8,16 @@ import { Roles } from 'src/auth/roles.decorator';
 
 @Controller('users')
 @UseFilters(AuthExceptionFilter)
-@UseGuards(RolesGuard)
+@UseGuards(AuthenticatedGuard)
 
 export class UsersController {
   constructor(private readonly usersService: UsersService) { }
 
-  @UseGuards(AuthenticatedGuard)
   @Get('/create')
-  @Roles(Role.ADMIN)    
+  @UseGuards(RolesGuard)  
+  @Roles(Role.ADMIN)  
   async create() {
-    const user = await this.usersService.create({ email: 'bob', password: '000999', roles: [ 'user'] });
+    const user = await this.usersService.create({ email: 'man', password: '000999', roles: ['manager'] });
     return user;
   }
 }

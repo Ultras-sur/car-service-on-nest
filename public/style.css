@@ -38,6 +38,10 @@ h3 {
     text-align: left;
 }
 
+h3.auth {
+    text-align: center;
+}
+
 table {
   font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
   font-size: 14px;
@@ -140,5 +144,10 @@ input#login {
   box-shadow:0 0 15px 4px rgba(0,0,0,0.06);
   margin:2px 0;
   border-radius:7px;    
+}
+
+div.logout {
+  padding: 0px;
+  margin-right: 50px;
 }
 // 8ED9B6

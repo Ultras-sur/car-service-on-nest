@@ -1,7 +1,7 @@
 .auth-outer
   .auth-inner
     form#login(name='auth' method='POST' action='/login')
-      h3(align='center') Authorisation
+      h3.auth(text-align='center') Authorisation
       p
         | Email:
         br
@@ -9,7 +9,7 @@
       p
         | Password:
         br
-        input#login(type='text' name='password' cols='20' rows='1')
+        input#login(type='password' name='password' cols='20' rows='1')
       p(align='center')
         input(type='submit' value='Login')
       p

@@ -224,7 +224,7 @@ async function loadSelectedJobs() {
     newSelect.setAttribute("id", selectId);
     newSelect.setAttribute("name", 'job');
     newSelect.setAttribute("autofocus", '');
-    newSelect.setAttribute("required", '');
+    newSelect.setAttribute("required", 'true');
     newSelect.setAttribute("class", 'jobselection');
     newInput.setAttribute('type', 'number');
     newInput.setAttribute("name", 'cost');
@@ -267,7 +267,8 @@ document.addEventListener("DOMContentLoaded", () => {
 addJobButton.addEventListener('click', addJobSelection);
 addJobButton.addEventListener('click', resetSelectorNames);
 
-submitButton.onclick = async () => {
+submitButton.onclick = async (event) => {
+  event.preventDefault();
   const jobRows = Array.from(document.getElementsByClassName('jobrows'));
   const updatedJobs = [];
   jobRows.forEach((jobRow, index) => {

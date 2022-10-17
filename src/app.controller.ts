@@ -1,8 +1,8 @@
-import { Controller, Get, Render, Post, Res, Req, UseGuards, UseFilters, Query, Request } from '@nestjs/common';
+import { Controller, Get, Render, Post, Res, Req, UseGuards, UseFilters, Query } from '@nestjs/common';
 import { CarService } from './car/car.service';
 import { OrderService } from './order/order.service';
 import { WorkPostService } from './workpost/workpost.service';
-import { Response } from 'express';
+import { Response, Request } from 'express';
 import { LoginGuard } from 'src/auth/common/guards/login.guard';
 import { AuthenticatedGuard } from 'src/auth/common/guards/authenticated.guard';
 import { RolesGuard } from './auth/common/guards/roles.guard';
@@ -17,24 +17,50 @@ import { Roles } from './auth/roles.decorator';
 export class AppController {
   constructor(private orderService: OrderService, private carService: CarService, private workPostService: WorkPostService) { }
 
-  
+
   @Get('/login')
   @Render('auth/auth')
-  index(@Request() req): { message: string } {
-    return { message: req.flash('loginError') };
+  index(@Req() req, @Res() res: Response): { message: string, loginPage: boolean } | void {
+    if (req.isAuthenticated()) {
+      return res.redirect('/');
+    }
+    return { message: req.flash('loginError'), loginPage: true };
   }
-  
+
   @UseGuards(LoginGuard)
   @Post('/login')
-  login(@Res() res: Response, @Req() req: Request) {
-    res.redirect('/');
+  login(@Res() res: Response) {
+    return res.redirect('/');
   }
 
 
-  @UseGuards(AuthenticatedGuard)
+  @Get('/logout')
+  logout(@Req() req, @Res() res: Response) {
+    /*req.session.destroy(() => {
+      res.cookie('connect.sid', null, {
+           path: "/",
+           httpOnly: true,
+           maxAge: 0,
+           expires: new Date(0)
+       })
+       return res.redirect('/login');
+    }) */
+
+    res.cookie('connect.sid', null, {
+      path: "/",
+      httpOnly: true,
+      maxAge: 0,
+      expires: new Date(0)
+    })
+    return res.redirect('/login');
+  }
+
+
   @Get('/')
   @Render('workpost/monitor')
-  @Roles(Role.ADMIN)   
+  @UseGuards(RolesGuard)
+  @Roles(Role.ADMIN, Role.MANAGER)
+  @UseGuards(AuthenticatedGuard)
   async getMonitor(@Query('page') page: number) {
     const currentpage = page ?? 1;
     const getWorkPosts = await this.workPostService.getWorkPosts();
