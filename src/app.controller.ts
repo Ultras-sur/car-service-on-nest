@@ -61,7 +61,7 @@ export class AppController {
   @UseGuards(RolesGuard)
   @Roles(Role.ADMIN, Role.MANAGER)
   @UseGuards(AuthenticatedGuard)
-  async getMonitor(@Query('page') page: number) {
+  async getMonitor(@Query('page') page: number, @Req() req) {
     const currentpage = page ?? 1;
     const getWorkPosts = await this.workPostService.getWorkPosts();
 
@@ -88,7 +88,9 @@ export class AppController {
 
     const ordersInQueue = await this.orderService
       .findOrdersByConditionPaginate({ orderStatus: 'opened', workPost: 'queue' }, currentpage);
-    return { workPosts, ordersInQueue };
+    const isAdmin = req.user.roles.includes(Role.ADMIN);
+    
+    return { workPosts, ordersInQueue, isAdmin };
   }
 
 }

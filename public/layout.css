@@ -21,7 +21,7 @@ body div {
 }
 
 .left-sidebar {
-    width: 15%;
+    width: 17%;
     background: #bae8d3;
     float: left;
     min-height: 700px;
@@ -37,7 +37,7 @@ body div {
 /*удалено width: 80%;*/
 .content {
     float: left;
-    width: 80%;
+    width: 78%;
     background: #ffffff;
     min-height: 700px;
 }

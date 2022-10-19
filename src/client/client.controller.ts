@@ -1,4 +1,4 @@
-import { Controller, Get, Render, Res, HttpStatus, Param, NotFoundException, Post, Body, Query, Put, Delete, Redirect, UseGuards, UseFilters } from '@nestjs/common';
+import { Controller, Get, Render, Res, HttpStatus, Param, NotFoundException, Post, Body, Query, Put, Delete, Redirect, UseGuards, UseFilters, Req } from '@nestjs/common';
 import { Response } from 'express';
 import { ClientService } from './client.service';
 import { CreateClientDTO } from '../../dto/create-client.dto';
@@ -25,52 +25,55 @@ export class ClientController {
     return res.status(HttpStatus.OK).json(clients);
   }*/
 
-  
+
   @Get('all')
   @Render('client/clients')
-  @UseGuards(RolesGuard)  
-  @Roles(Role.ADMIN, Role.MANAGER)   
-  async getClients(@Query('page') page: number) {
+  @UseGuards(RolesGuard)
+  @Roles(Role.ADMIN, Role.MANAGER)
+  async getClients(@Query('page') page: number, @Req() req) {
     const currentPage = page ?? 1;
     const clients = await this.clientService.findAll(currentPage);
-    return { ...clients }
+    const isAdmin = req.user.roles.includes(Role.ADMIN);
+    return { ...clients, isAdmin }
   }
 
- 
+
   @Get('create')
   @Render('client/create-client')
-  @UseGuards(RolesGuard)  
-  @Roles(Role.ADMIN, Role.MANAGER)   
-  getForm(): void {
-    return;
+  @UseGuards(RolesGuard)
+  @Roles(Role.ADMIN, Role.MANAGER)
+  getForm(@Req() req): { isAdmin: boolean } {
+    const isAdmin = req.user.roles.includes(Role.ADMIN);
+    return { isAdmin };
   }
 
-  
+
   @Get(':id')
   @Render('client/client')
-  @UseGuards(RolesGuard)  
-  @Roles(Role.ADMIN, Role.MANAGER)   
-  async getClient(@Res() res: Response, @Param('id', new ValidateObjectId()) clientID) {
+  @UseGuards(RolesGuard)
+  @Roles(Role.ADMIN, Role.MANAGER)
+  async getClient(@Res() res: Response, @Req() req, @Param('id', new ValidateObjectId()) clientID) {
     const client = await this.clientService.findOne(clientID);
     const cars = await this.carService.findOwnerCars(clientID);
     if (!client) throw new NotFoundException('Client does not exist!');
-    return { client, cars };
+    const isAdmin = req.user.roles.includes(Role.ADMIN);
+    return { client, cars, isAdmin };
   }
 
-   
+
   @Post('new')
-  @UseGuards(RolesGuard)  
-  @Roles(Role.ADMIN, Role.MANAGER) 
+  @UseGuards(RolesGuard)
+  @Roles(Role.ADMIN, Role.MANAGER)
   async createClient(@Res() res: Response, @Body() createClientDTO: CreateClientDTO) {
     const newClient = await this.clientService.create(createClientDTO);
     if (!newClient) throw new NotFoundException('New client is not created!');
     return res.redirect(`/client/${newClient['_id']}`);
   }
 
-   
+
   @Put('edit')
-  @UseGuards(RolesGuard)  
-  @Roles(Role.ADMIN, Role.MANAGER) 
+  @UseGuards(RolesGuard)
+  @Roles(Role.ADMIN, Role.MANAGER)
   async editClient(@Res() res: Response,
     @Query('clientID', new ValidateObjectId()) clientID,
     @Body() createClientDTO: CreateClientDTO) {
@@ -83,10 +86,10 @@ export class ClientController {
     })
   }
 
-   
+
   @Delete('delete')
-  @UseGuards(RolesGuard)  
-  @Roles(Role.ADMIN, Role.MANAGER) 
+  @UseGuards(RolesGuard)
+  @Roles(Role.ADMIN, Role.MANAGER)
   async deleteClient(@Res() res: Response,
     @Query('clientID', new ValidateObjectId()) clientID) {
     const deletedClient = await this.clientService.deleteClient(clientID);

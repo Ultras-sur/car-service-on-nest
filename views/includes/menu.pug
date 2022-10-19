@@ -1,8 +1,6 @@
-div
-  a.menu(href=`/`) Monitor
-div
-  a.menu(href=`/workpost/workpoststatus`) Work Posts
-div
-  a.menu(href=`/client/all`) Clients
-div
-  a.menu(href=`/order/all`) Orders
+if isAdmin === true
+  include ../admin/includes/menu.pug
+else
+  include ./user-menu.pug
+
+

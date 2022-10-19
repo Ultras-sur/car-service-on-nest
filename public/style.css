@@ -150,4 +150,41 @@ div.logout {
   padding: 0px;
   margin-right: 50px;
 }
+
+a#admin-title {
+  font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
+  outline: none;
+  text-decoration: none;
+  display: inline-block;
+  margin-right: 0.625%;
+  text-align: left;
+  line-height: 2;
+  color: #039;
+  font-size: 16px;
+}
+
+a#admin {
+  font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
+  outline: none;
+  text-decoration: none;
+  display: inline-block;
+  margin-right: 0.625%;
+  text-align: left;
+  line-height: 1;
+  color: #039;
+  font-size: 14px;
+}
+
+a#admin:link, a.menu:visited, a.menu:focus {
+  background: #bae8d3;
+}
+
+a#admin:hover {
+  background: #bae8d3;
+}
+
+a#admin:active {
+  background: #bae8d3;
+  color: white;
+}
 // 8ED9B6

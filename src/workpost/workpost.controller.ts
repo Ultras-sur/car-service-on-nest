@@ -33,7 +33,7 @@ export class WorkPostController {
   @Render('workpost/workposts')
   @UseGuards(RolesGuard)
   @Roles(Role.ADMIN, Role.MANAGER)
-  async getStatus() {
+  async getStatus(@Req() req) {
     const workPostsStatus = await this.workPostService.getWorkPosts();
     const workPosts = await Promise.all(workPostsStatus.map(async workPost => {
       if (workPost.car) {
@@ -57,7 +57,8 @@ export class WorkPostController {
     }));
     const ordersInQueue = await this.orderService
       .findOrdersByConditionPopulate({ orderStatus: 'opened', workPost: 'queue' });
-    return { workPosts, ordersInQueue };
+    const isAdmin = req.user.roles.includes(Role.ADMIN);
+    return { workPosts, ordersInQueue, isAdmin };
   }
 
   @Post('/unset')

@@ -22,35 +22,39 @@ import { AuthExceptionFilter } from 'src/auth/common/filters/auth-exceptions.fil
 export class OrderController {
   constructor(private orderService: OrderService, private carService: CarService, private clientService: ClientService, private workPostService: WorkPostService) { }
 
-  
+
   @Get('all')
   @Render('order/orders-p')
-  @UseGuards(RolesGuard)  
-  @Roles(Role.ADMIN, Role.MANAGER)  
-  async getOrders(@Query('page') page: number) {
+  @UseGuards(RolesGuard)
+  @Roles(Role.ADMIN, Role.MANAGER)
+  async getOrders(@Query('page') page: number, @Req() req) {
     const currentPage = page ?? 1;
     const step = 12;
     const sortCondition = { createdAt: 'desc' };
     const orders = await this.orderService.showAll(currentPage, step, sortCondition);
-    return { ...orders };
+    const isAdmin = req.user.roles.includes(Role.ADMIN);
+
+    return { ...orders, isAdmin };
   };
 
-  
+
   @Get(':orderId')
   @Render('order/edit-order')
-  @UseGuards(RolesGuard)  
-  @Roles(Role.ADMIN, Role.MANAGER)  
-  async getOrderForEdit(@Res() res: Response, @Param('orderId', new ValidateObjectId()) orderId) {
+  @UseGuards(RolesGuard)
+  @Roles(Role.ADMIN, Role.MANAGER)
+  async getOrderForEdit(@Res() res: Response, @Param('orderId', new ValidateObjectId()) orderId, @Req() req) {
     const order = await this.orderService.findOrder(orderId);
     const car = await this.carService.findCar(order.car);
     const client = await this.clientService.findOne(order.client);
-    return { car, client, order };
+    const isAdmin = req.user.roles.includes(Role.ADMIN);
+
+    return { car, client, order, isAdmin };
   }
 
-  
+
   @Get('/res/queue')
-  @UseGuards(RolesGuard)  
-  @Roles(Role.ADMIN, Role.MANAGER) 
+  @UseGuards(RolesGuard)
+  @Roles(Role.ADMIN, Role.MANAGER)
   async getOrderInqueue(@Res() res: Response) {
     const ordersInQueue = await this.orderService.findOrdersByConditionPopulate({ workPost: 'queue' });
     return res.status(HttpStatus.OK).json(ordersInQueue);
@@ -58,29 +62,31 @@ export class OrderController {
 
 
   @Get('/res/:orderId')
-  @UseGuards(RolesGuard)  
-  @Roles(Role.ADMIN, Role.MANAGER)  
+  @UseGuards(RolesGuard)
+  @Roles(Role.ADMIN, Role.MANAGER)
   async getOrder(@Res() res: Response, @Param('orderId', new ValidateObjectId()) orderId) {
     const order = await this.orderService.findOrder(orderId);
     return res.status(HttpStatus.OK).json(order);
   }
 
 
-  
+
   @Get('/create/:clientId/:carId')
   @Render('order/create-order')
-  @UseGuards(RolesGuard)  
-  @Roles(Role.ADMIN, Role.MANAGER)  
-  async createOrder(@Res() res: Response, @Param('clientId', new ValidateObjectId()) clientId, @Param('carId', new ValidateObjectId()) carId) {
+  @UseGuards(RolesGuard)
+  @Roles(Role.ADMIN, Role.MANAGER)
+  async createOrder(@Res() res: Response, @Param('clientId', new ValidateObjectId()) clientId, @Param('carId', new ValidateObjectId()) carId, @Req() req) {
     const car = await this.carService.findCar(carId);
     const client = await this.clientService.findOne(clientId);
-    return { car, client }
+    const isAdmin = req.user.roles.includes(Role.ADMIN);
+
+    return { car, client, isAdmin }
   }
 
-  
+
   @Post('new')
-  @UseGuards(RolesGuard)  
-  @Roles(Role.ADMIN, Role.MANAGER)  
+  @UseGuards(RolesGuard)
+  @Roles(Role.ADMIN, Role.MANAGER)
   async create(@Res() res: Response, @Body() createOrderDTO: CreateOrderDTO) {
     const car = await this.carService.findCar(createOrderDTO.car);
     const client = await this.clientService.findOne(createOrderDTO.client);
@@ -94,10 +100,10 @@ export class OrderController {
     return res.redirect(`/order/${createdOrder['_id']}`);
   }
 
-      
+
   @Put('/update/:orderId')
-  @UseGuards(RolesGuard)  
-  @Roles(Role.ADMIN, Role.MANAGER)  
+  @UseGuards(RolesGuard)
+  @Roles(Role.ADMIN, Role.MANAGER)
   async updateOrder(@Res() res: Response, @Param('orderId', new ValidateObjectId()) orderId, @Body() updateOrderDTO: UpdateOrderDTO) {
     const updatedOrder = await this.orderService.update(orderId, updateOrderDTO);
     if (!updatedOrder) throw new NotFoundException('Order is not updated!');
@@ -107,10 +113,10 @@ export class OrderController {
     });
   }
 
-   
+
   @Delete(':orderId')
-  @UseGuards(RolesGuard)  
-  @Roles(Role.ADMIN) 
+  @UseGuards(RolesGuard)
+  @Roles(Role.ADMIN)
   async deleteOrder(@Res() res: Response, @Param('orderId', new ValidateObjectId()) orderId) {
     const deletedOrder = await this.orderService.delete(orderId);
     if (!deletedOrder) throw new NotFoundException('Order is not deleted!');
