@@ -1,0 +1,28 @@
+extends ../layouts/layout.pug
+
+
+block content
+  .tab
+    button(class="tablinks active" onclick="openCity(event, 'London')" ) Слесарные работы
+    button(class="tablinks" onclick="openCity(event, 'Paris')") Малярные работы
+    button(class="tablinks" onclick="openCity(event, 'Tokyo')") Диагностика
+    button(class="tablinks" onclick="openCity(event, 'Create')") Добавить...
+  #London.tabcontent(style="display: block;")
+    h3 London
+    p London is the capital city of England.
+  #Paris.tabcontent(style="display: none;")
+    h3 Paris
+    p Paris is the capital of France.
+  #Tokyo.tabcontent(style="display: none;")
+    h3 Tokyo
+    p Tokyo is the capital of Japan.
+  #Create.tabcontent(style="display: none;")
+    h3(style="margin-left: 10px") Add category
+    div
+      form(method="POST" action="/job/newcategory")
+        p2() Name:
+        div(style='padding-left: 0px')
+          input(style='padding-left: 0px' type="text" name="name" required)
+
+        button(type="submit") Add
+  script(src='/tabs.js')

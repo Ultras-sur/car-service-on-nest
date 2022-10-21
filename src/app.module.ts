@@ -8,6 +8,7 @@ import { OrderModule } from './order/order.module';
 import { WorkPostModule } from './workpost/workpost.module';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
+import { JobModule } from './job/job.module';
 
 
 @Module({
@@ -17,7 +18,8 @@ import { AuthModule } from './auth/auth.module';
     OrderModule,
     WorkPostModule,
     UsersModule,
-    AuthModule],
+    AuthModule,
+    JobModule],
   controllers: [AppController],
   providers: [AppService],
 })

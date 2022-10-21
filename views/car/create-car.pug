@@ -3,7 +3,7 @@ extends ../layouts/layout.pug
 block content
     div
     form(method="POST" action="/car/new" name='carForm')
-      p2 Brand:
+      p2(style="margin-left: 10px") Brand:
       div
         select#brand-selection(autofocus='' required='' size='10' name='brand')
           option(value='SUZUKI') Suzuki
@@ -16,17 +16,17 @@ block content
           option(value='KIA') Kia
           option(value='VOLKSWAGEN') Volkswagen
           option(value='ВАЗ') &Vcy;&Acy;&Zcy;
-      p2 Model:
+      p2(style="margin-left: 10px") Model:
       div
         select#model-selection(autofocus='' required='' name='model')
           option
-      p2 Release year:
+      p2(style="margin-left: 10px") Release year:
       div
         input(type="number" name="releaseYear" required)
-      p2 VIN:
+      p2(style="margin-left: 10px") VIN:
       div
         input(type="text" name="vin" required)
       div
         input(type="hidden" name="owner" value=`${client._id}`)
-      button(type="submit") Добавить
+      button(style="margin-left: 10px" type="submit") Добавить
     script(src='/script.js')

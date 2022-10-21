@@ -104,7 +104,7 @@ function addJobSelection() {
   newRow.insertCell(-1).appendChild(newInput);
   newSelect.add(new Option(), null);
   getJobMenu(startJobSelection, newSelect);
-  // if (numberOfRow !== 1) {
+  
   const newDeleteButton = document.createElement('input');
   newDeleteButton.setAttribute('type', 'button');
   newDeleteButton.setAttribute('style', 'color: red;');
@@ -112,7 +112,7 @@ function addJobSelection() {
   const buttonId = `delete-selection${numberOfRow}`;
   newDeleteButton.setAttribute('id', buttonId);
   newRow.insertCell(-1).appendChild(newDeleteButton);
-  //}
+  
   resetEvents();
 }
 
@@ -241,7 +241,7 @@ async function loadSelectedJobs() {
       if (option.value === job) {
         option.selected = true;
       }
-    })// if (numberOfRow !== '1') {
+    })
     const newDeleteButton = document.createElement('input');
     newDeleteButton.setAttribute('type', 'button');
     newDeleteButton.setAttribute('style', 'color: red;');

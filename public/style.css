@@ -187,4 +187,48 @@ a#admin:active {
   background: #bae8d3;
   color: white;
 }
-// 8ED9B6
+
+/*--------------------------------------------------------*/
+/* Style the tab */
+* {box-sizing: border-box}
+.tab {
+  float: left;
+  border: 1px solid #ffffff;
+  background-color: #ffffff;
+  width: 30%;
+  height: 300px;
+}
+
+/* Style the buttons that are used to open the tab content */
+.tab button {
+  display: block;
+  background-color: inherit;
+  color: #039;
+  padding: 10px 8px;
+  width: 100%;
+  border: none;
+  outline: none;
+  text-align: left;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+/* Change background color of buttons on hover */
+.tab button:hover {
+  background-color: #ddeee7;
+}
+
+/* Create an active/current "tab button" class */
+.tab button.active {
+  background-color: #bae8d3;
+}
+
+/* Style the tab content */
+.tabcontent {
+  float: left;
+  padding: 0px 12px;
+  border: 1px solid #ffffff;
+  width: 70%;
+  border-left: none;
+  height: 300px;
+}

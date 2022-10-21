@@ -10,4 +10,4 @@ export class JobCategory {
   name: String;
 }
 
-export const JobCategorysSchema = SchemaFactory.createForClass(JobCategory);
+export const JobCategorySchema = SchemaFactory.createForClass(JobCategory);

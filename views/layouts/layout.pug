@@ -9,10 +9,8 @@ head
 
   .left-sidebar#left-div
     block menu
-      if isAdmin === true
-        include ../admin/includes/menu.pug
-      else
-        include ../includes/menu.pug
+      include ../includes/menu.pug
+
   .content#content-div
     block content
   
