@@ -16,16 +16,26 @@ block content
         if index === 0
           .tabcontent(id=`category${index + 1}` style="display: block;")
             h3 #{category.name}
+            if category.jobs
+              each job in category.jobs
+                table#orderstatuses-table(style="width:auto;" cellpadding='3' cellspacing='1')
+                  tbody
+                    tr
+                      td 
+                        input(type='text' value=`${job.name}` disabled size='30') 
+            include includes/addJobForm.pug
         else
           .tabcontent(id=`category${index + 1}` style="display: none;")
             h3 #{category.name}
+            if category.jobs
+              each job in category.jobs
+                table#orderstatuses-table(style="width:auto;" cellpadding='3' cellspacing='1')
+                  tbody
+                    tr
+                      td 
+                        input(type='text' value=`${job.name}` disabled size='30')
+            include includes/addJobForm.pug
   #Create.tabcontent(style="display: none;")
     h3(style="margin-left: 10px") Add category
-    div
-      form(method="POST" action="/job/newcategory")
-        p2() Name:
-        div(style='padding-left: 0px')
-          input(style='padding-left: 0px' type="text" name="name" required)
-
-        button(type="submit") Add
+    include ./includes/addCategoryForm.pug
   script(src='/tabs.js')

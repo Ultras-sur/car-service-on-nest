@@ -9,9 +9,6 @@ export type JobDocument = Job & Document;
 export class Job {
 
   @Prop({ required: true, unique: true })
-  code: Number;
-
-  @Prop({ required: true, unique: true })
   name: String;
 
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'JobCategory', required: true })

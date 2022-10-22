@@ -1,0 +1,6 @@
+div
+  form(method="POST" action="/job/newjob")
+    div(style='padding-left: 0px')
+      input(style='padding-left: 0px' type="text" name="name" required)
+      input(name="category" type='hidden' value=`${category._id}`)
+    button(type="submit") Add
