@@ -30,7 +30,7 @@ export class JobService {
     return jobs;
   }
 
-  async findCategoryes(): Promise<JobCategory[]> {
+  async findCategories(): Promise<JobCategory[]> {
     const categoryes = await this.jobCategoryModel.find();
     return categoryes;
   }
