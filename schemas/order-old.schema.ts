@@ -3,7 +3,6 @@ import { Document } from 'mongoose';
 import * as mongoose from 'mongoose';
 import { Client } from './client.schema';
 import { Car } from './car.schema';
-import { Job } from './job.schema';
 
 export type OrderDocument = Order & Document;
 
@@ -27,8 +26,8 @@ export class Order {
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Client', required: true })
   client: Client;
 
-  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Job', required: true })
-  jobs: [[Job, String, Number]];
+  @Prop()
+  jobs: [[String, Number]];
 
   @Prop({ required: true, default: 'not confirm' })
   workStatus: String;

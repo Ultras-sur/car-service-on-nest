@@ -1,10 +1,9 @@
-
-
 import { Req, Controller, Get, Render, Res, HttpStatus, Param, NotFoundException, Post, Body, Query, Put, Delete, UseGuards, UseFilters } from '@nestjs/common';
 import { Response } from 'express';
 import { WorkPostService } from './workpost.service';
 import { CarService } from '../car/car.service';
 import { OrderService } from '../order/order.service';
+import { JobService } from '../job/job.service';
 import { AuthenticatedGuard } from '../auth/common/guards/authenticated.guard';
 import { RolesGuard } from '../auth/common/guards/roles.guard';
 import { AuthExceptionFilter } from 'src/auth/common/filters/auth-exceptions.filter';
@@ -19,7 +18,7 @@ import { Roles } from '../auth/roles.decorator';
 
 
 export class WorkPostController {
-  constructor(private workPostService: WorkPostService, private carService: CarService, private orderService: OrderService) { }
+  constructor(private workPostService: WorkPostService, private carService: CarService, private orderService: OrderService, private jobService: JobService) { }
 
 
   @Get('/workposts')
@@ -42,11 +41,15 @@ export class WorkPostController {
 
         const car = await this.carService.findCar(workPost.car);
         const orderInfo = await this.orderService.findOrder(workPost.order);
+        const jobsNames = await Promise.all(orderInfo.jobs.map(async job => {
+          const findedJob = await this.jobService.findJob(job[0]);
+          return findedJob.name;
+        }))
         return {
           number: workPost.number,
           car,
           status: 'working',
-          order: { number: orderInfo.number, jobs: orderInfo.jobs, id: orderInfo['_id'] }
+          order: { number: orderInfo.number, jobs: jobsNames, id: orderInfo['_id'] }
         };
       } else {
         return {

@@ -4,6 +4,7 @@ import { OrderService } from './order.service';
 import { ClientService } from '../client/client.service';
 import { CarService } from '../car/car.service';
 import { WorkPostService } from '../workpost/workpost.service';
+import { JobService } from '../job/job.service';
 import { CreateOrderDTO } from '../../dto/create-order.dto';
 import { UpdateOrderDTO } from '../../dto/update-order.dto';
 import { ValidateObjectId } from '../shared/pipes/validate-object-id.pipes';
@@ -20,7 +21,7 @@ import { AuthExceptionFilter } from 'src/auth/common/filters/auth-exceptions.fil
 @UseGuards(AuthenticatedGuard)
 
 export class OrderController {
-  constructor(private orderService: OrderService, private carService: CarService, private clientService: ClientService, private workPostService: WorkPostService) { }
+  constructor(private orderService: OrderService, private carService: CarService, private clientService: ClientService, private workPostService: WorkPostService, private jobService: JobService) { }
 
 
   @Get('all')
@@ -33,9 +34,21 @@ export class OrderController {
     const sortCondition = { createdAt: 'desc' };
     const orders = await this.orderService.showAll(currentPage, step, sortCondition);
     const isAdmin = req.user.roles.includes(Role.ADMIN);
-
     return { ...orders, isAdmin };
   };
+
+  @Get('admin/orders')
+  @Render('admin/orders')
+  @UseGuards(RolesGuard)
+  @Roles(Role.ADMIN, Role.MANAGER)
+  async getOrdersForAdmin(@Query('page') page: number, @Req() req) {
+    const currentPage = page ?? 1;
+    const step = 12;
+    const sortCondition = { createdAt: 'desc' };
+    const orders = await this.orderService.showAll(currentPage, step, sortCondition);
+    const isAdmin = req.user.roles.includes(Role.ADMIN);
+    return { ...orders, isAdmin };
+  }
 
 
   @Get(':orderId')
@@ -44,11 +57,15 @@ export class OrderController {
   @Roles(Role.ADMIN, Role.MANAGER)
   async getOrderForEdit(@Res() res: Response, @Param('orderId', new ValidateObjectId()) orderId, @Req() req) {
     const order = await this.orderService.findOrder(orderId);
+    const fullJobsInfo = await Promise.all(order.jobs.map(async job => {
+      const findedJob = await this.jobService.findJob(job[0]);
+      return [...job, findedJob.name];
+    }))
     const car = await this.carService.findCar(order.car);
     const client = await this.clientService.findOne(order.client);
-    const isAdmin = req.user.roles.includes(Role.ADMIN);
 
-    return { car, client, order, isAdmin };
+    const isAdmin = req.user.roles.includes(Role.ADMIN);
+    return { car, client, order, fullJobsInfo , isAdmin };
   }
 
 
@@ -79,7 +96,6 @@ export class OrderController {
     const car = await this.carService.findCar(carId);
     const client = await this.clientService.findOne(clientId);
     const isAdmin = req.user.roles.includes(Role.ADMIN);
-
     return { car, client, isAdmin }
   }
 

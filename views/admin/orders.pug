@@ -1,0 +1,40 @@
+extends ../layouts/layout.pug
+include ../mixins/pages
+
+block content
+  h1 Orders
+  div
+   table#orderstatusesadmin-table(border='2'  width='20%' cellpadding='2' cellspacing='1')
+    tbody 
+      tr
+        td
+          strong №
+        td
+          strong Date
+        td 
+          strong Client name
+        td
+          strong Number
+        td   
+          strong Car 
+        td   
+          strong Status
+        td   
+          strong Action
+           
+    if orders 
+      each order, index in orders
+         tr
+            td.admin #{step * (Number(page) - 1) + (index + 1)}
+            td.admin #{new Date(order.createdAt).toLocaleString('en-US', {day: 'numeric', month: 'numeric', year: 'numeric'})}
+            td.admin #{order.client.name}
+            td.admin 
+              a(href=`/order/${order._id}`) #{order.number}
+            td.admin #{order.car.brand} #{order.car.model} #{order.car.releaseYear}
+            td.admin #{order.orderStatus}
+            td.admin 
+                button(type='button' id=`${order._id}` style='color: red;' onclick='deleteOrder(this.id)') X
+  div
+    if orders
+      +pages(page, totalPages, 'orders')
+  script(src='/aorders.js')

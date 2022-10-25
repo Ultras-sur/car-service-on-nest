@@ -35,11 +35,11 @@ block content
                     td 
                       details
                         summary Jobs:
-                        table(id=`workpost${workPost.number}-job-table`)
+                        table(id=`workpost${workPost.number}-job-table` style='width:400px')
                           each job in workPost.order.jobs
                             tbody
                                tr
-                                 td #{job[0]}
+                                 td #{job}
         else 
           div
             table(id=`workpost${workPost.number}-table` border='2'  width='20%' cellpadding='4' cellspacing='1')

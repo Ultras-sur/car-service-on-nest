@@ -27,10 +27,7 @@ export class Order {
   client: Client;
 
   @Prop()
-  jobs: [[String, Number]];
-
-  @Prop({ required: true, default: 'not confirm' })
-  workStatus: String;
+  jobs: [[{ type: mongoose.Schema.Types.ObjectId, ref: 'Job' }, Number]];
 
   @Prop({ required: true, default: 'opened' })
   orderStatus: String;

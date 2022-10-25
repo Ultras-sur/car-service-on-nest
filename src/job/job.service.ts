@@ -31,7 +31,7 @@ export class JobService {
   }
 
   async findCategories(): Promise<JobCategory[]> {
-    const categoryes = await this.jobCategoryModel.find();
-    return categoryes;
+    const categories = await this.jobCategoryModel.find();
+    return categories;
   }
 }

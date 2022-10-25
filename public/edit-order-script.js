@@ -1,33 +1,12 @@
-const jobs = {
-  malar: {
-    dver: 'Покраска двери',
-    kapot: 'Покраска капота',
-    roof: 'Покраска крыши',
-    bamper: 'Покраска бампера',
-  },
-  slesar: {
-    oil: 'Замена масла',
-    kolodki: 'Замена колодок',
-    filter: 'Замена фильтра',
-    enginedefense: 'Снятие и установка защиты двигателя',
-  },
-  diagnostic: {
-    engine: 'Диагностика двигателя',
-    transmission: 'Диагностика коробки передач',
-    electric: 'Диагностика электрической системы',
-  },
-  insurance: {
-    policy: 'Оформление страхового полиса',
-  }
+async function getJobsAndCategories() {
+  const response = await fetch('/job/jobsandcategories');
+  const collection = await response.json();
+  jobs = collection.jobsAndCategories;
+  startJobSelection = collection.categories;
 }
 
-const startJobSelection = {
-  slesar: 'Слесарные работы',
-  malar: 'Малярные работы',
-  diagnostic: 'Диагностика',
-  insurance: 'Страховая поддержка',
-}
-
+let jobs = {}
+let startJobSelection = {};
 function removeOptions(selectElement) {
   var i, L = selectElement.options.length - 1;
   for (i = L; i >= 0; i--) {
@@ -104,7 +83,7 @@ function addJobSelection() {
   newRow.insertCell(-1).appendChild(newInput);
   newSelect.add(new Option(), null);
   getJobMenu(startJobSelection, newSelect);
-  
+
   const newDeleteButton = document.createElement('input');
   newDeleteButton.setAttribute('type', 'button');
   newDeleteButton.setAttribute('style', 'color: red;');
@@ -112,7 +91,7 @@ function addJobSelection() {
   const buttonId = `delete-selection${numberOfRow}`;
   newDeleteButton.setAttribute('id', buttonId);
   newRow.insertCell(-1).appendChild(newDeleteButton);
-  
+
   resetEvents();
 }
 
@@ -207,6 +186,7 @@ function getJobsPart(job, collection) {
 
 async function loadSelectedJobs() {
   const orderJobs = await getOrderJobs();
+  console.log(orderJobs)
   orderJobs.forEach(([job, cost]) => {
     const jobsPart = getJobsPart(job, jobs); // jobs is full collection of jobs 
     const jobTable = document.querySelector('#jobtable');
@@ -265,7 +245,8 @@ const submitButton = document.querySelector('#submit-button');
 
 
 // Listeners
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
+  await getJobsAndCategories();
   loadSelectedJobs();
 });
 addJobButton.addEventListener('click', addJobSelection);

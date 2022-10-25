@@ -44,10 +44,10 @@ h3.auth {
 
 table {
   font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
-  font-size: 14px;
+  font-size: 13px;
   background: white;
-  max-width: 600px;
-  width: 600px;
+  max-width: 644px;
+  width: 644px;
   border-collapse: collapse;
   text-align: left;
 }
@@ -59,7 +59,7 @@ th {
 }
 td {
   color: #669;
-  padding: 9px 8px;
+  padding: 7px 7px;
   transition: .3s linear;
 }
 tr:hover td {
@@ -232,3 +232,25 @@ a#admin:active {
   border-left: none;
   height: 300px;
 }
+/* ------------------------------------------------------------------*/
+table#orderstatusesadmin-table {
+  font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
+  font-size: 12px;
+  background: white;
+  max-width: 644px;
+  width: 644px;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+td.admin {
+  color: #669;
+  padding: 6px 6px;
+  transition: .3s linear;
+}
+
+tr:hover a {
+  color: #6699ff;
+}
+
+

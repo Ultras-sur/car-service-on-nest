@@ -71,7 +71,7 @@ export class OrderService {
     return deletedOrder;
   }
 
-  async showAll(page: number, step, sortCondition) {
+  async showAll(page: number, step, sortCondition = {}) {
     const orders = await this.orderModel.find({}, null, {
       limit: step,
       skip: step * (page - 1),

@@ -21,7 +21,7 @@ export class JobController {
   @UseGuards(RolesGuard)
   @Roles(Role.ADMIN)
   async getCategoryesAndJobs(@Res() res) {
-    const categories = await this.jobService.findCategoryes();
+    const categories = await this.jobService.findCategories();
     const categoriesAndJobs = await Promise.all(categories.map(async (category) => {
       const findedJobs = await this.jobService.findJobs({ category: category['_id'] });
       return { _id: category['_id'], name: category.name, jobs: findedJobs };

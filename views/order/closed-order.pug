@@ -40,11 +40,11 @@ div.inner
                 td
                   srong Cost
                 td   
-            if order.jobs
-              each job, index in order.jobs
+            if fullJobsInfo
+              each job, index in fullJobsInfo
                 tr.jobrows
                   td #{index + 1}
-                  td #{job[0]}
+                  td #{job[2]}
                   td(id=`job-cost${index + 1}`) #{job[1]}
         div 
           table#jobcost(border='1'  width='20%' cellpadding='4' cellspacing='1')
