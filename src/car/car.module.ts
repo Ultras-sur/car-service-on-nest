@@ -6,10 +6,11 @@ import { CarController } from './car.controller';
 import { CarService } from '../car/car.service';
 import { ClientModule } from '../client/client.module';
 import { OrderModule } from '../order/order.module';
+import { CarModelModule } from 'src/car-model/car-model.module';
 
 
 @Module({
-  imports: [MongooseModule.forFeature([{ name: Car.name, schema: CarSchema }]), forwardRef(() => ClientModule), forwardRef(() => OrderModule)],
+  imports: [MongooseModule.forFeature([{ name: Car.name, schema: CarSchema }]), forwardRef(() => ClientModule), forwardRef(() => OrderModule), CarModelModule],
   controllers: [CarController],
   providers: [CarService],
   exports: [CarService],

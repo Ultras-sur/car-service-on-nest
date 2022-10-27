@@ -43,7 +43,7 @@ export class JobController {
       await Promise.all(jobs.map(async job => {
         jobsList[job['_id']] = job.name;
       }))
-      jobsAndCategories[category['id']] = jobsList;
+      jobsAndCategories[category['_id']] = jobsList;
     }))
     await Promise.all(allCategories.map(async category => {
       categories[category['_id']] = category.name;

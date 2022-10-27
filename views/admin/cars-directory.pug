@@ -1,0 +1,41 @@
+extends ../layouts/layout.pug
+
+
+block content
+  .tab
+    if carBrandsAndModels
+      each brand, index in carBrandsAndModels
+        if index === 0
+          button(class="tablinks active" onclick=`openCategory(event, 'brand${index + 1}')`) #{brand.name}
+        else
+          button(class="tablinks" onclick=`openCategory(event, 'brand${index + 1}')`) #{brand.name}
+    button(class="tablinks" onclick="openCategory(event, 'Create')") Добавить...
+
+  if carBrandsAndModels
+      each brand, index in carBrandsAndModels
+        if index === 0
+          .tabcontent(id=`brand${index + 1}` style="display: block;")
+            h3 #{brand.name}
+            if brand.models
+              each model in brand.models
+                table#orderstatuses-table(style="width:auto;" cellpadding='3' cellspacing='1')
+                  tbody
+                    tr
+                      td 
+                        input(type='text' value=`${model.name}` disabled size='30') 
+            include includes/addModelForm.pug
+        else
+          .tabcontent(id=`brand${index + 1}` style="display: none;")
+            h3 #{brand.name}
+            if brand.models
+              each model in brand.models
+                table#orderstatuses-table(style="width:auto;" cellpadding='3' cellspacing='1')
+                  tbody
+                    tr
+                      td 
+                        input(type='text' value=`${model.name}` disabled size='30')
+            include includes/addModelForm.pug
+  #Create.tabcontent(style="display: none;")
+    h3(style="margin-left: 10px") Add car brand
+    include ./includes/addBrandForm.pug
+  script(src='/tabs.js')

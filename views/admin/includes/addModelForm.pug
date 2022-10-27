@@ -1,0 +1,6 @@
+div
+  form(method="POST" action="/carmodel/newmodel")
+    div(style='padding-left: 0px')
+      input(style='padding-left: 0px' type="text" name="name" required)
+      input(name="brand" type='hidden' value=`${brand._id}`)
+    button(type="submit") Add

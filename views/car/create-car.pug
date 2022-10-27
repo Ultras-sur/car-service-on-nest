@@ -6,16 +6,9 @@ block content
       p2(style="margin-left: 10px") Brand:
       div
         select#brand-selection(autofocus='' required='' size='10' name='brand')
-          option(value='SUZUKI') Suzuki
-          option(value='TOYOTA') Toyota
-          option(value='NISSAN') Nissan
-          option(value='BMW') BMW
-          option(value='VOLVO') Volvo
-          option(value='MITSUBISHI') Mitsubishi
-          option(value='HYUNDAI') Hyundai
-          option(value='KIA') Kia
-          option(value='VOLKSWAGEN') Volkswagen
-          option(value='ВАЗ') &Vcy;&Acy;&Zcy;
+          if carBrands
+            each brand in carBrands
+              option(value=`${brand.name}`) #{brand.name}
       p2(style="margin-left: 10px") Model:
       div
         select#model-selection(autofocus='' required='' name='model')

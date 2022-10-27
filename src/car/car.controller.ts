@@ -3,6 +3,7 @@ import { Response } from 'express';
 import { CarService } from './car.service';
 import { ClientService } from '../client/client.service';
 import { OrderService } from '../order/order.service';
+import { CarModelService } from 'src/car-model/car-model.service';
 import { CreateCarDTO } from '../../dto/create-car.dto';
 import { ValidateObjectId } from '../shared/pipes/validate-object-id.pipes';
 import { AuthenticatedGuard } from '../auth/common/guards/authenticated.guard';
@@ -16,7 +17,7 @@ import { Roles } from 'src/auth/roles.decorator';
 @UseGuards(AuthenticatedGuard)
 
 export class CarController {
-  constructor(private carService: CarService, private clientService: ClientService, private orderService: OrderService) { }
+  constructor(private carService: CarService, private clientService: ClientService, private orderService: OrderService, private carModelService: CarModelService) { }
 
 
   @Get(':id')
@@ -37,8 +38,9 @@ export class CarController {
   @UseGuards(RolesGuard)
   @Roles(Role.ADMIN, Role.MANAGER)
   async createCar(@Param('ownerId', new ValidateObjectId()) ownerId, @Req() req) {
+    const carBrands = await this.carModelService.findCarBrands({}, { name: 'ASC' });
     const isAdmin = req.user.roles.includes(Role.ADMIN);
-    return { client: { _id: ownerId }, isAdmin }
+    return { client: { _id: ownerId }, carBrands, isAdmin }
   }
 
 

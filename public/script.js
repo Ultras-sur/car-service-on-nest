@@ -1,17 +1,16 @@
-const modelsOLD = {
-  suzuki: ['ignis', 'baleno', 'grand vitara'],
-  toyota: ['mark II', 'land cruiser', 'ipsum'],
-  nissan: ['juke', 'qashqai', 'almera'],
-  bmw: ['m5', 'x3', 'x4', 'x5', 'x6'],
-  volvo: ['x90', 'xc70', 'xc60'],
-  mitsubishi: ['galant', 'outlander', 'lancer'],
-  hyundai: ['porter', 'tucson', 'getz', 'solaris'],
-  kia: ['soul', 'rio', 'spectra'],
-  volkswagen: ['t2', 't3', 't4', 'polo', 'getta', 'touareg'],
-  ваз: ['2106', '2109', '2107'],
+//Functions
+async function getCarBrandsAndModels() {
+  const responce = await fetch('/carmodel/carbrandsandmodels');
+  const result = await responce.json();
+  models = result.carModelsAndBrands;
+  console.log(models)
 }
 
-const models = {
+let models = {}
+
+
+
+const models2 = {
   SUZUKI: ['IGNIS', 'BALENO', 'GRAND VITARA'],
   TOYOTA: ['MARK II', 'LAND CRUISER', 'IPSUM'],
   NISSAN: ['JUKE', 'QASHQAI', 'ALMERA'],
@@ -24,7 +23,7 @@ const models = {
   ВАЗ: ['2106', '2109', '2107'],
 }
 
-const brandSelection = document.getElementById("brand-selection");
+
 
 
 function removeOptions(selectElement) {
@@ -48,39 +47,12 @@ function changeOption() {
   })
 }
 
-function changeSizeDivs() {
-  const targetDivHeight = document.querySelector('#content-div').clientHeight;
-  console.log('size' + targetDivHeight)
-  const targetLeftDiv = document.querySelectorAll('#left-div').style.height = targetDivHeight + 'px';
-  const targetRightDiv = document.querySelectorAll('#right-div').style.height = targetDivHeight + 'px';
-}
+//Elements
+const brandSelection = document.getElementById("brand-selection");
 
-function openCity(evt, cityName) {
-  // Declare all variables
-  var i, tabcontent, tablinks;
-
-  // Get all elements with class="tabcontent" and hide them
-  tabcontent = document.getElementsByClassName("tabcontent");
-  for (i = 0; i < tabcontent.length; i++) {
-    tabcontent[i].style.display = "none";
-  }
-
-  // Get all elements with class="tablinks" and remove the class "active"
-  tablinks = document.getElementsByClassName("tablinks");
-  for (i = 0; i < tablinks.length; i++) {
-    tablinks[i].className = tablinks[i].className.replace(" active", "");
-  }
-
-  // Show the current tab, and add an "active" class to the link that opened the tab
-  document.getElementById(cityName).style.display = "block";
-  evt.currentTarget.className += " active";
-}
-
-
-
-const contentDivStyleHeigt = document.querySelector('#content-div').clientHeight;
-console.log('size' + contentDivStyleHeigt)
-
+//Listeners
+document.addEventListener("DOMContentLoaded", async () => {
+  await getCarBrandsAndModels();
+});
 brandSelection.addEventListener('change', changeOption);
-contentDivStyleHeigt.addEventListener('change', changeSizeDivs);
 
