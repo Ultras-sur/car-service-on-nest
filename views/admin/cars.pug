@@ -1,0 +1,35 @@
+extends ../layouts/layout.pug
+include ../mixins/pages
+
+block content
+  h1 Cars
+  div
+   table#carstatusesadmin-table(border='2'  width='20%' cellpadding='2' cellspacing='1')
+    tbody 
+      tr
+        td
+          strong №
+        td   
+          strong Car
+        td   
+          strong VIN
+        td 
+          strong Client name 
+        td   
+          strong Action
+           
+    if cars 
+      each car, index in cars
+         tr
+            td.admin #{step * (Number(page) - 1) + (index + 1)}
+            td.admin 
+              a(href=`/car/${car._id}`) #{car.brand} #{car.model} #{car.releaseYear}
+            td.admin #{car.vin}
+            td.admin 
+              a(href=`/client/${car.owner._id}`) #{car.owner.name}
+            td.admin 
+                button(type='button' id=`${car._id}_car` style='color: red;' onclick='deleteItem(this.id)') X
+  div
+    if cars
+      +pages(page, totalPages, 'cars')
+  script(src='/aorders.js')

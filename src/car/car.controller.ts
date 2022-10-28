@@ -19,6 +19,20 @@ import { Roles } from 'src/auth/roles.decorator';
 export class CarController {
   constructor(private carService: CarService, private clientService: ClientService, private orderService: OrderService, private carModelService: CarModelService) { }
 
+  @Get('cars')
+  @Render('admin/cars')
+  @UseGuards(RolesGuard)
+  @Roles(Role.ADMIN)  
+  async getCars(@Query('page') page: Number) {
+    const currentPage = page ?? 1;
+    const step = 12;
+    //const sortCondition = { createdAt: 'desc' };
+    const cars = await this.carService.findAllPaginate(currentPage, step);
+    return { ...cars, isAdmin: true };
+  }
+
+
+
 
   @Get(':id')
   @Render('car/car')
@@ -52,4 +66,15 @@ export class CarController {
     if (!newCar) throw new NotFoundException('New car is not created!');
     return res.redirect(`/car/${newCar['_id']}`);
   }
+
+  @Delete(':id')  
+  @UseGuards(RolesGuard)
+  @Roles(Role.ADMIN)  
+  async deleteCar(@Param('id') carId, @Res() res) {
+    const deletedCar = await this.carService.deleteCar(carId);
+    return res.status(HttpStatus.OK).json({
+      message: "Car has been deleted successfully!",
+      car: deletedCar,
+    });
+  }  
 }

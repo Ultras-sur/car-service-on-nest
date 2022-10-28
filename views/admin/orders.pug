@@ -27,13 +27,15 @@ block content
          tr
             td.admin #{step * (Number(page) - 1) + (index + 1)}
             td.admin #{new Date(order.createdAt).toLocaleString('en-US', {day: 'numeric', month: 'numeric', year: 'numeric'})}
-            td.admin #{order.client.name}
+            td.admin 
+              a(href=`/client/${order.client._id}`) #{order.client.name}
             td.admin 
               a(href=`/order/${order._id}`) #{order.number}
-            td.admin #{order.car.brand} #{order.car.model} #{order.car.releaseYear}
+            td.admin 
+              a(href=`/car/${order.car._id}`) #{order.car.brand} #{order.car.model} #{order.car.releaseYear}
             td.admin #{order.orderStatus}
             td.admin 
-                button(type='button' id=`${order._id}` style='color: red;' onclick='deleteOrder(this.id)') X
+                button(type='button' id=`${order._id}_order` style='color: red;' onclick='deleteItem(this.id)') X
   div
     if orders
       +pages(page, totalPages, 'orders')

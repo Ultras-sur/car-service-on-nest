@@ -11,7 +11,7 @@ import { CreateCarModelDTO } from 'dto/create-car-model.dto';
 export class CarModelService {
   constructor(@InjectModel(CarModel.name) private readonly carModelModel: Model<CarModelDocument>, @InjectModel(CarBrand.name) private readonly carBrandModel: Model<CarBrandDocument>) { }
 
-  async createCarBrand(createCarBrandDTO: CreateCarBrandDTO ) {
+  async createCarBrand(createCarBrandDTO: CreateCarBrandDTO): Promise<CarBrand> {
     const newCarBrand = new this.carBrandModel(createCarBrandDTO);
     return newCarBrand.save();
   }
@@ -36,7 +36,7 @@ export class CarModelService {
     return carModel;
   }
 
-  async findCarModels(condition = {}) {
+  async findCarModels(condition = {}): Promise<CarModel[]> {
     const carModels = await this.carModelModel.find(condition);
     return carModels;
   }

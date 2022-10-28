@@ -1,6 +1,5 @@
 import { Controller, Get, Render, Res, Req, HttpStatus, Param, NotFoundException, Post, Body, Query, Put, Delete, Redirect, UseGuards, UseFilters } from '@nestjs/common';
 import { Response } from 'express';
-import { ValidateObjectId } from '../shared/pipes/validate-object-id.pipes';
 import { AuthenticatedGuard } from '../auth/common/guards/authenticated.guard';
 import { AuthExceptionFilter } from 'src/auth/common/filters/auth-exceptions.filter';
 import { RolesGuard } from '../auth/common/guards/roles.guard';

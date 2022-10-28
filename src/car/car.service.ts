@@ -12,8 +12,13 @@ export class CarService {
   constructor(@InjectModel(Car.name) private carModel: Model<CarDocument>) { }
 
   async create(createCarDTO: CreateCarDTO): Promise<Car> {
-    const createdCar =  this.carModel.create(createCarDTO);
+    const createdCar = this.carModel.create(createCarDTO);
     return createdCar;
+  }
+
+  async deleteCar (carId): Promise<Car> {
+    const deletedCar = await this.carModel.findByIdAndDelete(carId);
+    return deletedCar;
   }
 
   async findOwnerCars(ownerId): Promise<Car[]> {
@@ -25,4 +30,19 @@ export class CarService {
     const car = await this.carModel.findById(carId);
     return car;
   }
+
+  async findAllPaginate(page, step, sortCondition = {}) {
+    const cars = await this.carModel.find({}, null, {
+      limit: step,
+      skip: step * (page - 1),
+    })
+      .populate('owner')
+      .sort(sortCondition);
+    const totalDocuments = await this.carModel.find().countDocuments();
+    const totalPages = Math.ceil(totalDocuments / step);
+    cars.forEach(car => {
+    })
+    return { cars, totalDocuments, step, totalPages, page };
+  }
+
 }

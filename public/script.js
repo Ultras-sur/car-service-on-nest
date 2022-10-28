@@ -8,24 +8,6 @@ async function getCarBrandsAndModels() {
 
 let models = {}
 
-
-
-const models2 = {
-  SUZUKI: ['IGNIS', 'BALENO', 'GRAND VITARA'],
-  TOYOTA: ['MARK II', 'LAND CRUISER', 'IPSUM'],
-  NISSAN: ['JUKE', 'QASHQAI', 'ALMERA'],
-  BMW: ['M5', 'X3', 'X4', 'X5', 'X6'],
-  VOLVO: ['X90', 'XC70', 'XC60'],
-  MITSUBISHI: ['GALANT', 'OUTLANDER', 'LANCER'],
-  HYUNDAI: ['PORTER', 'TUCSON', 'GETZ', 'SOLARIS'],
-  KIA: ['SOUL', 'RIO', 'SPECTRA'],
-  VOLKSWAGEN: ['T2', 'T3', 'T4', 'POLO', 'GETTA', 'TOUAREG'],
-  ВАЗ: ['2106', '2109', '2107'],
-}
-
-
-
-
 function removeOptions(selectElement) {
   var i, L = selectElement.options.length - 1;
   for (i = L; i >= 0; i--) {
