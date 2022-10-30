@@ -30,6 +30,6 @@ block content
             td.admin 
                 button(type='button' id=`${car._id}_car` style='color: red;' onclick='deleteItem(this.id)') X
   div
-    if cars
+    if cars && page > 1
       +pages(page, totalPages, 'cars')
   script(src='/aorders.js')

@@ -5,18 +5,18 @@ block content
   div
    table#workposts-table(border='2'  width='20%' cellpadding='4' cellspacing='1')
     tbody
-      tr
+      tr(style="background-color: #f7f7f7")
         td(colspan='4')
           strong Work Posts:  
       tr
         td
           strong №
         td
-          srong Order №
+          strong Order №
         td
-          srong Car
+          strong Car
         td   
-          srong Status  
+          strong Status  
     if workPosts 
       each workPost in workPosts
          tr
@@ -24,20 +24,23 @@ block content
             td 
               a(href=`/order/${workPost.order.id}`) #{workPost.order.number}
             td #{workPost.car.brand} #{workPost.car.model} #{workPost.car.releaseYear}
-            td #{workPost.status}
+            if workPost.status === 'free'
+              td(style="background-color: #d4fdc9") #{workPost.status}
+            else
+              td(style="background-color: #ffbdbd") #{workPost.status}
   div
    table#queuestatus-table(border='2'  width='20%' cellpadding='4' cellspacing='1')
     tbody
-      tr
+      tr(style="background-color: #f7f7f7")
         td(colspan='6')
           strong Queue:  
       tr
         td
           strong №
         td
-          srong Order
+          strong Order
         td   
-          srong Car
+          strong Car
         
  
            

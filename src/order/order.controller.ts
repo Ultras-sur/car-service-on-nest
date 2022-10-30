@@ -37,15 +37,22 @@ export class OrderController {
     return { ...orders, isAdmin };
   };
 
+
   @Get('admin/orders')
   @Render('admin/orders')
   @UseGuards(RolesGuard)
   @Roles(Role.ADMIN, Role.MANAGER)
-  async getOrdersForAdmin(@Query('page') page: number, @Req() req) {
+  async getOrdersForAdmin(@Query('name') name: string,
+    @Query('orderNumber') orderNumber: string,
+    @Query('page') page: number,
+    @Req() req) {
+    const findCondition = {};
+    orderNumber ? findCondition['number'] = orderNumber : null;
+    name ? findCondition['client'] = name : null;
     const currentPage = page ?? 1;
     const step = 12;
     const sortCondition = { createdAt: 'desc' };
-    const orders = await this.orderService.showAll(currentPage, step, sortCondition);
+    const orders = await this.orderService.showAll(currentPage, step, sortCondition, findCondition);
     const isAdmin = req.user.roles.includes(Role.ADMIN);
     return { ...orders, isAdmin };
   }
@@ -65,7 +72,7 @@ export class OrderController {
     const client = await this.clientService.findOne(order.client);
 
     const isAdmin = req.user.roles.includes(Role.ADMIN);
-    return { car, client, order, fullJobsInfo , isAdmin };
+    return { car, client, order, fullJobsInfo, isAdmin };
   }
 
 
