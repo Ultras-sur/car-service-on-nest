@@ -23,7 +23,8 @@ block content
             td #{workPost.number}
             td 
               a(href=`/order/${workPost.order.id}`) #{workPost.order.number}
-            td #{workPost.car.brand} #{workPost.car.model} #{workPost.car.releaseYear}
+            td 
+              a(href=`/car/${workPost.car.id}`) #{workPost.car.brand} #{workPost.car.model} #{workPost.car.releaseYear}
             if workPost.status === 'free'
               td(style="background-color: #d4fdc9") #{workPost.status}
             else
@@ -50,7 +51,8 @@ block content
             td #{ordersInQueue.step * (Number(ordersInQueue.page) - 1) + (index + 1)}
             td 
               a(href=`/order/${order._id}`) #{order.number}
-            td #{order.car.brand} #{order.car.model} #{order.car.releaseYear}
+            td 
+              a(href=`/car/${order.car._id}`) #{order.car.brand} #{order.car.model} #{order.car.releaseYear}
   div
     if ordersInQueue
       +pages(ordersInQueue.page, ordersInQueue.totalPages, '')         

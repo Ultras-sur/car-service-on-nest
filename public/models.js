@@ -20,6 +20,7 @@ function changeOption() {
   const modelSelection = document.getElementById("model-selection");
   removeOptions(modelSelection);
   const selectedBrand = brandSelection.options[selectedIndex].value;
+  modelSelection.add(new Option());
   models[selectedBrand].sort().forEach(model => {
     const text = model.toUpperCase();
     const value = model;

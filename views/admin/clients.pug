@@ -1,0 +1,44 @@
+extends ../layouts/layout.pug
+include ../mixins/pages
+
+block content
+    h1 Clients
+    div.find
+      form(method="GET" action='/client/admin/clients')
+        div(style="padding-bottom: 1px;padding-top: 1px;padding-left: 1px;")
+          p(style='margin-bottom:2px; margin-top: 2px;') Licens number:
+          input.number(type='text' name='licensNumber')
+          p(style='margin-bottom:2px; margin-top: 2px;') Client name:
+          input.clientname(type='text' name='name') 
+          br
+          button(style="margin-top: 5px;") Find
+    div
+      table#orderstatuses-table(border='2'  width='20%' cellpadding='4' cellspacing='1')
+        tbody
+          tr
+            td.admin
+              strong №
+            td.admin
+              strong Name
+            td.admin
+              strong Licens number
+            td.admin
+              strong Action
+        if clients
+          each client, index in clients
+            tr
+              td.admin #{step * (page - 1) + (index + 1)}
+              td.admin 
+                a(href=`/client/${client._id}`) #{client.name}
+              td.admin #{client.licensNumber}
+              td.admin 
+                button.edit(type='button' id=`${client._id}_client` title="edit") ...
+                button(type='button' id=`${client._id}_client` style='color: red;' onclick='deleteItem(this.id)' title="delete") X
+                
+    div
+      if clients
+        +pages(page, totalPages, '/client/admin/clients')
+    div
+      button 
+        a(href=`/client/create`) Добавить клиента
+    script(src='/delete-config.js')

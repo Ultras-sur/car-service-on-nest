@@ -9,8 +9,6 @@ import { WorkPostModule } from './workpost/workpost.module';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { JobModule } from './job/job.module';
-import { CarModelService } from './car-model/car-model.service';
-import { CarModelController } from './car-model/car-model.controller';
 import { CarModelModule } from './car-model/car-model.module';
 
 

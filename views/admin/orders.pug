@@ -50,5 +50,5 @@ block content
                 button(type='button' id=`${order._id}_order` style='color: red;' onclick='deleteItem(this.id)') X
   div
     if orders && totalPages > 1
-      +pages(page, totalPages, 'orders')
-  script(src='/aorders.js')
+      +pages(page, totalPages, 'orders', serchString)
+  script(src='/delete-config.js')

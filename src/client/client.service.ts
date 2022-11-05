@@ -13,14 +13,19 @@ export class ClientService {
     const createdClient = new this.clientModel(createClientDTO);
     return createdClient.save();
   }
-  async findAll(page, step = 10) {
-    const clients = await this.clientModel.find({}, null, {
+  async findAll(page, step, sortCondition = {}, findCondition = {}) {
+    const clients = await this.clientModel.find(findCondition, null, {
       limit: step,
       skip: step * (page - 1)
-    }) // : Promise<Client[]>
-    const totalDocuments = await this.clientModel.find().countDocuments();
-    const totalPages = Math.ceil(totalDocuments / step);
+    })
+    .sort(sortCondition);
+    const totalPages = Math.ceil(clients.length / step);
     return { clients, totalPages, page, step };
+  }
+
+  async find(condition) {
+    const clients = await this.clientModel.find(condition);
+    return clients;
   }
   async findOne(clientId): Promise<Client> {
     return this.clientModel.findById(clientId).exec();

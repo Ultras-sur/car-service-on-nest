@@ -31,18 +31,15 @@ export class CarService {
     return car;
   }
 
-  async findAllPaginate(page, step, sortCondition = {}) {
-    const cars = await this.carModel.find({}, null, {
+  async findAllPaginate(page, step, condition = {}, sortCondition = {}) {
+    const cars = await this.carModel.find(condition, null, {
       limit: step,
       skip: step * (page - 1),
     })
       .populate('owner')
       .sort(sortCondition);
-    const totalDocuments = await this.carModel.find().countDocuments();
+    const totalDocuments = await this.carModel.find(condition).countDocuments();
     const totalPages = Math.ceil(totalDocuments / step);
-    cars.forEach(car => {
-    })
-    return { cars, totalDocuments, step, totalPages, page };
+    return { cars, step, totalPages, page };
   }
-
 }

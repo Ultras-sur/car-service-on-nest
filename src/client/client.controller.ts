@@ -18,12 +18,20 @@ import { Roles } from 'src/auth/roles.decorator';
 export class ClientController {
   constructor(private clientService: ClientService, private carService: CarService) { }
 
-  /*@Get()
-  // @Render('client/clients')
-  async index(@Res() res) {
-    const clients = await this.clientService.findAll();
-    return res.status(HttpStatus.OK).json(clients);
-  }*/
+  @Get('admin/clients')
+  @Render('admin/clients')
+  @UseGuards(RolesGuard)
+  @Roles(Role.ADMIN)  
+  async getClientsForAdmin(@Query('name') name, @Query('licensNumber') licensNumber, @Query('page') page) {
+    const findCondition = {};
+    name ? findCondition['name'] = new RegExp(name, 'gmi') : null;
+    licensNumber ? findCondition['licensNumber'] = licensNumber : null;
+    const currentPage = page ?? 1;
+    const step = 12;
+    const sortCondition = { createdAt: 'desc' }; 
+    const clients = await this.clientService.findAll(currentPage, step, sortCondition, findCondition);
+    return { ...clients, isAdmin: true };
+  }
 
 
   @Get('all')
@@ -32,7 +40,8 @@ export class ClientController {
   @Roles(Role.ADMIN, Role.MANAGER)
   async getClients(@Query('page') page: number, @Req() req) {
     const currentPage = page ?? 1;
-    const clients = await this.clientService.findAll(currentPage);
+    const step = 12;
+    const clients = await this.clientService.findAll(currentPage, step);
     const isAdmin = req.user.roles.includes(Role.ADMIN);
     return { ...clients, isAdmin }
   }
@@ -89,14 +98,11 @@ export class ClientController {
 
   @Delete('delete')
   @UseGuards(RolesGuard)
-  @Roles(Role.ADMIN, Role.MANAGER)
+  @Roles(Role.ADMIN)
   async deleteClient(@Res() res: Response,
     @Query('clientID', new ValidateObjectId()) clientID) {
     const deletedClient = await this.clientService.deleteClient(clientID);
     if (!deletedClient) throw new NotFoundException('Client does not exist!');
-    return res.status(HttpStatus.OK).json({
-      message: 'Client has been deleted!',
-      post: deletedClient
-    })
+    return res.status(HttpStatus.OK).redirect('/client/admin/clients');
   }
 }

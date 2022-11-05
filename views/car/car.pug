@@ -38,7 +38,11 @@ block content
               td #{new Date(order.createdAt).toLocaleString('en-US', {day: 'numeric', month: 'numeric', year: 'numeric'})}
               td 
                 a(href=`/order/${order._id}`) #{order.number}
-              td #{order.orderStatus}
+              if order.orderStatus === 'opened'
+                td(style="background-color: #d4fdc9") #{order.orderStatus}
+              else
+                td(style="background-color: #ffbdbd") #{order.orderStatus}
+              
     div
       button 
         a(href=`/order/create/${client._id}/${car._id}`) Создать заказ

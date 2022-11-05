@@ -28,33 +28,46 @@ export class OrderController {
   @Render('order/orders-p')
   @UseGuards(RolesGuard)
   @Roles(Role.ADMIN, Role.MANAGER)
-  async getOrders(@Query('page') page: number, @Req() req) {
+  async getOrders(@Query('name') name: string,
+    @Query('orderNumber') orderNumber: string,
+    @Query('page') page: number, @Req() req) {
+    const condition = {};
+    const serchString = `${req.url.replace(/\/order\/all\??(page=\d+\&?)?/mi, '')}`;
+    orderNumber ? condition['number'] = orderNumber : null;
+    if (name) {
+      const clients = await this.clientService.find({ name: new RegExp(name, 'gmi') });
+      const potencialClientsId = clients.map(client => client._id);
+      condition['client'] = potencialClientsId;
+    }
     const currentPage = page ?? 1;
-    const step = 12;
+    const step = 10;
     const sortCondition = { createdAt: 'desc' };
-    const orders = await this.orderService.showAll(currentPage, step, sortCondition);
+    const orders = await this.orderService.showAll(currentPage, step, sortCondition, condition);
     const isAdmin = req.user.roles.includes(Role.ADMIN);
-    return { ...orders, isAdmin };
+    return { ...orders, isAdmin, serchString };
   };
 
 
   @Get('admin/orders')
   @Render('admin/orders')
   @UseGuards(RolesGuard)
-  @Roles(Role.ADMIN, Role.MANAGER)
+  @Roles(Role.ADMIN)
   async getOrdersForAdmin(@Query('name') name: string,
     @Query('orderNumber') orderNumber: string,
-    @Query('page') page: number,
-    @Req() req) {
-    const findCondition = {};
-    orderNumber ? findCondition['number'] = orderNumber : null;
-    name ? findCondition['client'] = name : null;
+    @Query('page') page: number, @Req() req) {
+    const condition = {};
+    const serchString = `${req.url.replace(/\/order\/admin\/orders\??(page=\d+\&?)?/mi, '')}`;
+    orderNumber ? condition['number'] = orderNumber : null;
+    if (name) {
+      const clients = await this.clientService.find({ name: new RegExp(name, 'gmi') });
+      const potencialClientsId = clients.map(client => client._id);
+      condition['client'] = potencialClientsId;
+    }
     const currentPage = page ?? 1;
-    const step = 12;
+    const step = 10;
     const sortCondition = { createdAt: 'desc' };
-    const orders = await this.orderService.showAll(currentPage, step, sortCondition, findCondition);
-    const isAdmin = req.user.roles.includes(Role.ADMIN);
-    return { ...orders, isAdmin };
+    const orders = await this.orderService.showAll(currentPage, step, sortCondition, condition);
+    return { ...orders, isAdmin: true, serchString };
   }
 
 
@@ -70,7 +83,6 @@ export class OrderController {
     }))
     const car = await this.carService.findCar(order.car);
     const client = await this.clientService.findOne(order.client);
-
     const isAdmin = req.user.roles.includes(Role.ADMIN);
     return { car, client, order, fullJobsInfo, isAdmin };
   }

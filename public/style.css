@@ -260,4 +260,18 @@ tr:hover a {
   color: #6699ff;
 }
 
+p {
+  font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
+  font-size: 14px;
+  color: #669;
+}
+
+button {
+  font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
+  color: #669;
+}
+
+button.edit {
+  margin-right: 5px;
+}
 

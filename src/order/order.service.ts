@@ -71,32 +71,29 @@ export class OrderService {
     return deletedOrder;
   }
 
-  async showAll(page: number, step, sortCondition = {}, findCondition = {}) {
-    let ordernumber: Partial<{} & string> = {};
-    if (findCondition.hasOwnProperty('number')) {
-      ordernumber['number'] = findCondition['number'];
+  async showAll(page: number, step, sortCondition = {}, findData = {}) {
+    const condition = {};
+    if (findData.hasOwnProperty('number')) {
+      condition['number'] = findData['number'];
     }
-    let clientName: Partial<{} & { name: string }> = {};
-    if (findCondition.hasOwnProperty('client')) {
-      clientName = { name: findCondition['client'] };
+    if (findData.hasOwnProperty('client')) {
+      condition['client'] = { $in: findData['client'] }; 
     }
-
-    const orders = await this.orderModel.find({ ...ordernumber }, null, {
+    const orders = await this.orderModel.find(condition, null, {
       limit: step,
       skip: step * (page - 1),
     })
       .populate('car')
       .populate('client')
       .sort(sortCondition);
-    if (clientName.hasOwnProperty('name')) {
+    /*if (clientName.hasOwnProperty('name')) {
       const regexp = new RegExp(clientName.name, 'gmi');
       const findedClientOrders = orders.filter(order =>
         regexp.exec(order.client.name.toString()) !== null);
       const totalPages = Math.ceil(findedClientOrders.length / step);
       return { orders: findedClientOrders, totalPages, page, step };
-    }
-
-    const totalDocuments = await this.orderModel.find({ ...ordernumber }).countDocuments();
+    }*/
+    const totalDocuments = await this.orderModel.find(condition).countDocuments();
     const totalPages = Math.ceil(totalDocuments / step);
     return { orders, totalPages, page, step };
   }

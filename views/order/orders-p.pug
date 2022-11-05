@@ -3,6 +3,15 @@ include ../mixins/pages
 
 block content
   h1 Orders
+  div.find
+    form(method="GET" action='/order/all')
+      div(style="padding-bottom: 1px;padding-top: 1px;padding-left: 1px;")
+        p(style='margin-bottom:2px; margin-top: 2px;') Number:
+        input.number(type='text' name='orderNumber')
+        p(style='margin-bottom:2px; margin-top: 2px;') Client name:
+        input.clientname(type='text' name='name') 
+        br
+        button(style="margin-top: 5px;") Find
   div
    table#orderstatuses-table(border='2'  width='20%' cellpadding='4' cellspacing='1')
     tbody 
@@ -11,6 +20,8 @@ block content
           strong №
         td
           strong Date
+        td 
+          strong Client name
         td
           strong Number
         td   
@@ -23,12 +34,16 @@ block content
          tr
             td #{step * (Number(page) - 1) + (index + 1)}
             td #{new Date(order.createdAt).toLocaleString('en-US', {day: 'numeric', month: 'numeric', year: 'numeric'})}
+            td #{order.client.name}
             td 
               a(href=`/order/${order._id}`) #{order.number}
             td #{order.car.brand} #{order.car.model} #{order.car.releaseYear}
-            td #{order.orderStatus}
+            if order.orderStatus === 'opened'
+              td(style="background-color: #d4fdc9") #{order.orderStatus}
+            else
+              td(style="background-color: #ffbdbd") #{order.orderStatus}
   div
     if orders
-      +pages(page, totalPages, '/order/all')
+      +pages(page, totalPages, '/order/all', serchString)
      
               

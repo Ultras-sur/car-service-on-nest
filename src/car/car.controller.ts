@@ -22,13 +22,20 @@ export class CarController {
   @Get('cars')
   @Render('admin/cars')
   @UseGuards(RolesGuard)
-  @Roles(Role.ADMIN)  
-  async getCars(@Query('page') page: Number) {
+  @Roles(Role.ADMIN)
+  async getCars(@Query('page') page: Number, @Req() req, @Query('releaseYear') releaseYear,
+    @Query('brand') brand, @Query('model') model, @Query('vin') vin) {
+    const condition = {};
+    const serchString = `${req.url.replace(/\/car\/cars\??(page=\d+\&?)?/mi, '')}`;
+    releaseYear ? condition['releaseYear'] = releaseYear : null;
+    brand ? condition['brand'] = brand : null;
+    model ? condition['model'] = model : null;
+    vin ? condition['vin'] = new RegExp(vin, 'gmi') : null;
     const currentPage = page ?? 1;
-    const step = 12;
-    //const sortCondition = { createdAt: 'desc' };
-    const cars = await this.carService.findAllPaginate(currentPage, step);
-    return { ...cars, isAdmin: true };
+    const step = 10;
+    const cars = await this.carService.findAllPaginate(currentPage, step, condition);
+    const carBrands = await this.carModelService.findCarBrands({}, { name: 'ASC' });
+    return { ...cars, isAdmin: true, carBrands, serchString};
   }
 
 
@@ -67,14 +74,14 @@ export class CarController {
     return res.redirect(`/car/${newCar['_id']}`);
   }
 
-  @Delete(':id')  
+  @Delete(':id')
   @UseGuards(RolesGuard)
-  @Roles(Role.ADMIN)  
+  @Roles(Role.ADMIN)
   async deleteCar(@Param('id') carId, @Res() res) {
     const deletedCar = await this.carService.deleteCar(carId);
     return res.status(HttpStatus.OK).json({
       message: "Car has been deleted successfully!",
       car: deletedCar,
     });
-  }  
+  }
 }

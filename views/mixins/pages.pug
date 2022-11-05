@@ -1,7 +1,10 @@
-mixin pages(page, totalPages, link)
+mixin pages(page, totalPages, link, serchString='')
   - var n = 1;
       while n <= totalPages
         if n === Number(page)
           a= `[ ${n++} ]`
         else
-          a(href=`${link}?page=${n}`)= `[${n++}]`
+          if serchString.length > 0
+            a(href=`${link}?page=${n}&${serchString}`)= `[${n++}]`
+          else
+            a(href=`${link}?page=${n}`)= `[${n++}]`

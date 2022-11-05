@@ -1,0 +1,52 @@
+extends ../layouts/layout.pug
+include ../mixins/pages
+
+block content
+    h1 Users
+    div.find
+      form(method="GET" action='/users')
+        div(style="padding-bottom: 1px;padding-top: 1px;padding-left: 1px;")
+          p(style='margin-bottom:2px; margin-top: 2px;') Login:
+          input.login(type='text' name='email')
+          p(style='margin-bottom:2px; margin-top: 2px;') Name:
+          input.login(type='text' name='name')
+          p(style='margin-bottom:2px; margin-top: 2px;') Roles:
+          select#model-selection(autofocus name='roles' size='4' multiple='true' title='Ctrl + Click for few options')
+            option(autofocus)
+            option(value='admin') ADMIN
+            option(value='manager') MANAGER
+            option(value='user') USER
+          br
+          button(style="margin-top: 5px;") Find
+    div
+      table#users-table(border='2'  width='20%' cellpadding='4' cellspacing='1')
+        tbody
+          tr
+            td.admin
+              strong №
+            td.admin
+              strong Login
+            td.admin
+              strong Name
+            td.admin
+              strong Roles
+            td.admin
+              strong Action
+        if users
+          each user, index in users
+            tr
+              td.admin #{step * (page - 1) + (index + 1)} 
+              td.admin #{user.email}
+              td.admin #{user.name}
+              td.admin #{user.roles}
+              td.admin 
+                button.edit(type='button' id=`${user._id}_user` title="edit") ...
+                button(type='button' id=`${user._id}_user` style='color: red;' onclick='deleteItem(this.id)' title="delete") X
+                
+    div
+      if users & page > 1
+        +pages(page, totalPages, '/user')
+    div
+      button 
+        a(href=`/user/create`) Add user
+    script(src='/delete-config.js')
