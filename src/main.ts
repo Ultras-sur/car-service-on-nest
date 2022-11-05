@@ -7,6 +7,7 @@ import * as session from 'express-session';
 import flash = require('connect-flash');
 import passport = require("passport");
 
+const PORT = process.env.PORT || 5000;
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
   // app.setBaseViewsDir(join(__dirname, '..', 'views'));
@@ -16,7 +17,7 @@ async function bootstrap() {
 
   app.use(
     session({
-      secret: 'key',
+      secret: process.env.SESSION_KEY,
       resave: false,
       saveUninitialized: false,
     }),
@@ -25,6 +26,6 @@ async function bootstrap() {
   app.use(passport.session());
   app.use(flash());
 
-  await app.listen(5000);
+  await app.listen(PORT);
 }
 bootstrap();

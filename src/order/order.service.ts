@@ -77,7 +77,7 @@ export class OrderService {
       condition['number'] = findData['number'];
     }
     if (findData.hasOwnProperty('client')) {
-      condition['client'] = { $in: findData['client'] }; 
+      condition['client'] = { $in: findData['client'] };
     }
     const orders = await this.orderModel.find(condition, null, {
       limit: step,
@@ -86,13 +86,6 @@ export class OrderService {
       .populate('car')
       .populate('client')
       .sort(sortCondition);
-    /*if (clientName.hasOwnProperty('name')) {
-      const regexp = new RegExp(clientName.name, 'gmi');
-      const findedClientOrders = orders.filter(order =>
-        regexp.exec(order.client.name.toString()) !== null);
-      const totalPages = Math.ceil(findedClientOrders.length / step);
-      return { orders: findedClientOrders, totalPages, page, step };
-    }*/
     const totalDocuments = await this.orderModel.find(condition).countDocuments();
     const totalPages = Math.ceil(totalDocuments / step);
     return { orders, totalPages, page, step };
