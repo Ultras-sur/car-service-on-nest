@@ -22,8 +22,8 @@
     "heroku-postbuild": "npm run build"
   },
   "engines": {
-    "node": "16.x",
-    "npm": "8.x"
+    "node": "16.13.2",
+    "npm": "8.1.2"
   },
   "dependencies": {
     "@nestjs/common": "^9.0.0",
