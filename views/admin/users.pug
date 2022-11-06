@@ -4,7 +4,7 @@ include ../mixins/pages
 block content
     h1 Users
     div.find
-      form(method="GET" action='/users')
+      form(method="GET" action='/user')
         div(style="padding-bottom: 1px;padding-top: 1px;padding-left: 1px;")
           p(style='margin-bottom:2px; margin-top: 2px;') Login:
           input.login(type='text' name='email')
@@ -36,17 +36,17 @@ block content
           each user, index in users
             tr
               td.admin #{step * (page - 1) + (index + 1)} 
-              td.admin #{user.email}
-              td.admin #{user.name}
-              td.admin #{user.roles}
               td.admin 
-                button.edit(type='button' id=`${user._id}_user` title="edit") ...
+                a(href=`/user/${user._id}`) #{user.email}
+              td.admin #{user.name}
+              td.admin #{user.roles.sort()}
+              td.admin 
                 button(type='button' id=`${user._id}_user` style='color: red;' onclick='deleteItem(this.id)' title="delete") X
                 
     div
-      if users & page > 1
+      if users 
         +pages(page, totalPages, '/user')
     div
       button 
-        a Add user
+        a(href="/user/admin/create") Add user
     script(src='/delete-config.js')

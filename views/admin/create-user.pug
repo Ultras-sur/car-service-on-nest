@@ -1,0 +1,20 @@
+extends ../layouts/layout.pug
+
+block content
+    h1 Create new user
+    div.create
+      form(method="POST" action='/user/admin/create')
+        div(style="padding-bottom: 1px;padding-top: 1px;padding-left: 1px;")
+          p(style='margin-bottom:2px; margin-top: 2px;') Login:
+          input.login(type='text' name='email')
+          p(style='margin-bottom:2px; margin-top: 2px;') Name:
+          input.login(type='text' name='name')
+          p(style='margin-bottom:2px; margin-top: 2px;') Password:
+          input.login(type='text' name='password')
+          p(style='margin-bottom:2px; margin-top: 2px;') Roles:
+          select#model-selection(autofocus name='roles' size='4' multiple='true' title='Ctrl + Click for few options' required)
+            option(value='USER') USER
+            option(value='MANAGER') MANAGER
+            option(value='ADMIN') ADMIN
+          br
+          button(style="margin-top: 5px;") Create

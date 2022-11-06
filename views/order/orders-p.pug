@@ -34,10 +34,12 @@ block content
          tr
             td #{step * (Number(page) - 1) + (index + 1)}
             td #{new Date(order.createdAt).toLocaleString('en-US', {day: 'numeric', month: 'numeric', year: 'numeric'})}
-            td #{order.client.name}
+            td 
+              a(href=`/client/${order.client._id}`) #{order.client.name}
             td 
               a(href=`/order/${order._id}`) #{order.number}
-            td #{order.car.brand} #{order.car.model} #{order.car.releaseYear}
+            td 
+              a(href=`/car/${order.car._id}`) #{order.car.brand} #{order.car.model} #{order.car.releaseYear}
             if order.orderStatus === 'opened'
               td(style="background-color: #d4fdc9") #{order.orderStatus}
             else

@@ -3,6 +3,7 @@ const responseConfig = {
   order: (id) => `/order/${id}`,
   client: (id) => `/client/${id}`,
   car: (id) => `/car/${id}`,
+  user: (id) => `/user/admin/delete/${id}`,
 }
 
 async function deleteItem(itemInfo) {

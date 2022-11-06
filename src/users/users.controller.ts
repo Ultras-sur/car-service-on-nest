@@ -5,8 +5,10 @@ import { AuthExceptionFilter } from 'src/auth/common/filters/auth-exceptions.fil
 import { RolesGuard } from '../auth/common/guards/roles.guard';
 import { Role } from 'schemas/user.schema';
 import { Roles } from 'src/auth/roles.decorator';
+import { CreateUserDTO } from 'dto/create-user.dto';
+import { UpdateUserDTO } from 'dto/update-user.dto';
 
-@Controller('users')
+@Controller('user')
 @UseFilters(AuthExceptionFilter)
 @UseGuards(AuthenticatedGuard)
 
@@ -26,36 +28,53 @@ export class UsersController {
     if (roles) {
       Array.isArray(roles) ? condition['roles'] = roles : condition['roles'] = [roles];
     }
-    
+    console.log(condition)
     const users = await this.usersService.findUsers(currentPage, step, condition);
+    
+    console.log(users)
     return { ...users, isAdmin: true };
   }
 
-  @Get('update')
-  @UseGuards(RolesGuard)
-  @Roles(Role.ADMIN)  
-  async updateUser(@Res() res) {
-    const updatedUser = await this.usersService.updateUser('6347ddc393c05ea682542283', {  name: 'Admin'});
-    return res.redirect('/users');
-  }  
-       
-
-  @Post('/create')
+  @Get('/admin/create')
+  @Render('admin/create-user')
   @UseGuards(RolesGuard)
   @Roles(Role.ADMIN)
-  async create() {
-    const user = await this.usersService.create({ email: 'man', password: '000999', roles: ['manager'] });
-    return user;
+  async createUserForm() {
+    return { isAdmin: true };
   }
 
-  @Post('/delete')
+  @Get('/admin/:userId')
+  @Render('admin/user')
   @UseGuards(RolesGuard)
   @Roles(Role.ADMIN)
-  async delete(@Query('id') id, @Res() res) {
-    const deletedUser = await this.usersService.deleteUser(id);
+  async user(@Param('userId') userId) {
+    const user = await this.usersService.findUser(userId);
+    return { user };
+  }
+
+  @Post('/admin/create')
+  async createUser(@Body() createUserDTO: CreateUserDTO, @Res() res) {
+    const createdUser = await this.usersService.create(createUserDTO);
+    console.log(createdUser)
+    return res.redirect(`/user`);
+  }
+
+  @Put('admin/update/:userId')
+  @UseGuards(RolesGuard)
+  @Roles(Role.ADMIN)
+  async updateUser(@Param('userId') userId, @Body() updatedUserDTO: UpdateUserDTO, @Res() res) {
+    const updatedUser = await this.usersService.updateUser(userId, updatedUserDTO);
+    return res.redirect(`/users/${updatedUser['_id']}`);
+  }
+
+  @Delete('admin/delete/:userId')
+  @UseGuards(RolesGuard)
+  @Roles(Role.ADMIN)
+  async delete(@Param('userId') userId, @Res() res) {
+    const deletedUser = await this.usersService.deleteUser(userId);
     return res.status(HttpStatus.OK).json({
       deletedUser,
       message: 'User is deleted!'
     });
-  }  
+  }
 }
