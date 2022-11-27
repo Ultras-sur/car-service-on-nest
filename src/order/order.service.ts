@@ -6,11 +6,13 @@ import { CreateOrderDTO } from '../../dto/create-order.dto';
 import { UpdateOrderDTO } from '../../dto/update-order.dto';
 import { UpdateOrderWorkPostDTO } from '../../dto/update-order-workpost.dto';
 import { ValidateObjectId } from '../shared/pipes/validate-object-id.pipes';
+import { WorkPostService } from 'src/workpost/workpost.service';
+import * as mongoose from 'mongoose';
 
 
 @Injectable()
 export class OrderService {
-  constructor(@InjectModel(Order.name) private orderModel: Model<OrderDocument>) { }
+  constructor(@InjectModel(Order.name) private orderModel: Model<OrderDocument>, private workPostService: WorkPostService) { }
 
   async findCarOrders(carId): Promise<Order[]> {
     const carOrders = await this.orderModel.find({ car: carId });
@@ -66,11 +68,6 @@ export class OrderService {
     return updatedOrder;
   }
 
-  async delete(id): Promise<Order> {
-    const deletedOrder = await this.orderModel.findByIdAndDelete(id);
-    return deletedOrder;
-  }
-
   async showAll(page: number, step, sortCondition = {}, findData = {}) {
     const condition = {};
     if (findData.hasOwnProperty('number')) {
@@ -89,6 +86,21 @@ export class OrderService {
     const totalDocuments = await this.orderModel.find(condition).countDocuments();
     const totalPages = Math.ceil(totalDocuments / step);
     return { orders, totalPages, page, step };
+  }
+
+  async delete(id): Promise<Order> {
+    const deletedOrder = await this.orderModel.findByIdAndDelete(id);
+    return deletedOrder;
+  }
+
+  async deleteMany(orderIds: string[], session: mongoose.ClientSession | null = null) {
+    const unsetOrdersInWorkPost = await Promise.all(orderIds.map(async orderId => {
+      const order = await this.findOrder(orderId);
+      if (order.workPost !== 'queue') {
+        await this.workPostService.unsetWorkPost(order.workPost, session);
+      }
+    })) 
+    return this.orderModel.deleteMany({ _id: orderIds }).session(session);
   }
 }
 

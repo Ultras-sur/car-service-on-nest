@@ -3,22 +3,19 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Car, CarDocument } from '../../schemas/car.schema';
 import { CreateCarDTO } from '../../dto/create-car.dto';
-import { ValidateObjectId } from '../shared/pipes/validate-object-id.pipes';
+import { OrderService } from 'src/order/order.service';
+import * as mongoose from 'mongoose';
+import { deepFlatArray } from 'helpers/deep-flat-array';
 
 
 @Injectable()
 
 export class CarService {
-  constructor(@InjectModel(Car.name) private carModel: Model<CarDocument>) { }
+  constructor(@InjectModel(Car.name) private carModel: Model<CarDocument>, private orderService: OrderService) { }
 
   async create(createCarDTO: CreateCarDTO): Promise<Car> {
     const createdCar = this.carModel.create(createCarDTO);
     return createdCar;
-  }
-
-  async deleteCar (carId): Promise<Car> {
-    const deletedCar = await this.carModel.findByIdAndDelete(carId);
-    return deletedCar;
   }
 
   async findOwnerCars(ownerId): Promise<Car[]> {
@@ -41,5 +38,24 @@ export class CarService {
     const totalDocuments = await this.carModel.find(condition).countDocuments();
     const totalPages = Math.ceil(totalDocuments / step);
     return { cars, step, totalPages, page };
+  }
+
+
+  async deleteCar(carId): Promise<Car> {
+    const deletedCar = await this.carModel.findByIdAndDelete(carId);
+    return deletedCar;
+  }
+
+  async deleteMany(carIds: string[], session: mongoose.ClientSession | null = null) {
+    await this.carModel.deleteMany({ _id: carIds }).session(session);
+    const carOrdersIds = await Promise.all(carIds.map(async (carId) => {
+      const orders = await this.orderService.findOrders({ car: carId });
+      const ordersIds = orders.map(order => order['_id'].toString());
+      return ordersIds;
+    }))
+    
+    console.log(`Deleting orders`);
+    console.log(carOrdersIds);
+    return this.orderService.deleteMany(deepFlatArray(carOrdersIds), session);
   }
 }

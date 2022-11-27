@@ -6,18 +6,25 @@ const responseConfig = {
   user: (id) => `/user/admin/delete/${id}`,
 }
 
+const alerts = {
+  order: `Вы уверены, что хотите удалить данный заказ?`,
+  client: `Вы уверены, что хотите удалить клиента?Вся информация об автомобилях и заказах будет так же удалена.`,
+  car: `Вы уверены, что хотите удалить данный автомобиль?/nВся информация о заказах так же будет удалена?`,
+  client: `Вы уверены, что хотите удалить клиента?`,
+  user: `Вы уверены, что хотите удалить пользователя?`,
+}
+
 async function deleteItem(itemInfo) {
-  const needToDelete = confirm(`Вы уверены?`);
-  if (!needToDelete) return;
-
   const [id, item] = itemInfo.split('_');
+  const needToDelete = confirm(alerts[item]);
+  if (!needToDelete) return;
   const responseURL = responseConfig[item](id);
-
+  console.log(responseURL)
   try {
     const response = await fetch(responseURL, {
       method: 'DELETE'
     })
-    location.href = location.href;
+    location.href = location.href.replace(location.search, '');
     return;
   } catch (e) {
     console.log('Request failed', e);

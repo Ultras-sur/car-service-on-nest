@@ -4,6 +4,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { WorkPost, WorkPostDocument } from '../../schemas/workpost.schema';
 import { CreateWorkPostDTO } from '../../dto/create-workpost.dto';
 import { ValidateObjectId } from '../shared/pipes/validate-object-id.pipes';
+import * as mongoose from 'mongoose';
 
 @Injectable()
 export class WorkPostService {
@@ -24,8 +25,8 @@ export class WorkPostService {
     return setedWorkPost;
   }
 
-  async unsetWorkPost(workpostNumber): Promise<any> {
-    const unSetedWorkPost = await this.workPostModel.findOneAndReplace({ number: workpostNumber }, { number: workpostNumber });
+  async unsetWorkPost(workpostNumber, session: mongoose.ClientSession | null = null): Promise<any> {
+    const unSetedWorkPost = await this.workPostModel.findOneAndReplace({ number: workpostNumber }, { number: workpostNumber }).session(session);
     return unSetedWorkPost;
   }
 }

@@ -30,6 +30,7 @@ export class ClientController {
     const step = 12;
     const sortCondition = { createdAt: 'desc' }; 
     const clients = await this.clientService.findAll(currentPage, step, sortCondition, findCondition);
+    
     return { ...clients, isAdmin: true };
   }
 
@@ -91,18 +92,21 @@ export class ClientController {
     if (!editedClient) throw new NotFoundException('Client does not exist!');
     return res.status(HttpStatus.OK).json({
       message: 'Client has been successfully updated',
-      post: editedClient
+      client: editedClient
     })
   }
 
-
-  @Delete('delete')
+  @Delete(':clientID')
   @UseGuards(RolesGuard)
   @Roles(Role.ADMIN)
   async deleteClient(@Res() res: Response,
-    @Query('clientID', new ValidateObjectId()) clientID) {
-    const deletedClient = await this.clientService.deleteClient(clientID);
-    if (!deletedClient) throw new NotFoundException('Client does not exist!');
-    return res.status(HttpStatus.OK).redirect('/client/admin/clients');
+    @Param('clientID', new ValidateObjectId()) clientID) {
+    const clientCars = await this.carService.findOwnerCars(clientID);
+    console.log(`Deleting client`);
+    const deletedClient = await this.clientService.deleteClient(clientID, clientCars);
+    return res.status(HttpStatus.OK).json({
+      message: 'Client has been successfully deleted',
+      client: deletedClient
+    })
   }
 }
