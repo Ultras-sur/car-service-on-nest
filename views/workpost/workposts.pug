@@ -47,7 +47,7 @@ block content
                 tr
                   td(colspan='4')
                     strong Work Post № #{workPost.number}
-                    form(method="POST" action="/workpost/set" name=`workPost${workPost.number}`)
+                    form(method="POST" action="/order/set" name=`workPost${workPost.number}`)
                           div
                               input.workpost(type='hidden' name='workPost' value=`${workPost.number}`)
                               select.order-selection(required='' id=`order-selection${workPost.number}` name='order')

@@ -1,6 +1,6 @@
 import { Model } from 'mongoose';
 import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
+import { InjectModel, InjectConnection } from '@nestjs/mongoose';
 import { WorkPost, WorkPostDocument } from '../../schemas/workpost.schema';
 import { CreateWorkPostDTO } from '../../dto/create-workpost.dto';
 import { ValidateObjectId } from '../shared/pipes/validate-object-id.pipes';
@@ -20,13 +20,11 @@ export class WorkPostService {
     return workPosts;
   }
 
-  async setToWorkPost(order) {
-    const setedWorkPost = await this.workPostModel.findOneAndUpdate({ number: order.workPost }, { car: order.car, order: order._id });
-    return setedWorkPost;
+  async setToWorkPost(order, session: mongoose.ClientSession | null = null): Promise<any> {
+    return this.workPostModel.findOneAndUpdate({ number: order.workPost }, { car: order.car, order: order._id }).session(session);
   }
 
   async unsetWorkPost(workpostNumber, session: mongoose.ClientSession | null = null): Promise<any> {
-    const unSetedWorkPost = await this.workPostModel.findOneAndReplace({ number: workpostNumber }, { number: workpostNumber }).session(session);
-    return unSetedWorkPost;
+      return this.workPostModel.findOneAndReplace({ number: workpostNumber }, { number: workpostNumber }).session(session);
   }
 }

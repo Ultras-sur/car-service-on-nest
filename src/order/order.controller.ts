@@ -118,7 +118,16 @@ export class OrderController {
     return { car, client, isAdmin }
   }
 
+  @Post('/set')
+  @UseGuards(RolesGuard)
+  @Roles(Role.ADMIN, Role.MANAGER)
+  async setToWorkPost(@Res() res: Response, @Body() workPostData) {
+    const { order, workPost } = workPostData;
+    await this.orderService.setToWorkPost(order, workPost);
+    return res.redirect('/workpost/workpoststatus');
+  }
 
+    
   @Post('new')
   @UseGuards(RolesGuard)
   @Roles(Role.ADMIN, Role.MANAGER)
@@ -127,11 +136,6 @@ export class OrderController {
     const client = await this.clientService.findOne(createOrderDTO.client);
     const orderNumber = createOrderNumber(car, client);
     const createdOrder = await this.orderService.create({ ...createOrderDTO, number: orderNumber });
-    if (!createdOrder) throw new NotFoundException('New order is not created!');
-    if (createdOrder.workPost !== 'queue') {
-      const setOrderToWorkpost = await this.workPostService.setToWorkPost(createdOrder);
-      if (!setOrderToWorkpost) throw new NotFoundException('New order is not seted to work post!');
-    }
     return res.redirect(`/order/${createdOrder['_id']}`);
   }
 

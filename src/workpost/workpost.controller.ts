@@ -70,8 +70,8 @@ export class WorkPostController {
   @UseGuards(RolesGuard)
   @Roles(Role.ADMIN, Role.MANAGER)
   async unset(@Res() res: Response, @Body() workPostData) {
-    const { order, workPost } = workPostData;
-    const completeCondition = workPostData.complete === 'true' ? { orderStatus: 'closed' } : {};
+    const { order, workPost, complete } = workPostData;
+    const completeCondition = complete === 'true' ? { orderStatus: 'closed' } : {};
     const unsetedOrder =
       await this.orderService.update(order, { ...{ workPost: 'queue' }, ...completeCondition });
     const workPostToUnset = await this.workPostService.unsetWorkPost(workPost);

@@ -1,6 +1,6 @@
 import { Model } from 'mongoose';
-import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectModel, InjectConnection } from '@nestjs/mongoose';
 import { Order, OrderDocument } from '../../schemas/order.schema';
 import { CreateOrderDTO } from '../../dto/create-order.dto';
 import { UpdateOrderDTO } from '../../dto/update-order.dto';
@@ -12,7 +12,7 @@ import * as mongoose from 'mongoose';
 
 @Injectable()
 export class OrderService {
-  constructor(@InjectModel(Order.name) private orderModel: Model<OrderDocument>, private workPostService: WorkPostService) { }
+  constructor(@InjectModel(Order.name) private orderModel: Model<OrderDocument>, private workPostService: WorkPostService, @InjectConnection() private readonly connection: mongoose.Connection) { }
 
   async findCarOrders(carId): Promise<Order[]> {
     const carOrders = await this.orderModel.find({ car: carId });
@@ -59,8 +59,19 @@ export class OrderService {
   }
 
   async create(createOrderDTO: CreateOrderDTO): Promise<Order> {
-    const createdOrder = new this.orderModel(createOrderDTO);
-    return createdOrder.save();
+    const session = await this.connection.startSession();
+    let createdOrder;
+    await session.withTransaction(async () => {
+      createdOrder = new this.orderModel(createOrderDTO);
+      createdOrder.save();
+      if (!createdOrder) throw new NotFoundException('New order is not created!');
+      if (createdOrder.workPost !== 'queue') {
+        const setOrderToWorkpost = await this.workPostService.setToWorkPost(createdOrder, session);
+        if (!setOrderToWorkpost) throw new NotFoundException('New order is not seted to work post!');
+      }
+    })
+    session.endSession();
+    return createdOrder;
   }
 
   async update(id, updateOrderDTO): Promise<Order> {
@@ -86,6 +97,17 @@ export class OrderService {
     const totalDocuments = await this.orderModel.find(condition).countDocuments();
     const totalPages = Math.ceil(totalDocuments / step);
     return { orders, totalPages, page, step };
+  }
+
+  async setToWorkPost(orderId, workPost): Promise<Order> {
+    let setedOrder;
+    const session = await this.connection.startSession();
+    await session.withTransaction(async () => {
+      setedOrder = await this.orderModel.findByIdAndUpdate({ _id: orderId }, { workPost }, { new: true });
+      await this.workPostService.setToWorkPost(setedOrder, session);
+    });
+    session.endSession();
+    return setedOrder;
   }
 
   async delete(id): Promise<Order> {
