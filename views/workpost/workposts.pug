@@ -11,7 +11,7 @@ block content
                 tr
                   td(colspan='4')
                     strong Work Post № #{workPost.number}
-                    form(method="POST" action=`/workpost/unset` name=`workPost${workPost.number}`)
+                    form(method="POST" action=`/order/unset` name=`workPost${workPost.number}`)
                         div
                             input.workpost(type='hidden' name='workPost' value=`${workPost.number}`)
                             input.order-id(type='hidden' name='order' value=`${workPost.order.id}`)

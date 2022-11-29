@@ -3,9 +3,6 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel, InjectConnection } from '@nestjs/mongoose';
 import { Order, OrderDocument } from '../../schemas/order.schema';
 import { CreateOrderDTO } from '../../dto/create-order.dto';
-import { UpdateOrderDTO } from '../../dto/update-order.dto';
-import { UpdateOrderWorkPostDTO } from '../../dto/update-order-workpost.dto';
-import { ValidateObjectId } from '../shared/pipes/validate-object-id.pipes';
 import { WorkPostService } from 'src/workpost/workpost.service';
 import * as mongoose from 'mongoose';
 
@@ -110,8 +107,27 @@ export class OrderService {
     return setedOrder;
   }
 
+  async unsetWorkPost(orderId, workpost, completeCondition) {
+    let unsetedOrder;
+    const session = await this.connection.startSession();
+     await session.withTransaction(async () => {
+       unsetedOrder = await this.orderModel.
+         findByIdAndUpdate({ _id: orderId }, { workPost: 'queue', ...completeCondition }, { new: true });
+       await this.workPostService.unsetWorkPost(workpost);
+     });
+    session.endSession();
+    return unsetedOrder;
+  }
+
   async delete(id): Promise<Order> {
-    const deletedOrder = await this.orderModel.findByIdAndDelete(id);
+    let deletedOrder;
+    const session = await this.connection.startSession();
+    await session.withTransaction(async () => {
+      deletedOrder = await this.orderModel.findByIdAndDelete(id);
+      if (deletedOrder.workPost !== 'queue') {
+        await this.workPostService.unsetWorkPost(deletedOrder.workPost, session);
+      }
+    })
     return deletedOrder;
   }
 

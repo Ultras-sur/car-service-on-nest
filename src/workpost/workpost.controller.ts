@@ -66,30 +66,6 @@ export class WorkPostController {
     return { workPosts, ordersInQueue, isAdmin };
   }
 
-  @Post('/unset')
-  @UseGuards(RolesGuard)
-  @Roles(Role.ADMIN, Role.MANAGER)
-  async unset(@Res() res: Response, @Body() workPostData) {
-    const { order, workPost, complete } = workPostData;
-    const completeCondition = complete === 'true' ? { orderStatus: 'closed' } : {};
-    const unsetedOrder =
-      await this.orderService.update(order, { ...{ workPost: 'queue' }, ...completeCondition });
-    const workPostToUnset = await this.workPostService.unsetWorkPost(workPost);
-    return res.redirect('workpoststatus');
-  }
-
-
-  @Post('/set')
-  @UseGuards(RolesGuard)
-  @Roles(Role.ADMIN, Role.MANAGER)
-  async set(@Res() res: Response, @Body() workPostData) {
-    const { order, workPost } = workPostData;
-    const orderToSet = await this.orderService.update(order, { workPost });
-    const workPostToSet = await this.workPostService.setToWorkPost(orderToSet);
-    return res.redirect('workpoststatus');
-  }
-
-
   /*@Get('/createworkpost')
   async createWorkPost(@Res() res) {
     const newWorkPost = await this.workPostService.createWorkPost();

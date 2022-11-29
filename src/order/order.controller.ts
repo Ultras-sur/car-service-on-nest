@@ -3,7 +3,6 @@ import { Response } from 'express';
 import { OrderService } from './order.service';
 import { ClientService } from '../client/client.service';
 import { CarService } from '../car/car.service';
-import { WorkPostService } from '../workpost/workpost.service';
 import { JobService } from '../job/job.service';
 import { CreateOrderDTO } from '../../dto/create-order.dto';
 import { UpdateOrderDTO } from '../../dto/update-order.dto';
@@ -21,7 +20,7 @@ import { AuthExceptionFilter } from 'src/auth/common/filters/auth-exceptions.fil
 @UseGuards(AuthenticatedGuard)
 
 export class OrderController {
-  constructor(private orderService: OrderService, private carService: CarService, private clientService: ClientService, private workPostService: WorkPostService, private jobService: JobService) { }
+  constructor(private orderService: OrderService, private carService: CarService, private clientService: ClientService, private jobService: JobService) { }
 
 
   @Get('all')
@@ -127,8 +126,18 @@ export class OrderController {
     return res.redirect('/workpost/workpoststatus');
   }
 
+  @Post('/unset')
+  @UseGuards(RolesGuard)
+  @Roles(Role.ADMIN, Role.MANAGER)
+  async unsetWorkPost(@Res() res: Response, @Body() workPostData) {
+    const { order, workPost, complete } = workPostData;
+    const completeCondition = complete === 'true' ? { orderStatus: 'closed' } : {};
+    await this.orderService.unsetWorkPost(order, workPost, completeCondition);
+    return res.redirect('/workpost/workpoststatus');
+  }  
+
     
-  @Post('new')
+  @Post('/new')
   @UseGuards(RolesGuard)
   @Roles(Role.ADMIN, Role.MANAGER)
   async create(@Res() res: Response, @Body() createOrderDTO: CreateOrderDTO) {
