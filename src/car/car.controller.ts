@@ -23,10 +23,30 @@ export class CarController {
   @Render('admin/cars')
   @UseGuards(RolesGuard)
   @Roles(Role.ADMIN)
-  async getCars(@Query('page') page: Number, @Req() req, @Query('releaseYear') releaseYear,
-    @Query('brand') brand, @Query('model') model, @Query('vin') vin) {
+  async getCars(@Query('page') page: Number, @Query('releaseYearBefore') releaseYearBefore, @Query('releaseYearTo') releaseYearTo, @Query('brand') brand, @Query('model') model, @Query('vin') vin, @Req() req) {
     const condition = {};
+    const releaseYearBeforeCondition = releaseYearBefore ?  { $gte: releaseYearBefore } : { $gte: 0 };
+    const releaseYearToCondition = releaseYearTo ? { $lte: releaseYearTo } : { $lte: 2022 };
+    condition['releaseYear'] = {...releaseYearBeforeCondition, ...releaseYearToCondition };
+    brand ? condition['brand'] = brand : null;
+    model ? condition['model'] = model : null;
+    vin ? condition['vin'] = new RegExp(vin, 'gmi') : null;
+    const currentPage = page ?? 1;
+    const step = 10;
+    const cars = await this.carService.findAllPaginate(currentPage, step, condition);
+    const carBrands = await this.carModelService.findCarBrands({}, { name: 'ASC' });
     const serchString = `${req.url.replace(/\/car\/cars\??(page=\d+\&?)?/mi, '')}`;
+    return { ...cars, isAdmin: true, carBrands, serchString };
+  }
+
+  @Get('all')
+  @Render('car/cars')
+  @UseGuards(RolesGuard)
+  @Roles(Role.ADMIN, Role.MANAGER)
+  async getCarsForUser(@Query('page') page: Number, @Query('releaseYear') releaseYear,
+    @Query('brand') brand, @Query('model') model, @Query('vin') vin, @Req() req) {
+    const condition = {};
+    const serchString = `${req.url.replace(/\/car\/all\??(page=\d+\&?)?/mi, '')}`;
     releaseYear ? condition['releaseYear'] = releaseYear : null;
     brand ? condition['brand'] = brand : null;
     model ? condition['model'] = model : null;
@@ -35,7 +55,8 @@ export class CarController {
     const step = 10;
     const cars = await this.carService.findAllPaginate(currentPage, step, condition);
     const carBrands = await this.carModelService.findCarBrands({}, { name: 'ASC' });
-    return { ...cars, isAdmin: true, carBrands, serchString};
+    const isAdmin = req.user.roles.includes(Role.ADMIN);
+    return { ...cars, isAdmin, carBrands, serchString };
   }
 
 

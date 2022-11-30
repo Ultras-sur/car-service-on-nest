@@ -76,13 +76,13 @@ export class OrderService {
     return updatedOrder;
   }
 
-  async showAll(page: number, step, sortCondition = {}, findData = {}) {
+  async showAll(page: number, step, sortCondition = {}, conditionData = {}) {
     const condition = {};
-    if (findData.hasOwnProperty('number')) {
-      condition['number'] = findData['number'];
+    if (conditionData.hasOwnProperty('number')) {
+      condition['number'] = conditionData['number'];
     }
-    if (findData.hasOwnProperty('client')) {
-      condition['client'] = { $in: findData['client'] };
+    if (conditionData.hasOwnProperty('client')) {
+      condition['client'] = { $in: conditionData['client'] };
     }
     const orders = await this.orderModel.find(condition, null, {
       limit: step,

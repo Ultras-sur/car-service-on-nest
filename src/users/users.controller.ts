@@ -28,10 +28,7 @@ export class UsersController {
     if (roles) {
       Array.isArray(roles) ? condition['roles'] = roles : condition['roles'] = [roles];
     }
-    console.log(condition)
     const users = await this.usersService.findUsers(currentPage, step, condition);
-    
-    console.log(users)
     return { ...users, isAdmin: true };
   }
 

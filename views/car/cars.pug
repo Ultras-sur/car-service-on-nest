@@ -4,7 +4,7 @@ include ../mixins/pages
 block content
   h1(style="margin-bottom: 0px;") Cars
   div(style="width: 450px;padding-top: 0px;")
-    form(method="GET" action="/car/cars" name='carForm')
+    form(method="GET" action="/car/all" name='carForm')
       
       div(style="padding-bottom: 10px;padding-top: 1px;padding-left: 1px; float: left; width: 100px;")
         p(style="margin-left: 0px;margin-bottom: 5px;") Brand: 
@@ -20,17 +20,7 @@ block content
             option
          
           p(style="margin-left: 0px;margin-top: 5px;margin-bottom: 5px;") Release year:
-          select(type="number" name="releaseYearBefore" style="margin-right: 10px;") 
-            option
-            - var year = 2022;
-            while year > 1980
-              option= year--
-              
-          select(type="number" name="releaseYearTo")
-            option
-            - var year = 2022;
-            while year > 1980
-              option= year--
+          input(type="number" name="releaseYear")
           p(style="margin-left: 0px;margin-top: 5px;margin-bottom: 5px;") VIN:
           input(type="text" name="vin" )
           br
@@ -47,8 +37,6 @@ block content
           strong VIN
         td 
           strong Client name 
-        td   
-          strong Action
            
     if cars 
       each car, index in cars
@@ -59,10 +47,7 @@ block content
             td.admin #{car.vin}
             td.admin 
               a(href=`/client/${car.owner._id}`) #{car.owner.name}
-            td.admin 
-                button(type='button' id=`${car._id}_car` style='color: red;' onclick='deleteItem(this.id)') X
   div
     if cars 
-      +pages(page, totalPages, 'cars', serchString)
-  script(src='/delete-config.js')
+      +pages(page, totalPages, 'car/all', serchString)
   script(src='/models.js')
