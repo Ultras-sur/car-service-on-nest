@@ -19,15 +19,15 @@ import { Roles } from 'src/auth/roles.decorator';
 export class CarController {
   constructor(private carService: CarService, private clientService: ClientService, private orderService: OrderService, private carModelService: CarModelService) { }
 
-  @Get('cars')
+  @Get('admin/cars')
   @Render('admin/cars')
   @UseGuards(RolesGuard)
   @Roles(Role.ADMIN)
   async getCars(@Query('page') page: Number, @Query('releaseYearBefore') releaseYearBefore, @Query('releaseYearTo') releaseYearTo, @Query('brand') brand, @Query('model') model, @Query('vin') vin, @Req() req) {
     const condition = {};
-    const releaseYearBeforeCondition = releaseYearBefore ?  { $gte: releaseYearBefore } : { $gte: 0 };
-    const releaseYearToCondition = releaseYearTo ? { $lte: releaseYearTo } : { $lte: 2022 };
-    condition['releaseYear'] = {...releaseYearBeforeCondition, ...releaseYearToCondition };
+    const releaseYearBeforeCondition = releaseYearBefore ? { $gte: releaseYearBefore } : { $gte: 0 };
+    const releaseYearToCondition = releaseYearTo ? { $lte: releaseYearTo } : { $lte: new Date().getUTCFullYear() };
+    condition['releaseYear'] = { ...releaseYearBeforeCondition, ...releaseYearToCondition };
     brand ? condition['brand'] = brand : null;
     model ? condition['model'] = model : null;
     vin ? condition['vin'] = new RegExp(vin, 'gmi') : null;
@@ -35,7 +35,7 @@ export class CarController {
     const step = 10;
     const cars = await this.carService.findAllPaginate(currentPage, step, condition);
     const carBrands = await this.carModelService.findCarBrands({}, { name: 'ASC' });
-    const serchString = `${req.url.replace(/\/car\/cars\??(page=\d+\&?)?/mi, '')}`;
+    const serchString = `${req.url.replace(/\/car\/admin\/cars\??(page=\d+\&?)?/mi, '')}`;
     return { ...cars, isAdmin: true, carBrands, serchString };
   }
 
@@ -43,11 +43,11 @@ export class CarController {
   @Render('car/cars')
   @UseGuards(RolesGuard)
   @Roles(Role.ADMIN, Role.MANAGER)
-  async getCarsForUser(@Query('page') page: Number, @Query('releaseYear') releaseYear,
-    @Query('brand') brand, @Query('model') model, @Query('vin') vin, @Req() req) {
+  async getCarsForUser(@Query('page') page: Number, @Query('releaseYearBefore') releaseYearBefore, @Query('releaseYearTo') releaseYearTo, @Query('brand') brand, @Query('model') model, @Query('vin') vin, @Req() req) {
     const condition = {};
-    const serchString = `${req.url.replace(/\/car\/all\??(page=\d+\&?)?/mi, '')}`;
-    releaseYear ? condition['releaseYear'] = releaseYear : null;
+    const releaseYearBeforeCondition = releaseYearBefore ? { $gte: releaseYearBefore } : { $gte: 0 };
+    const releaseYearToCondition = releaseYearTo ? { $lte: releaseYearTo } : { $lte: new Date().getUTCFullYear() };
+    condition['releaseYear'] = { ...releaseYearBeforeCondition, ...releaseYearToCondition };
     brand ? condition['brand'] = brand : null;
     model ? condition['model'] = model : null;
     vin ? condition['vin'] = new RegExp(vin, 'gmi') : null;
@@ -56,6 +56,7 @@ export class CarController {
     const cars = await this.carService.findAllPaginate(currentPage, step, condition);
     const carBrands = await this.carModelService.findCarBrands({}, { name: 'ASC' });
     const isAdmin = req.user.roles.includes(Role.ADMIN);
+    const serchString = `${req.url.replace(/\/car\/all\??(page=\d+\&?)?/mi, '')}`;
     return { ...cars, isAdmin, carBrands, serchString };
   }
 
