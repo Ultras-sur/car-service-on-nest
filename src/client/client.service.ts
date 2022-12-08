@@ -2,10 +2,10 @@ import { Model } from 'mongoose';
 import * as mongoose from 'mongoose';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel, InjectConnection } from '@nestjs/mongoose';
-import { Client, ClientDocument } from '../../schemas/client.schema';
-import { Car } from '../../schemas/car.schema';
+import { Client, ClientDocument } from 'schemas/client.schema';
+import { Car } from 'schemas/car.schema';
 import { CarService } from 'src/car/car.service';
-import { CreateClientDTO } from '../../dto/create-client.dto';
+import { CreateClientDTO } from 'dto/create-client.dto';
 import { ValidateObjectId } from '../shared/pipes/validate-object-id.pipes';
 
 
@@ -29,7 +29,7 @@ export class ClientService {
     return { clients, totalPages, page, step };
   }
 
-  async find(condition) {
+  async find(condition): Promise<Client[]> {
     const clients = await this.clientModel.find(condition);
     return clients;
   }
@@ -43,9 +43,8 @@ export class ClientService {
       .findByIdAndUpdate(clientId, createClientDTO, { new: true });
   }
 
-  async deleteClient(clientId: String, clientCars: Car[]): Promise<Client> {
+  async deleteClient(clientId: string, clientCars: Car[]): Promise<Client> {
     const session = await this.connection.startSession();
-    console.log(`Start transaction`);
     let deletedUser;
     await session.withTransaction(async () => {
       deletedUser = await this.clientModel.findByIdAndDelete(clientId);
@@ -53,7 +52,6 @@ export class ClientService {
         throw new NotFoundException('Client does not exist!');
       }
       const carIds = clientCars.map(car => car['_id'].toString());
-      console.log(`Deleting cars`);
       console.log(carIds);
       await this.carService.deleteMany(carIds, session);
     })
