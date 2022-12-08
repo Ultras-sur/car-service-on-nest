@@ -52,10 +52,8 @@ export class CarService {
       const orders = await this.orderService.findOrders({ car: carId });
       const ordersIds = orders.map(order => order['_id'].toString());
       return ordersIds;
-    }))
-    
-    console.log(`Deleting orders`);
-    console.log(carOrdersIds);
+    }));
+
     return this.orderService.deleteMany(deepFlatArray(carOrdersIds), session);
   }
 }

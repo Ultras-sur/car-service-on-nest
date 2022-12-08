@@ -35,7 +35,7 @@ export class OrderController {
     orderNumber ? condition['number'] = orderNumber : null;
     if (name) {
       const clients = await this.clientService.find({ name: new RegExp(name, 'gmi') });
-      const potencialClientsId = clients.map(client => client._id);
+      const potencialClientsId = clients.map(client => client['_id']);
       condition['client'] = potencialClientsId;
     }
     const currentPage = page ?? 1;
@@ -59,7 +59,7 @@ export class OrderController {
     orderNumber ? condition['number'] = orderNumber : null;
     if (name) {
       const clients = await this.clientService.find({ name: new RegExp(name, 'gmi') });
-      const potencialClientsId = clients.map(client => client._id);
+      const potencialClientsId = clients.map(client => client['_id']);
       condition['client'] = potencialClientsId;
     }
     const currentPage = page ?? 1;
@@ -134,9 +134,9 @@ export class OrderController {
     const completeCondition = complete === 'true' ? { orderStatus: 'closed' } : {};
     await this.orderService.unsetWorkPost(order, workPost, completeCondition);
     return res.redirect('/workpost/workpoststatus');
-  }  
+  }
 
-    
+
   @Post('/new')
   @UseGuards(RolesGuard)
   @Roles(Role.ADMIN, Role.MANAGER)
