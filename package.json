@@ -22,25 +22,26 @@
     "heroku-postbuild": "npm run build"
   },
   "engines": {
-      "node": ">=16.x"
-   },
+    "node": ">=16.x"
+  },
   "dependencies": {
     "@nestjs/common": "^9.0.0",
     "@nestjs/core": "^9.0.0",
     "@nestjs/mongoose": "^9.2.0",
     "@nestjs/passport": "^9.0.0",
     "@nestjs/platform-express": "^9.0.0",
+    "@nestjs/typeorm": "^9.0.1",
     "@types/bcrypt": "^5.0.0",
     "@types/connect-flash": "^0.0.37",
     "bcrypt": "^5.0.1",
     "connect-flash": "^0.1.1",
     "express-session": "^1.17.3",
-    "heroku": "^7.65.0",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.5.1",
     "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0",
-    "pug": "^3.0.2"
+    "pug": "^3.0.2",
+    "typeorm": "^0.3.11"
   },
   "devDependencies": {
     "@nestjs/cli": "^9.0.0",
@@ -72,8 +73,13 @@
       "json",
       "ts"
     ],
-    "roots": ["<rootDir>"],
-    "modulePaths": ["<rootDir>", "/src"],
+    "roots": [
+      "<rootDir>"
+    ],
+    "modulePaths": [
+      "<rootDir>",
+      "/src"
+    ],
     "testRegex": ".*\\.spec\\.ts$",
     "transform": {
       "^.+\\.(t|j)s$": "ts-jest"
