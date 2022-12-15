@@ -46,7 +46,7 @@ export class CarService {
     return deletedCar;
   }
 
-  async deleteMany(carIds: string[], session: mongoose.ClientSession | null = null) {
+  async deleteMany(carIds: string[], session: mongoose.ClientSession | null = null): Promise<any> {
     await this.carModel.deleteMany({ _id: carIds }).session(session);
     const carOrdersIds = await Promise.all(carIds.map(async (carId) => {
       const orders = await this.orderService.findOrders({ car: carId });

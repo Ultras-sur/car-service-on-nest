@@ -10,10 +10,25 @@ import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { JobModule } from './job/job.module';
 import { CarModelModule } from './car-model/car-model.module';
+import { ConfigModule } from '@nestjs/config';
+import * as Joi from '@hapi/joi';
+import { DatabaseModule } from './database.module';
+import { ClientModulePG } from './postgres/pg-client.module';
 
 
 @Module({
   imports: [MongooseModule.forRoot(process.env.DB_CONFIG, { useNewUrlParser: true }),
+    ConfigModule.forRoot({
+      validationSchema: Joi.object({
+        POSTGRES_HOST: Joi.string().required(),
+        POSTGRES_PORT: Joi.number().required(),
+        POSTGRES_USER: Joi.string().required(),
+        POSTGRES_PASSWORD: Joi.string().required(),
+        POSTGRES_DB: Joi.string().required(),
+      })
+    }),        
+    DatabaseModule,
+    ClientModulePG,
     ClientModule,
     CarModule,
     OrderModule,

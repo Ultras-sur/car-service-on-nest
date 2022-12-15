@@ -131,7 +131,7 @@ export class OrderService {
     return deletedOrder;
   }
 
-  async deleteMany(orderIds: string[], session: mongoose.ClientSession | null = null) {
+  async deleteMany(orderIds: string[], session: mongoose.ClientSession | null = null): Promise<any> {
     const unsetOrdersInWorkPost = await Promise.all(orderIds.map(async orderId => {
       const order = await this.findOrder(orderId);
       if (order.workPost !== 'queue') {

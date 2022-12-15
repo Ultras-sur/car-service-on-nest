@@ -6,8 +6,7 @@ import { WorkPost } from './workpost.entity';
 
 @Entity()
 export class Order {
-  @PrimaryColumn()
-  @Generated('uuid')
+  @PrimaryGeneratedColumn()
   public id: string;
 
   @Column({ unique: true, nullable: true })
