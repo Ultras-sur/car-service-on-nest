@@ -18,8 +18,8 @@ import { WorkPost } from 'entities/workpost.entity';
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
         type: 'postgres',
-        host: process.env.POSTGRES_HOST,
-        port: 6392,
+        host: process.env.POSTGRES_HOST1,
+        port: 5432,
         username: process.env.POSTGRES_USER,
         password: process.env.POSTGRES_PASSWORD,
         database: process.env.POSTGRES_DB,

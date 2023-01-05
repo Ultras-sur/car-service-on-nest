@@ -11,6 +11,7 @@ export class ClientServisePG {
   async findAll(): Promise<Client[]> {
     return this.clientRepository.find();
   }
+  
   async fondOne(id): Promise<Client> {
     const client = await this.clientRepository.findOne(id);
     if (!client) {

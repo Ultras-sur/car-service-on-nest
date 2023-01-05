@@ -7,9 +7,9 @@ export class Job {
   @PrimaryGeneratedColumn()
   public id: number;
 
-  @Column()
+  @Column({ unique: true })
   public name: string;
 
   @ManyToOne(() => JobCategory, (category: JobCategory) => category.jobs)
-  category: JobCategory;
+  public category: JobCategory;
 }  

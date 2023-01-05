@@ -13,20 +13,20 @@ import { CarModelModule } from './car-model/car-model.module';
 import { ConfigModule } from '@nestjs/config';
 import * as Joi from '@hapi/joi';
 import { DatabaseModule } from './database.module';
-import { ClientModulePG } from './postgres/pg-client.module';
+import { ClientModulePG } from './postgres/client/pg-client.module';
 
 
 @Module({
   imports: [MongooseModule.forRoot(process.env.DB_CONFIG, { useNewUrlParser: true }),
-    ConfigModule.forRoot({
-      validationSchema: Joi.object({
-        POSTGRES_HOST: Joi.string().required(),
-        POSTGRES_PORT: Joi.number().required(),
-        POSTGRES_USER: Joi.string().required(),
-        POSTGRES_PASSWORD: Joi.string().required(),
-        POSTGRES_DB: Joi.string().required(),
-      })
-    }),        
+  ConfigModule.forRoot({
+    validationSchema: Joi.object({
+      POSTGRES_HOST1: Joi.string().required(),
+      POSTGRES_PORT: Joi.number().required(),
+      POSTGRES_USER: Joi.string().required(),
+      POSTGRES_PASSWORD: Joi.string().required(),
+      POSTGRES_DB: Joi.string().required(),
+    })
+  }),
     DatabaseModule,
     ClientModulePG,
     ClientModule,

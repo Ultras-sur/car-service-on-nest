@@ -2,11 +2,11 @@ import { Controller, Get, Render, Post, Res, Req, UseGuards, UseFilters, Query, 
 import { ClientServisePG } from './pg-client.service';
 
 
-@Controller('pg')
+@Controller('pgclient')
 export class ClientControllerPG {
   constructor(private pgclientService: ClientServisePG) { }
 
-  @Get('create')
+  @Get('createclient')
   async pgCreate(@Res() res) {
     const newClient = await this.pgclientService.createClient()
     return res.status(HttpStatus.OK).json({

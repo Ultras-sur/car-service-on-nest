@@ -9,6 +9,6 @@ export class JobCategory {
   @Column({ unique: true })
   public name: string;
 
-  @OneToMany(() => Job, (jobs: Job) => jobs.category)
-  jobs: Job[];
+  @OneToMany(() => Job, (job: Job) => job.category)
+  public jobs: Job[];
 }  
