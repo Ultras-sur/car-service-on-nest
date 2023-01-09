@@ -7,8 +7,15 @@ export class CarModelControllerPG {
   constructor(private carModelService: CarModelServicePG) {}
 
   @Get('createcarbrand')
-  async createCarModel(@Res() res) {
+  async createCarBrand(@Res() res) {
     const newCarBrand = await this.carModelService.createCarBrand({ name: 'TOYOTA' });
     return res.status(HttpStatus.OK).json(newCarBrand);
+  }
+
+  @Get('createcarmodel')
+  async createCarModel(@Res() res) {
+    const carBrand = await this.carModelService.findCarBrand({ where: { name: 'TOYOTA' }});
+    const newCarModel = await this.carModelService.createCarModel({ name: 'ESTIMA', brand: carBrand })
+    return res.status(HttpStatus.OK).json(newCarModel);
   }
 }

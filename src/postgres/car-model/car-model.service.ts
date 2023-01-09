@@ -9,7 +9,8 @@ import { CreateCarModelDTO } from './dto/create-car-model.dto';
 
 @Injectable()
 export class CarModelServicePG {
-  constructor(@InjectRepository(CarModel) private carBrandRepository: Repository<CarBrand>, @InjectRepository(CarModel) private carModelRepository: Repository<CarModel>) { }
+  constructor(@InjectRepository(CarBrand) private carBrandRepository: Repository<CarBrand>, 
+  @InjectRepository(CarModel) private carModelRepository: Repository<CarModel>) { }
 
   async createCarBrand(carBrand: CreateCarBrandDTO): Promise<CarBrand> {
     const newCarBrand = this.carBrandRepository.create(carBrand);
@@ -21,6 +22,11 @@ export class CarModelServicePG {
     const newCarModel = this.carModelRepository.create(carModel);
     await this.carModelRepository.save(newCarModel);
     return newCarModel;
+  }
+
+  async findCarBrand(condition = {}) {
+    const findedCarBrand = await this.carBrandRepository.findOne(condition);
+    return findedCarBrand;
   }
 
 
