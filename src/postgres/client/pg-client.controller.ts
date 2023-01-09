@@ -13,4 +13,10 @@ export class ClientControllerPG {
       client: newClient,
     });
   }
+
+  @Get('getclients')
+  async getClients(@Res() res) {
+    const clients = await this.pgclientService.findAll();
+    return res.status(HttpStatus.OK).json({ clients });
+  }
 }
