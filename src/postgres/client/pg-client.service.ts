@@ -1,4 +1,4 @@
-import { Injectable, Inject, HttpException, HttpStatus } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { Client } from 'entities/client.entity';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -6,22 +6,23 @@ import { CreateClientDTO } from './dto/createClient.dto';
 
 @Injectable()
 export class ClientServisePG {
-  constructor(@InjectRepository(Client) private clientRepository: Repository<Client>) { }
+  constructor(
+    @InjectRepository(Client) private clientRepository: Repository<Client>,
+  ) {}
 
-  async findAll(): Promise<Client[]> {
-    return this.clientRepository.find();
+  async findAll(condition = {}): Promise<Client[]> {
+    return this.clientRepository.findBy(condition);
   }
-  
-  async fondOne(id): Promise<Client> {
-    const client = await this.clientRepository.findOne(id);
+  async findClient(id): Promise<Client> {
+    const client = await this.clientRepository.findOne({ where: { id } });
     if (!client) {
       throw new HttpException('Client not found', HttpStatus.NOT_FOUND);
     }
     return client;
   }
 
-  async createClient() {
-    const newClient = this.clientRepository.create({ name: 'Bob', licensNumber: 587458745 });
+  async createClient(clientData: CreateClientDTO): Promise<Client> {
+    const newClient = this.clientRepository.create(clientData);
     await this.clientRepository.save(newClient);
     return newClient;
   }

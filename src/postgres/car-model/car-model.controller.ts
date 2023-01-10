@@ -1,4 +1,15 @@
-import { Controller, Get, Render, Post, Res, Req, UseGuards, UseFilters, Query, HttpStatus } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Render,
+  Post,
+  Res,
+  Req,
+  UseGuards,
+  UseFilters,
+  Query,
+  HttpStatus,
+} from '@nestjs/common';
 import { CarModelServicePG } from '../car-model/car-model.service';
 
 
@@ -14,7 +25,7 @@ export class CarModelControllerPG {
 
   @Get('createcarmodel')
   async createCarModel(@Res() res) {
-    const carBrand = await this.carModelService.findCarBrand({ where: { name: 'TOYOTA' }});
+    const carBrand = await this.carModelService.findCarBrand({ name: 'TOYOTA' });
     const newCarModel = await this.carModelService.createCarModel({ name: 'ESTIMA', brand: carBrand })
     return res.status(HttpStatus.OK).json(newCarModel);
   }

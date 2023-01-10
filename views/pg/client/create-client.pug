@@ -1,0 +1,16 @@
+extends ../../layouts/layout.pug
+
+block content
+    h1 New Client
+    div
+      form(method="POST" action="/pgclient/create")
+        p2(style="margin-left: 10px") Name:
+        div
+          input(type="text" name="name" required)
+        p2(style="margin-left: 10px") Licens number:
+        div
+          input(type="text" name="licensNumber" required)
+
+        button(style="margin-left: 10px" type="submit") Создать
+
+

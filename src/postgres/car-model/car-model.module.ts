@@ -8,7 +8,7 @@ import { CarModelControllerPG } from './car-model.controller';
 @Module({
   imports: [TypeOrmModule.forFeature([CarBrand, CarModel])],
   providers: [CarModelServicePG],
-  controllers: [CarModelControllerPG]
+  controllers: [CarModelControllerPG],
+  exports: [CarModelServicePG],
 })
-
 export class CarModelModulePG {}

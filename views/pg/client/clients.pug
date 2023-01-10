@@ -1,0 +1,28 @@
+extends ../../layouts/layout.pug
+include ../../mixins/pages
+
+block content
+    h1 Clients
+    div
+      table#orderstatuses-table(border='2'  width='20%' cellpadding='4' cellspacing='1')
+        tbody
+          tr
+            td
+              strong №
+            td
+              strong Name
+            td
+              strong Licens number
+        if clients
+          each client, index in clients
+            tr
+              td #{step * (page - 1) + (index + 1)}
+              td 
+                a(href=`/pgclient/${client.id}`) #{client.name}
+              td #{client.licensNumber}
+    div
+      if clients
+        +pages(page, totalPages, '/pgclient/getclients')
+    div
+      button 
+        a(href=`/pgclient/create`) Добавить клиента

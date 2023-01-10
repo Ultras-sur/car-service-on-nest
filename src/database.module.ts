@@ -8,7 +8,6 @@ import { CarBrand } from 'entities/car-brand.entity';
 import { CarModel } from 'entities/car-model.entity';
 import { JobCategory } from 'entities/job-category.entity';
 import { Job } from 'entities/job.entity';
-import { User } from 'entities/user.entity';
 import { WorkPost } from 'entities/workpost.entity';
 
 @Module({
@@ -23,10 +22,19 @@ import { WorkPost } from 'entities/workpost.entity';
         username: process.env.POSTGRES_USER,
         password: process.env.POSTGRES_PASSWORD,
         database: process.env.POSTGRES_DB,
-        entities: [Client, Car, Order, CarBrand, CarModel, JobCategory, Job, WorkPost],
+        entities: [
+          Client,
+          Car,
+          Order,
+          CarBrand,
+          CarModel,
+          JobCategory,
+          Job,
+          WorkPost,
+        ],
         synchronize: true,
-      })
+      }),
     }),
   ],
 })
-export class DatabaseModule { }
+export class DatabaseModule {}

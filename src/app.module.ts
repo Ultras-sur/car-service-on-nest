@@ -15,20 +15,22 @@ import * as Joi from '@hapi/joi';
 import { DatabaseModule } from './database.module';
 import { ClientModulePG } from './postgres/client/pg-client.module';
 import { CarModelModulePG } from './postgres/car-model/car-model.module';
+import { CarModulePG } from './postgres/car/car.module';
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 require('dotenv').config();
 
-
 @Module({
-  imports: [MongooseModule.forRoot(process.env.DB_CONFIG, { useNewUrlParser: true }),
-  ConfigModule.forRoot({
-    validationSchema: Joi.object({
-      POSTGRES_HOST: Joi.string().required(),
-      POSTGRES_PORT: Joi.number().required(),
-      POSTGRES_USER: Joi.string().required(),
-      POSTGRES_PASSWORD: Joi.string().required(),
-      POSTGRES_DB: Joi.string().required(),
-    })
-  }),
+  imports: [
+    MongooseModule.forRoot(process.env.DB_CONFIG, { useNewUrlParser: true }),
+    ConfigModule.forRoot({
+      validationSchema: Joi.object({
+        POSTGRES_HOST: Joi.string().required(),
+        POSTGRES_PORT: Joi.number().required(),
+        POSTGRES_USER: Joi.string().required(),
+        POSTGRES_PASSWORD: Joi.string().required(),
+        POSTGRES_DB: Joi.string().required(),
+      }),
+    }),
     DatabaseModule,
     ClientModulePG,
     ClientModule,
@@ -39,10 +41,10 @@ require('dotenv').config();
     AuthModule,
     JobModule,
     CarModelModule,
-    CarModelModulePG],
+    CarModelModulePG,
+    CarModulePG,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule { }
-
-
+export class AppModule {}

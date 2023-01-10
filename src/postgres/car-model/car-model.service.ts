@@ -1,4 +1,4 @@
-import { Injectable, Inject, HttpException, HttpStatus } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { CarModel } from 'entities/car-model.entity';
 import { CarBrand } from 'entities/car-brand.entity';
@@ -6,11 +6,14 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { CreateCarBrandDTO } from './dto/create-car-brand.dto';
 import { CreateCarModelDTO } from './dto/create-car-model.dto';
 
-
 @Injectable()
 export class CarModelServicePG {
-  constructor(@InjectRepository(CarBrand) private carBrandRepository: Repository<CarBrand>, 
-  @InjectRepository(CarModel) private carModelRepository: Repository<CarModel>) { }
+  constructor(
+    @InjectRepository(CarBrand)
+    private carBrandRepository: Repository<CarBrand>,
+    @InjectRepository(CarModel)
+    private carModelRepository: Repository<CarModel>,
+  ) {}
 
   async createCarBrand(carBrand: CreateCarBrandDTO): Promise<CarBrand> {
     const newCarBrand = this.carBrandRepository.create(carBrand);
@@ -25,9 +28,12 @@ export class CarModelServicePG {
   }
 
   async findCarBrand(condition = {}) {
-    const findedCarBrand = await this.carBrandRepository.findOne(condition);
+    const findedCarBrand = await this.carBrandRepository.findOneBy(condition);
     return findedCarBrand;
   }
 
-
+  async findCarModel(condition = {}) {
+    const findedCarModel = await this.carModelRepository.findOneBy(condition);
+    return findedCarModel;
+  }
 }

@@ -1,4 +1,4 @@
-import { CarModel } from "entities/car-model.entity";
+import { CarModel } from 'entities/car-model.entity';
 
 export class CreateCarBrandDTO {
   readonly name: string;
