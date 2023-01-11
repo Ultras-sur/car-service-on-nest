@@ -1,0 +1,26 @@
+extends ../../layouts/layout.pug
+
+block content
+    div
+    form(method="POST" action="/pgcar/createcar" name='carForm')
+      p2(style="margin-left: 10px") Brand:
+      div
+        select#brand-selection(autofocus='' required='' size='10' name='brand')
+          if carBrands
+          option
+            each brand in carBrands
+              option(value=`${brand.name}`) #{brand.name}
+      p2(style="margin-left: 10px") Model:
+      div
+        select#model-selection(autofocus='' required='' name='model')
+          option
+      p2(style="margin-left: 10px") Release year:
+      div
+        input(type="number" name="releaseYear" required)
+      p2(style="margin-left: 10px") VIN:
+      div
+        input(type="text" name="vin" required)
+      div
+        input(type="hidden" name="owner" value=`${owner.id}`)
+      button(style="margin-left: 10px" type="submit") Добавить
+    script(src='/models.js')

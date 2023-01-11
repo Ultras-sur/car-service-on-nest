@@ -1,7 +1,8 @@
-import { Controller, Get, Render, Post, Res, Req, UseGuards, UseFilters, Query, HttpStatus, Body } from '@nestjs/common';
+import { Controller, Get, Render, Post, Res, Req, UseGuards, UseFilters, Query, HttpStatus, Body, Param } from '@nestjs/common';
 import { ClientServisePG } from '../client/pg-client.service';
 import { CarModelServicePG } from '../car-model/car-model.service';
 import { CarServicePG } from './car.service';
+import { Role } from 'schemas/user.schema';
 
 
 @Controller('pgcar')
@@ -10,12 +11,29 @@ export class CarControllerPG {
     private carServicePG: CarServicePG,
     private clientServicePG: ClientServisePG,
     private carModelServicePG: CarModelServicePG,
-  ) {}
+  ) { }
 
   @Get('cars')
   async getCars(@Res() res) {
     const cars = await this.carServicePG.findCars();
     return res.status(HttpStatus.OK).json({ cars });
+  }
+
+  @Get(':id')
+  @Render('pg/car/car')
+  async getCar(@Param('id') carId) {
+    const car = await this.carServicePG.findCar(carId);
+    const owner = await this.clientServicePG.findClient(car.owner);
+    return { car, owner };
+  }
+
+  @Get('createcar/:ownerId')
+  @Render('pg/car/create-car')
+  async getCreteCarForm(@Param('ownerId') ownerId, @Req() req) {
+    const owner = { id: ownerId };
+    const carBrands = await this.carModelServicePG.findCarBrand();
+    const isAdmin = req.user.roles.includes(Role.ADMIN);
+    return { owner, carBrands, isAdmin };
   }
 
   @Post('createcar')
@@ -30,6 +48,7 @@ export class CarControllerPG {
       releaseYear: carData.releaseYear,
       vin: carData.vin,
     });
-    return res.status(HttpStatus.OK).json({ newCar });
+    return res.redirect(`${newCar.id}`)
+    //return res.status(HttpStatus.OK).json({ newCar });
   }
 }

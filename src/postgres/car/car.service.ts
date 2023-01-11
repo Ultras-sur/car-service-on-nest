@@ -6,11 +6,16 @@ import { CreateCarDTO } from './dto/create-car.dto';
 
 @Injectable()
 export class CarServicePG {
-  constructor(@InjectRepository(Car) private carRepository: Repository<Car>) {}
+  constructor(@InjectRepository(Car) private carRepository: Repository<Car>) { }
 
   async findCars(condition = {}): Promise<Car[]> {
     const cars = await this.carRepository.findBy(condition);
     return cars;
+  }
+
+  async findCar(carId): Promise<Car> {
+    const car = await this.carRepository.findOne({ where: { id: carId } });
+    return car;
   }
 
   async createCar(carData: CreateCarDTO): Promise<Car> {

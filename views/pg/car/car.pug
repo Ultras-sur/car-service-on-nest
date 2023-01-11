@@ -1,0 +1,46 @@
+extends ../../layouts/layout.pug
+
+block content
+    div
+     table#car-table(border='2'  width='20%' cellpadding='4' cellspacing='1')
+      tbody
+        tr
+          td(colspan='6')
+            strong Car: 
+            p3 #{car.brand} #{car.model}
+        tr
+          td(colspan='6')
+            strong VIN: 
+            p3 #{car.vin}
+        tr
+          td(colspan='6')
+            strong Owner: 
+            p3
+              a(href=`/pgclient/${owner.id}`) #{owner.name} 
+        tr
+          td(colspan='6')
+            strong Orders:
+        tr
+          td №
+          td
+            srong Date
+          td
+            srong Number 
+          td   
+            srong Status
+
+      if orders 
+        each order, index in orders
+          tr
+              td #{index + 1}
+              td #{new Date(order.createdAt).toLocaleString('en-US', {day: 'numeric', month: 'numeric', year: 'numeric'})}
+              td 
+                a(href=`/order/${order.id}`) #{order.number}
+              if order.orderStatus === 'opened'
+                td(style="background-color: #d4fdc9") #{order.orderStatus}
+              else
+                td(style="background-color: #ffbdbd") #{order.orderStatus}
+
+    div
+      button 
+        a(href=`/pgorder/create/${owner.id}/${car.id}`) Создать заказ
