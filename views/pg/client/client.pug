@@ -26,9 +26,9 @@ block content
           tr
             td #{index + 1}
             td 
-              a(href=`/pgcar/${car._id}`) #{car.brand} #{car.model}
+              a(href=`/pgcar/${car.id}`) #{car.brand} #{car.model}
             td #{car.releaseYear}
             td #{car.vin}
   div
       button 
-        a(href=`/pgcar/create/${client._id}`) Добавить авто  
+        a(href=`/pgcar/create/${client.id}`) Добавить авто  
