@@ -43,7 +43,7 @@ export class CarModelServicePG {
   }
 
   async findCarModels(condition = {}) {
-    const findedCarModel = await this.carModelRepository.find(condition);
-    return findedCarModel;
+    const findedCarModels = await this.carModelRepository.find(condition);
+    return findedCarModels;
   }
 }
