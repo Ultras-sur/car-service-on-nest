@@ -19,10 +19,10 @@ export class CarModelControllerPG {
 
   @Get('carbrandsandmodels')
   async getCarbrandsForFetch(@Res() res) {
-    const carBrands = await this.carModelServicePG.getAllCarBrands();
+    const carBrands = await this.carModelServicePG.findCarBrands();
     const carBrandsAndModels = {};
     await Promise.all(carBrands.map(async (brand) => {
-      const findedModels = await this.carModelServicePG.findCarModels({ where: { brand } });
+      const findedModels = await this.carModelServicePG.findCarModels({ where: { brand: brand.id } });
       const modelNames = findedModels.map(model => model.name);
       carBrandsAndModels[brand.name] = modelNames;
     }))

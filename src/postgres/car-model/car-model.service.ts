@@ -32,8 +32,8 @@ export class CarModelServicePG {
     return findedCarBrand;
   }
 
-  async getAllCarBrands(): Promise<CarBrand[]> {
-    const findedCarBrand = await this.carBrandRepository.find();
+  async findCarBrands(condition = {}): Promise<CarBrand[]> {
+    const findedCarBrand = await this.carBrandRepository.find(condition);
     return findedCarBrand;
   }
 
