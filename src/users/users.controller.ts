@@ -66,7 +66,7 @@ export class UsersController {
 
   @Delete('admin/delete/:userId')
   @UseGuards(RolesGuard)
-  @Roles(Role.ADMIN)
+  @Roles(Role.SUPERADMIN)
   async delete(@Param('userId') userId, @Res() res) {
     const deletedUser = await this.usersService.deleteUser(userId);
     return res.status(HttpStatus.OK).json({

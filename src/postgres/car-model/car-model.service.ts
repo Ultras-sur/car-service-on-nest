@@ -13,7 +13,7 @@ export class CarModelServicePG {
     private carBrandRepository: Repository<CarBrand>,
     @InjectRepository(CarModel)
     private carModelRepository: Repository<CarModel>,
-  ) {}
+  ) { }
 
   async createCarBrand(carBrand: CreateCarBrandDTO): Promise<CarBrand> {
     const newCarBrand = this.carBrandRepository.create(carBrand);
@@ -32,8 +32,18 @@ export class CarModelServicePG {
     return findedCarBrand;
   }
 
+  async getAllCarBrands(): Promise<CarBrand[]> {
+    const findedCarBrand = await this.carBrandRepository.find();
+    return findedCarBrand;
+  }
+
   async findCarModel(condition = {}) {
     const findedCarModel = await this.carModelRepository.findOneBy(condition);
+    return findedCarModel;
+  }
+
+  async findCarModels(condition = {}) {
+    const findedCarModel = await this.carModelRepository.find(condition);
     return findedCarModel;
   }
 }

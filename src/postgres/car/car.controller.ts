@@ -14,7 +14,7 @@ export class CarControllerPG {
   ) { }
 
   @Get('cars')
-  async getCars(@Res() res) {
+  async getCars(@Res() res, ) {
     const cars = await this.carServicePG.findCars();
     return res.status(HttpStatus.OK).json({ cars });
   }
@@ -31,7 +31,7 @@ export class CarControllerPG {
   @Render('pg/car/create-car')
   async getCreteCarForm(@Param('ownerId') ownerId, @Req() req) {
     const owner = { id: ownerId };
-    const carBrands = await this.carModelServicePG.findCarBrand();
+    const carBrands = await this.carModelServicePG.getAllCarBrands();
     const isAdmin = req.user.roles.includes(Role.ADMIN);
     return { owner, carBrands, isAdmin };
   }

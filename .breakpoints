@@ -15,6 +15,14 @@
         "version": 6995,
         "index": 249
       }
+    ],
+    "src/car/car.controller.ts": [
+      {
+        "id": "0287ff3f-f3a0-4626-8e23-f21bd692fb64",
+        "line": 16,
+        "version": 3678,
+        "index": 909
+      }
     ]
   }
 }
