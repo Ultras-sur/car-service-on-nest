@@ -1,9 +1,13 @@
 //Functions
 async function getCarBrandsAndModels() {
-  const responce = await fetch('/pgcarmodel/carbrandsandmodels');
-  const result = await responce.json();
-  models = result.carModelsAndBrands;
-  console.log(models)
+  try {
+    const responce = await fetch('/pgcarmodel/carbrandsandmodels');
+    const result = await responce.json();
+    models = result.carModelsAndBrands;
+    console.log(models)
+  } catch (e) {
+    console.log(e);
+  }
 }
 
 let models = {}
