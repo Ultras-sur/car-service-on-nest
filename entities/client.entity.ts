@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, OneToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, OneToOne, OneToMany, PrimaryGeneratedColumn, JoinTable } from 'typeorm';
 import { Car } from './car.entity';
 
 @Entity()
@@ -14,5 +14,6 @@ export class Client {
   public licensNumber: number;
 
   @OneToMany(() => Car, (car: Car) => car.owner)
+  @JoinTable()
   public cars: Car[];
 }  

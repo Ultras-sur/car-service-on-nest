@@ -9,12 +9,12 @@ export class CarServicePG {
   constructor(@InjectRepository(Car) private carRepository: Repository<Car>) { }
 
   async findCars(condition = {}): Promise<Car[]> {
-    const cars = await this.carRepository.findBy(condition);
+    const cars = await this.carRepository.find(condition);
     return cars;
   }
 
-  async findCar(carId): Promise<Car> {
-    const car = await this.carRepository.findOne({ where: { id: carId } });
+  async findCar(condition = {}): Promise<Car> {
+    const car = await this.carRepository.findOne(condition);
     return car;
   }
 

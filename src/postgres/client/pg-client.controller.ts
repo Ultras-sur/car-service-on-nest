@@ -26,7 +26,6 @@ export class ClientControllerPG {
   async getClients(@Res() res, @Req() req) {
     const clients = await this.pgclientService.findAll();
     const isAdmin = req.user.roles.includes(Role.ADMIN);
-    console.log(clients);
     return { clients, totalPages: 1, page: 1, step: 20, isAdmin };
   }
 

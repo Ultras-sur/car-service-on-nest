@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, OneToOne, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, OneToOne, ManyToOne, PrimaryGeneratedColumn, JoinTable } from 'typeorm';
 import { CarBrand } from './car-brand.entity';
 import { CarModel } from './car-model.entity';
 import { Client } from './client.entity';
@@ -10,9 +10,11 @@ export class Car {
   public id: number;
 
   @ManyToOne(() => CarBrand)
+  @JoinTable()
   public brand: CarBrand;
 
   @ManyToOne(() => CarModel)
+  @JoinTable()
   public model: CarModel;
 
   @Column()
@@ -22,5 +24,6 @@ export class Car {
   public vin: string;
 
   @ManyToOne(() => Client, (owner: Client) => owner.cars)
+  @JoinTable()
   public owner: Client;
 }

@@ -5,14 +5,14 @@ block content
     form(method="POST" action="/pgcar/createcar" name='carForm')
       p2(style="margin-left: 10px") Brand:
       div
-        select#brand-selection(autofocus='' required='' size='10' name='brand')
+        select#brand-selection(autofocus='' required='' size='10' name='brandId')
           if carBrands
           option
             each brand in carBrands
-              option(value=`${brand.name}`) #{brand.name}
+              option(value=`${brand.id}`) #{brand.name}
       p2(style="margin-left: 10px") Model:
       div
-        select#model-selection(autofocus='' required='' name='model')
+        select#model-selection(autofocus='' required='' name='modelId')
           option
       p2(style="margin-left: 10px") Release year:
       div

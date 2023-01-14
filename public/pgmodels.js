@@ -23,11 +23,12 @@ function changeOption() {
   const selectedIndex = brandSelection.options.selectedIndex;
   const modelSelection = document.getElementById("model-selection");
   removeOptions(modelSelection);
-  const selectedBrand = brandSelection.options[selectedIndex].value;
+  const selectedBrand = brandSelection.options[selectedIndex].text;
   modelSelection.add(new Option());
-  models[selectedBrand].sort().forEach(model => {
-    const text = model.toUpperCase();
-    const value = model;
+  models[selectedBrand].forEach(model => {
+    const [modelId, modelName] = model;
+    const text = modelName.toUpperCase();
+    const value = modelId;
     const newOption = new Option(text, value);
     newOption.name = value;
     modelSelection.add(newOption);

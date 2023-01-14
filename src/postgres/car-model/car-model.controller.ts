@@ -21,11 +21,16 @@ export class CarModelControllerPG {
   async getCarbrandsForFetch(@Res() res) {
     const carBrands = await this.carModelServicePG.findCarBrands();
     const carModelsAndBrands = {};
-    await Promise.all(carBrands.map(async brand => {
-      const findedModels = await this.carModelServicePG.findCarModels({ where: { brand: brand } });
-      const modelNames = findedModels.map(model => model.name);
-      carModelsAndBrands[brand.name] = modelNames;
-    }))
+    await Promise.all(
+      carBrands.map(async (brand) => {
+        const findedModels = await this.carModelServicePG.findCarModels({
+          where: { brand: brand },
+        });
+        //const modelBrands = findedModels.map(model => model.name);
+        const models = findedModels.map(model => [model.id, model.name]);
+        carModelsAndBrands[brand.name] = models;
+      }),
+    );
     return res.status(HttpStatus.OK).json({ carModelsAndBrands });
   }
 

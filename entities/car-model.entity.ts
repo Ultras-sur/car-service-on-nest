@@ -11,4 +11,4 @@ export class CarModel {
 
   @ManyToOne(() => CarBrand, (carBrand: CarBrand) => carBrand.models)
   public brand: CarBrand;
-}  
+}
