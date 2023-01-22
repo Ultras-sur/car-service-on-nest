@@ -7,7 +7,7 @@ block content
         tr
           td(colspan='6')
             strong Car: 
-            p3 #{car.brand} #{car.model}
+            p3 #{car.brand.name} #{car.model.name}
         tr
           td(colspan='6')
             strong VIN: 
@@ -16,7 +16,7 @@ block content
           td(colspan='6')
             strong Owner: 
             p3
-              a(href=`/pgclient/${owner.id}`) #{owner.name} 
+              a(href=`/pgclient/${car.owner.id}`) #{car.owner.name} 
         tr
           td(colspan='6')
             strong Orders:
@@ -43,4 +43,4 @@ block content
 
     div
       button 
-        a(href=`/pgorder/createcar/${owner.id}/${car.id}`) Создать заказ
+        a(href=`/pgorder/createcar/${car.owner.id}/${car.id}`) Создать заказ

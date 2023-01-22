@@ -12,19 +12,21 @@ import {
 } from '@nestjs/common';
 import { CarModelServicePG } from '../car-model/car-model.service';
 
-
 @Controller('pgcarmodel')
 export class CarModelControllerPG {
   constructor(private carModelServicePG: CarModelServicePG) { }
 
   @Get('carbrandsandmodels')
   async getCarbrandsForFetch(@Res() res) {
-    const carBrands = await this.carModelServicePG.findCarBrands();
+    const carBrands = await this.carModelServicePG.findCarBrands({
+      order: { name: 'ASC' },
+    });
     const carModelsAndBrands = {};
     await Promise.all(
       carBrands.map(async (brand) => {
         const findedModels = await this.carModelServicePG.findCarModels({
           where: { brand: brand },
+          order: { name: 'ASC' },
         });
         //const modelBrands = findedModels.map(model => model.name);
         const models = findedModels.map(model => [model.id, model.name]);

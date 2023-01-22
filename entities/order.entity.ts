@@ -21,11 +21,11 @@ export class Order {
   @OneToMany(() => WorkPost, (workPost: WorkPost) => workPost.order)
   public workPost: WorkPost;
 
-  @ManyToOne(() => Car)
+  @ManyToOne(() => Car, (car: Car) => car.orders)
   public car: Car;
 
   @ManyToOne(() => Client)
-  public client: Client
+  public client: Client;
 
   @Column({ default: 'opened', nullable: true })
   public orderStatus: string;

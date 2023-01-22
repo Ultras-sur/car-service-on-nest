@@ -16,15 +16,18 @@ import {
 import { ClientServisePG } from './pg-client.service';
 import { Role } from 'schemas/user.schema';
 import { CreateClientDTO } from './dto/createClient.dto';
+import { CarServicePG } from '../car/car.service';
 
 @Controller('pgclient')
 export class ClientControllerPG {
-  constructor(private pgclientService: ClientServisePG) { }
+  constructor(
+    private clientServisePG: ClientServisePG,
+    private carServicePG: CarServicePG) { }
 
   @Get('getclients')
   @Render('pg/client/clients')
   async getClients(@Res() res, @Req() req) {
-    const clients = await this.pgclientService.findAll();
+    const clients = await this.clientServisePG.findAll();
     const isAdmin = req.user.roles.includes(Role.ADMIN);
     return { clients, totalPages: 1, page: 1, step: 20, isAdmin };
   }
@@ -39,14 +42,26 @@ export class ClientControllerPG {
   @Get(':id')
   @Render('pg/client/client')
   async getClient(@Param('id') id, @Req() req) {
-    const client = await this.pgclientService.findClient(id);
+    const client = await this.clientServisePG.findClient(id);
+    const cars = await this.carServicePG.findCars({
+      select: {
+        id: true,
+        releaseYear: true,
+        vin: true,
+        brand: true,
+        model: true,
+      },
+      relations: { brand: true, model: true },
+      where: { owner: client },
+    });
+    console.log(cars);
     const isAdmin = req.user.roles.includes(Role.ADMIN);
-    return { client, isAdmin };
+    return { client, isAdmin, cars };
   }
 
   @Post('create')
   async createClient(@Res() res, @Body() clientData: CreateClientDTO) {
-    const newClient = await this.pgclientService.createClient(clientData);
+    const newClient = await this.clientServisePG.createClient(clientData);
     if (!newClient) throw new NotFoundException('New client is not created!');
     return res.redirect('getclients');
   }
