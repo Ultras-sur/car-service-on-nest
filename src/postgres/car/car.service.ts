@@ -16,7 +16,7 @@ export class CarServicePG {
     return cars;
   }
 
-  async findCarsPaginate(pageOptions: PageOptionsDTO) {
+  async findCarsPaginate(pageOptions: PageOptionsDTO): Promise<PageDTO<Car>> {
     const carsAndCount = await this.carRepository.findAndCount({
       select: {
         id: true,
@@ -39,7 +39,6 @@ export class CarServicePG {
     });
     const [cars, carsCount] = carsAndCount;
     const pageMeta = new PageMetaDTO(carsCount, pageOptions);
-    console.log(pageMeta);
     return new PageDTO(cars, pageMeta);
   }
 

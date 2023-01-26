@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { Order } from 'entities/order.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Like, Repository } from 'typeorm';
+import { CreateOrderDTO } from './dto/create-order.dto';
 
 @Injectable()
 export class OrderServicePG {
@@ -18,7 +19,7 @@ export class OrderServicePG {
         orderStatus: true,
       },
       relations: {
-        car: true,
+        car: { brand: true, model: true },
         client: true,
       },
       where: {
@@ -35,5 +36,16 @@ export class OrderServicePG {
 
     const [orders, ordersCount] = ordersAndCount;
     return orders;
+  }
+
+  async createOrder(createOrderDTO: CreateOrderDTO) {
+    const orderNumber =
+      `${Math.floor(Math.random() * 10)}` + `${createOrderDTO.car.brand.toString()}`;
+    const newOrder = this.orderRepository.create({
+      ...createOrderDTO,
+      number: orderNumber,
+    });
+    await this.orderRepository.save(newOrder);
+    return newOrder;
   }
 }

@@ -1,10 +1,11 @@
 import { Car } from 'entities/car.entity';
 import { Client } from 'entities/client.entity';
-import { Job } from 'entities/job.entity';
+import { Job } from 'entities/interfaces/job.interface';
+import { WorkPost } from 'entities/workpost.entity';
 
 export class CreateOrderDTO {
-  readonly owner: Client;
+  readonly client: Client;
   readonly car: Car;
-  readonly workPost: number;
+  readonly workPost: WorkPost;
   readonly jobs: Job[];
 }

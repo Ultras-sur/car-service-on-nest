@@ -36,7 +36,6 @@ export class CarControllerPG {
   @Render('pg/car/cars')
   async getCars(@Res() res, @Req() req, @Query() query: PageOptionsDTO) {
     const pageOptions = new PageOptionsDTO(query);
-    console.log(pageOptions);
     const cars = await this.carServicePG.findCarsPaginate(pageOptions);
     const carBrands = await this.carModelServicePG.findCarBrands();
     const isAdmin = req.user.roles.includes(Role.ADMIN);
@@ -44,7 +43,6 @@ export class CarControllerPG {
       /\/pgcar\/cars\??(page=\d+\&?)?/im,
       '',
     )}`;
-    console.log(cars);
     return { cars, isAdmin, carBrands, serchString };
   }
 
@@ -57,9 +55,11 @@ export class CarControllerPG {
       .leftJoinAndSelect('car.owner', 'owner')
       .leftJoinAndSelect('car.model', 'model')
       .leftJoinAndSelect('car.brand', 'brand')
+      .leftJoinAndSelect('car.orders', 'orders')
       .where('car.id = :id', { id: carId })
       .getOne();
     const isAdmin = req.user.roles.includes(Role.ADMIN);
+    console.log(car);
     return { car, isAdmin };
   }
 

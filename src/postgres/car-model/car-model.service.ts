@@ -33,7 +33,9 @@ export class CarModelServicePG {
   }
 
   async findCarBrandById(id) {
-    const findedCarBrand = await this.carBrandRepository.findOne({ where: { id } });
+    const findedCarBrand = await this.carBrandRepository.findOne({
+      where: { id },
+    });
     return findedCarBrand;
   }
 
@@ -51,7 +53,9 @@ export class CarModelServicePG {
   }
 
   async findCarModelById(id) {
-    const findedCarModel = await this.carModelRepository.findOne({ where: { id } });
+    const findedCarModel = await this.carModelRepository.findOne({
+      where: { id },
+    });
     return findedCarModel;
   }
 

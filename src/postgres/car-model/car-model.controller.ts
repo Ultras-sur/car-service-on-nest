@@ -9,12 +9,26 @@ import {
   UseFilters,
   Query,
   HttpStatus,
+  Body,
 } from '@nestjs/common';
+import { Role } from 'schemas/user.schema';
 import { CarModelServicePG } from '../car-model/car-model.service';
+import { CreateCarBrandDTO } from './dto/create-car-brand.dto';
+import { CreateCarModelDTO } from './dto/create-car-model.dto';
 
 @Controller('pgcarmodel')
 export class CarModelControllerPG {
   constructor(private carModelServicePG: CarModelServicePG) { }
+
+  @Get('/')
+  @Render('pg/admin/cars-directory')
+  async getCarBrands(@Res() res, @Req() req) {
+    const carBrandsAndModels = await this.carModelServicePG.findCarBrands({
+      relations: { models: true },
+    });
+    const isAdmin = req.user.roles.includes(Role.ADMIN);
+    return { carBrandsAndModels, isAdmin };
+  }
 
   @Get('carbrandsandmodels')
   async getCarbrandsForFetch(@Res() res) {
@@ -29,23 +43,29 @@ export class CarModelControllerPG {
           order: { name: 'ASC' },
         });
         //const modelBrands = findedModels.map(model => model.name);
-        const models = findedModels.map(model => [model.id, model.name]);
+        const models = findedModels.map((model) => [model.id, model.name]);
         carModelsAndBrands[brand.name] = models;
       }),
     );
     return res.status(HttpStatus.OK).json({ carModelsAndBrands });
   }
 
-  @Get('createcarbrand')
-  async createCarBrand(@Res() res) {
-    const newCarBrand = await this.carModelServicePG.createCarBrand({ name: 'TOYOTA' });
-    return res.status(HttpStatus.OK).json(newCarBrand);
+  @Post('newbrand')
+  async createCarBrand(
+    @Body() createCarBrandDTO: CreateCarBrandDTO,
+    @Res() res,
+  ) {
+    const newCarBrand = await this.carModelServicePG.createCarBrand(
+      createCarBrandDTO,
+    );
+    return res.redirect('/pgcarmodel');
   }
 
-  @Get('createcarmodel')
-  async createCarModel(@Res() res) {
-    const carBrand = await this.carModelServicePG.findCarBrand({ name: 'TOYOTA' });
-    const newCarModel = await this.carModelServicePG.createCarModel({ name: 'ESTIMA', brand: carBrand })
-    return res.status(HttpStatus.OK).json(newCarModel);
+  @Post('newmodel')
+  async createCarModel(@Body() createCarModel: CreateCarModelDTO, @Res() res) {
+    const newCarModel = await this.carModelServicePG.createCarModel(
+      createCarModel,
+    );
+    return res.redirect('/pgcarmodel');
   }
 }
