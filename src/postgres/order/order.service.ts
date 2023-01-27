@@ -3,6 +3,7 @@ import { Order } from 'entities/order.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Like, Repository } from 'typeorm';
 import { CreateOrderDTO } from './dto/create-order.dto';
+import { createOrderNumber } from 'helpers/number-generator';
 
 @Injectable()
 export class OrderServicePG {
@@ -10,7 +11,13 @@ export class OrderServicePG {
     @InjectRepository(Order) private orderRepository: Repository<Order>,
   ) {}
 
+  async findOrder(condition = {}): Promise<Order> {
+    const findedOrder = await this.orderRepository.findOne(condition);
+    return findedOrder;
+  }
+
   async findOrdersPaginate(carPageOptions) {
+    console.log(carPageOptions);
     const ordersAndCount = await this.orderRepository.findAndCount({
       select: {
         id: true,
@@ -24,12 +31,10 @@ export class OrderServicePG {
       },
       where: {
         client: {
-          name: carPageOptions.client
-            ? Like(`%${carPageOptions.client}%`)
-            : null,
+          name: carPageOptions.name ? Like(`%${carPageOptions.name}%`) : null,
         },
-        number: carPageOptions.number
-          ? Like(`%${carPageOptions.number}%`)
+        number: carPageOptions.orderNumber
+          ? Like(`%${carPageOptions.orderNumber}%`)
           : null,
       },
     });
@@ -39,8 +44,15 @@ export class OrderServicePG {
   }
 
   async createOrder(createOrderDTO: CreateOrderDTO) {
-    const orderNumber =
-      `${Math.floor(Math.random() * 10)}` + `${createOrderDTO.car.brand.toString()}`;
+    const orderNumber = createOrderNumber(
+      {
+        _id: createOrderDTO.car.id,
+        brand: createOrderDTO.car.brand.name,
+        model: createOrderDTO.car.model.name,
+      },
+      { name: createOrderDTO.client.name },
+    );
+
     const newOrder = this.orderRepository.create({
       ...createOrderDTO,
       number: orderNumber,

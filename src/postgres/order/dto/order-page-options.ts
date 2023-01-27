@@ -3,6 +3,6 @@ import { Client } from 'entities/client.entity';
 import { WorkPost } from 'entities/workpost.entity';
 
 export class OrderPageOptionsDTO {
-  readonly client?: Client;
-  readonly number?: string;
+  readonly name?: Client;
+  readonly orderNumber?: string;
 }

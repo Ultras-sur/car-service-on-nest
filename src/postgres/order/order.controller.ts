@@ -28,6 +28,12 @@ export class OrderControllerPG {
     return { orders, isAdmin, step: 10, page: 1, totalPages: 1 };
   }
 
+  @Get(':orderId')
+  async getOrder(@Res() res, @Param('orderId') id) {
+    const order = await this.orderServicePG.findOrder({ where: { id } });
+    return res.status(HttpStatus.OK).json(order);
+  }
+
   @Get('new/:carId')
   @Render('pg/order/create-order')
   async getCreateForm(@Req() req, @Param('carId') carId) {
@@ -44,7 +50,7 @@ export class OrderControllerPG {
     console.log(orderData);
     const car = await this.carServicePG.findCar({
       where: { id: orderData.car },
-      relations: { brand: true },
+      relations: { brand: true, model: true },
     });
     const client = await this.clientServicePG.findClient(orderData.client);
     const workPost = await this.workPostServicePG.findWorkPost({
