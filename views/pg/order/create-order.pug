@@ -1,0 +1,57 @@
+extends ../../layouts/layout.pug
+
+block content
+    div.inner
+      form(method="POST" action="/pgorder/new" name='jobs')
+        div.info
+          input(type="hidden" name="car" value=`${car.id}`)
+          input(type="hidden" name="client" value=`${car.owner.id}`)
+          table#jobinfo(border='1'  width='20%' cellpadding='4' cellspacing='1')
+            tbody
+              tr
+                td(colspan='4')
+                  strong NEW ORDER INFORMATION
+              tr
+                td
+                  strong Car: 
+                  a(href=`/pgcar/${car.id}`)   #{car.brand.name} #{car.model.name} (#{car.releaseYear})
+              tr
+                td
+                  strong Owner: 
+                  a(href=`/pgclient/${car.owner.id}`) #{car.owner.name}
+              tr
+                td(colspan='4')
+                  strong FREE WORK POSTS:
+                    div
+                      select#post-selection(autofocus='' required='' name='workPost')
+                        option.workpost-selection(value='queue' selected) Queue
+                        option.workpost-selection(value='1') 1
+                        option.workpost-selection(value='2') 2
+                        option.workpost-selection(value='3') 3
+        div
+          table#jobtable(border='0'  width='20%' cellpadding='4' cellspacing='1')
+            tbody
+              tr
+                td(colspan='4')
+                  strong JOBS:  
+                    input#addjob(type='button', value='+')
+              tr
+                td
+                  strong №
+                td
+                  srong Name
+                td
+                  srong Cost
+                td   
+        div 
+          table#jobcost(border='1'  width='20%' cellpadding='4' cellspacing='1')
+            tbody
+              tr
+                td(colspan='4')
+                  strong TOTAL:  
+                    input#total(type='number' disabled)
+                  strong   RUR
+              tr
+                td(colspan='4')
+                  button(type="submit" id="") Save
+    script(src='/order-script-pg.js')

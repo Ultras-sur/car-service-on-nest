@@ -9,7 +9,7 @@ export type OrderDocument = Order & Document;
 @Schema()
 export class Order {
   @Prop({ unique: true })
-  number: String;
+  number: string;
 
   @Prop({ default: new Date() })
   createdAt: Date;
@@ -18,7 +18,7 @@ export class Order {
   updatedAt: Date;
 
   @Prop({ required: true })
-  workPost: String;
+  workPost: string;
 
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Car', required: true })
   car: Car;
@@ -27,13 +27,13 @@ export class Order {
   client: Client;
 
   @Prop()
-  jobs: [[{ type: mongoose.Schema.Types.ObjectId, ref: 'Job' }, Number]];
+  jobs: [[{ type: mongoose.Schema.Types.ObjectId; ref: 'Job' }, number]];
 
   @Prop({ required: true, default: 'opened' })
-  orderStatus: String;
+  orderStatus: string;
 
   @Prop()
-  cost: Number;
+  cost: number;
 }
 
 export const OrderSchema = SchemaFactory.createForClass(Order);

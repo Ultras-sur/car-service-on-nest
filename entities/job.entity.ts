@@ -1,9 +1,8 @@
-import { Column, Entity, JoinColumn, OneToOne, OneToMany, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
 import { JobCategory } from './job-category.entity';
 
 @Entity()
 export class Job {
-
   @PrimaryGeneratedColumn()
   public id: number;
 
@@ -12,4 +11,4 @@ export class Job {
 
   @ManyToOne(() => JobCategory, (category: JobCategory) => category.jobs)
   public category: JobCategory;
-}  
+}

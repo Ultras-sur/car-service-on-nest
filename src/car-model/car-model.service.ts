@@ -22,7 +22,9 @@ export class CarModelService {
   }
 
   async findCarBrands(condition = {}, sortCondition = {}): Promise<CarBrand[]> {
-    const carBrands = await this.carBrandModel.find(condition).sort(sortCondition);
+    const carBrands = await this.carBrandModel
+      .find(condition)
+      .sort(sortCondition);
     return carBrands;
   }
 

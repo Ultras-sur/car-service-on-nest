@@ -37,22 +37,28 @@ export class JobController {
     const allCategories = await this.jobService.findCategories();
     const jobsAndCategories = {};
     const categories = {};
-    await Promise.all(allCategories.map(async category => {
-      const jobs = await this.jobService.findJobs({ category: category['_id'] });
-      const jobsList = {};
-      await Promise.all(jobs.map(async job => {
-        jobsList[job['_id']] = job.name;
-      }))
-      jobsAndCategories[category['_id']] = jobsList;
-    }))
-    await Promise.all(allCategories.map(async category => {
-      categories[category['_id']] = category.name;
-    })) 
+    await Promise.all(
+      allCategories.map(async (category) => {
+        const jobs = await this.jobService.findJobs({
+          category: category['_id'],
+        });
+        const jobsList = {};
+        await Promise.all(
+          jobs.map(async (job) => {
+            jobsList[job['_id']] = job.name;
+          }),
+        );
+        jobsAndCategories[category['_id']] = jobsList;
+      }),
+    );
+    await Promise.all(
+      allCategories.map(async (category) => {
+        categories[category['_id']] = category.name;
+      }),
+    );
 
     return res.status(HttpStatus.OK).json({ categories, jobsAndCategories });
   }
-
-
 
   @Post('newcategory')
   @UseGuards(RolesGuard)

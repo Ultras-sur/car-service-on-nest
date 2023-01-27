@@ -141,6 +141,7 @@ export class OrderController {
   @UseGuards(RolesGuard)
   @Roles(Role.ADMIN, Role.MANAGER)
   async create(@Res() res: Response, @Body() createOrderDTO: CreateOrderDTO) {
+    console.log(createOrderDTO)
     const car = await this.carService.findCar(createOrderDTO.car);
     const client = await this.clientService.findOne(createOrderDTO.client);
     const orderNumber = createOrderNumber(car, client);

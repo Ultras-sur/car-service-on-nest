@@ -1,4 +1,10 @@
-import { Column, Entity, JoinColumn, OneToOne, OneToMany, PrimaryGeneratedColumn, Generated, PrimaryColumn, ManyToOne } from 'typeorm';
+import {
+  Column,
+  Entity,
+  OneToOne,
+  PrimaryGeneratedColumn,
+  ManyToOne,
+} from 'typeorm';
 import { Car } from './car.entity';
 import { Order } from './order.entity';
 
@@ -15,5 +21,4 @@ export class WorkPost {
 
   @ManyToOne(() => Order, (order: Order) => order.workPost)
   public order: Order;
-  
-}  
+}

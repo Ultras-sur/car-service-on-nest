@@ -60,9 +60,6 @@ export class CarController {
     return { ...cars, isAdmin, carBrands, serchString };
   }
 
-
-
-
   @Get(':id')
   @Render('car/car')
   @UseGuards(RolesGuard)
@@ -75,7 +72,6 @@ export class CarController {
     return { car, client, orders, isAdmin };
   }
 
-
   @Get('/create/:ownerId')
   @Render('car/create-car')
   @UseGuards(RolesGuard)
@@ -83,9 +79,8 @@ export class CarController {
   async createCar(@Param('ownerId', new ValidateObjectId()) ownerId, @Req() req) {
     const carBrands = await this.carModelService.findCarBrands({}, { name: 'ASC' });
     const isAdmin = req.user.roles.includes(Role.ADMIN);
-    return { client: { _id: ownerId }, carBrands, isAdmin }
+    return { client: { _id: ownerId }, carBrands, isAdmin };
   }
-
 
   @Post('new')
   @UseGuards(RolesGuard)
@@ -102,7 +97,7 @@ export class CarController {
   async deleteCar(@Param('id') carId, @Res() res) {
     const deletedCar = await this.carService.deleteCar(carId);
     return res.status(HttpStatus.OK).json({
-      message: "Car has been deleted successfully!",
+      message: 'Car has been deleted successfully!',
       car: deletedCar,
     });
   }

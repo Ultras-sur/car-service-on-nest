@@ -2,5 +2,5 @@ div(style='padding-left: 0px')
   form(method="POST" action="/pgcarmodel/newmodel")
     div(style='padding-left: 2px')
       input(style='padding-left: 0px' type="text" name="name" required)
-      input(name="brand" type='hidden' value=`${brand._id}`)
+      input(name="brand" type='hidden' value=`${brand.id}`)
     button(type="submit") Add

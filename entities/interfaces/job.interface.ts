@@ -1,4 +1,4 @@
 export interface Job {
-  id: number,
-  cost: number
+  id: number;
+  cost: number;
 }

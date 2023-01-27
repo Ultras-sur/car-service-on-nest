@@ -1,0 +1,6 @@
+div(style='padding-left: 0px')
+  form(method="POST" action="/pgjob/newjob")
+    div(style='padding-left: 2px;')
+      input(style='padding-left: 0px' type="text" name="name" required)
+      input(name="category" type='hidden' value=`${category.id}`)
+    button(type="submit") Add

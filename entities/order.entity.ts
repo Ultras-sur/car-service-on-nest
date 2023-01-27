@@ -1,4 +1,10 @@
-import { Column, Entity, JoinColumn, OneToOne, OneToMany, PrimaryGeneratedColumn, Generated, PrimaryColumn, ManyToOne } from 'typeorm';
+import {
+  Column,
+  Entity,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  ManyToOne,
+} from 'typeorm';
 import { Car } from './car.entity';
 import { Client } from './client.entity';
 import { Job } from './interfaces/job.interface';
@@ -9,13 +15,13 @@ export class Order {
   @PrimaryGeneratedColumn()
   public id: string;
 
-  @Column({ unique: true, nullable: true })
+  @Column({ unique: true })
   public number: string;
 
-  @Column({ default: new Date(), nullable: true })
+  @Column({ default: new Date() })
   public createdAt: Date;
 
-  @Column()
+  @Column({ nullable: true })
   public updatedAt: Date;
 
   @OneToMany(() => WorkPost, (workPost: WorkPost) => workPost.order)
@@ -27,7 +33,7 @@ export class Order {
   @ManyToOne(() => Client)
   public client: Client;
 
-  @Column({ default: 'opened', nullable: true })
+  @Column({ default: 'opened' })
   public orderStatus: string;
 
   @Column({ type: 'jsonb' })

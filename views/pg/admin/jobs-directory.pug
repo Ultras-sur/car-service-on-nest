@@ -1,0 +1,40 @@
+extends ../../layouts/layout.pug
+
+block content
+  .tab
+    if categoriesAndJobs
+      each category, index in categoriesAndJobs
+        if index === 0
+          button(class="tablinks active" onclick=`openCategory(event, 'category${index + 1}')`) #{category.name}
+        else
+          button(class="tablinks" onclick=`openCategory(event, 'category${index + 1}')`) #{category.name}
+    button(class="tablinks" onclick="openCategory(event, 'Create')") Добавить...
+
+  if categoriesAndJobs
+      each category, index in categoriesAndJobs
+        if index === 0
+          .tabcontent(id=`category${index + 1}` style="display: block;")
+            h3 #{category.name}
+            if category.jobs
+              each job in category.jobs
+                table#orderstatuses-table(style="width:auto;" cellpadding='3' cellspacing='1')
+                  tbody
+                    tr
+                      td.directory 
+                        input(type='text' value=`${job.name}` disabled size='30') 
+            include includes/addJobForm.pug
+        else
+          .tabcontent(id=`category${index + 1}` style="display: none;")
+            h3 #{category.name}
+            if category.jobs
+              each job in category.jobs
+                table#orderstatuses-table(style="width:auto;" cellpadding='3' cellspacing='1')
+                  tbody
+                    tr
+                      td.directory
+                        input(type='text' value=`${job.name}` disabled size='30')
+            include includes/addJobForm.pug
+  #Create.tabcontent(style="display: none;")
+    h3(style="margin-left: 10px") Add category
+    include ./includes/addCategoryForm.pug
+  script(src='/tabs.js')

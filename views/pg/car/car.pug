@@ -29,13 +29,13 @@ block content
           td   
             srong Status
 
-      if orders 
-        each order, index in orders
+      if car.orders 
+        each order, index in car.orders
           tr
               td #{index + 1}
               td #{new Date(order.createdAt).toLocaleString('en-US', {day: 'numeric', month: 'numeric', year: 'numeric'})}
               td 
-                a(href=`/order/${order.id}`) #{order.number}
+                a(href=`/pgorder/${order.id}`) #{order.number}
               if order.orderStatus === 'opened'
                 td(style="background-color: #d4fdc9") #{order.orderStatus}
               else
@@ -43,4 +43,4 @@ block content
 
     div
       button 
-        a(href=`/pgorder/createcar/${car.owner.id}/${car.id}`) Создать заказ
+        a(href=`/pgorder/new/${car.id}`) Создать заказ

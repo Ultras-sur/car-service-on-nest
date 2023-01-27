@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, OneToOne, OneToMany, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Job } from './job.entity';
 
 @Entity()
@@ -11,4 +11,4 @@ export class JobCategory {
 
   @OneToMany(() => Job, (job: Job) => job.category)
   public jobs: Job[];
-}  
+}
