@@ -1,0 +1,8 @@
+extends ../../layouts/layout.pug
+
+block content
+    if order.orderStatus === 'opened'
+      include ./opened-order.pug
+    else
+      include ./closed-order.pug
+      

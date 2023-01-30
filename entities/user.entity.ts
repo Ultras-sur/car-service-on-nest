@@ -2,15 +2,15 @@ import { Column, Entity, JoinColumn, OneToOne, OneToMany, PrimaryGeneratedColumn
 
 
 export enum UserRole {
-    ADMIN = "ADMIN",
-    USER = "USER",
-    MANAGER = "MANAGER",
-    SUPERADMIN = "SUPERADMIN",
+  ADMIN = "ADMIN",
+  USER = "USER",
+  MANAGER = "MANAGER",
+  SUPERADMIN = 'SUPERADMIN',
 }
 
 @Entity()
 export class User {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn('uuid')
   public id: number;
 
   @Column({ unique: true, nullable: true })

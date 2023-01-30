@@ -10,7 +10,7 @@ import { Order } from './order.entity';
 
 @Entity()
 export class WorkPost {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn('uuid')
   public id: number;
 
   @Column({ unique: true, nullable: true })

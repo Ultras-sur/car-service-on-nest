@@ -1,0 +1,59 @@
+div.inner
+      form#order(method="POST" action=`/order/update/${order._id}` name='jobs')
+        input(type="hidden" name="_method" value="PUT")
+        div.info
+          input(type="hidden" name="car" value=`${car._id}`)
+          input(type="hidden" name="client" value=`${client._id}`)
+          input#orderid(type="hidden" name="order" value=`${order._id}`)
+          table#jobinfo(border='1'  width='20%' cellpadding='4' cellspacing='1')
+            tbody
+              tr
+                td(colspan='4')
+                  strong ORDER: 
+                  p3 #{order.number} 
+              tr
+                td
+                  strong Car:   
+                  a(href=`/car/${car._id}`) 
+                    p3 #{car.brand} #{car.model} (#{car.releaseYear})
+              tr
+                td
+                  strong Owner:
+                  p3   
+                    a(href=`/client/${client._id}`) #{client.name}
+              tr
+                td
+                  strong Status:
+                    div#div-status
+                      select#status-selection 
+                        option(value='closed' selected) closed
+                        option(value='opened') opened
+        div
+          table#jobtable(border='0'  width='20%' cellpadding='4' cellspacing='1')
+            tbody
+              tr
+                td(colspan='4')
+                  strong JOBS:
+              tr
+                td
+                  strong №
+                td
+                  strong Name
+                td
+                  strong Cost
+                td   
+            if fullJobsInfo
+              each job, index in fullJobsInfo
+                tr.jobrows
+                  td #{index + 1}
+                  td #{job[2]}
+                  td(id=`job-cost${index + 1}`) #{job[1]}
+        div 
+          table#jobcost(border='1'  width='20%' cellpadding='4' cellspacing='1')
+            tbody
+              tr
+                td(colspan='4')
+                  strong TOTAL:  
+                    input#total(type='number' disabled)
+                  strong   RUR
+script(src='/closed-order.js')

@@ -3,7 +3,7 @@ import { JobCategory } from './job-category.entity';
 
 @Entity()
 export class Job {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn('uuid')
   public id: number;
 
   @Column({ unique: true })

@@ -3,7 +3,7 @@ import { CarModel } from './car-model.entity';
 
 @Entity()
 export class CarBrand {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn('uuid')
   public id: number;
 
   @Column({ unique: true, nullable: true })

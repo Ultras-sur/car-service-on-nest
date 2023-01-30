@@ -1,0 +1,55 @@
+div.inner
+      form#order(method="POST" action=`/pgorder/update/${order.id}` name='jobs')
+        input(type="hidden" name="_method" value="PUT")
+        div.info
+          input(type="hidden" name="car" value=`${order.car.id}`)
+          input(type="hidden" name="client" value=`${order.client.id}`)
+          input#orderid(type="hidden" name="order" value=`${order.id}`)
+          table#jobinfo(border='1'  width='20%' cellpadding='4' cellspacing='1')
+            tbody
+              tr
+                td(colspan='4')
+                  strong ORDER: 
+                  p3 #{order.number} 
+              tr
+                td
+                  strong Car:   
+                  a(href=`/pgcar/${order.car.id}`) 
+                    p3 #{order.car.brand.name} #{order.car.model.name} (#{order.car.releaseYear})
+              tr
+                td
+                  strong Owner:
+                  p3   
+                    a(href=`/pgclient/${order.client.id}`) #{order.client.name}
+              tr
+                td(colspan='4')
+                  strong WORK POST: #{order.workPost}
+        div
+          table#jobtable(border='0'  width='20%' cellpadding='4' cellspacing='1')
+            tbody
+              tr
+                td(colspan='4')
+                  strong JOBS:  
+                    input#addjob(type='button', value='+')
+              tr
+                td
+                  strong №
+                td
+                  strong Name
+                td
+                  strong Cost
+                td   
+        div 
+          table#jobcost(border='1'  width='20%' cellpadding='4' cellspacing='1')
+            tbody
+              tr
+                td(colspan='4')
+                  strong TOTAL:  
+                    input#total(type='number' disabled)
+                  strong   RUR
+              tr
+                td(colspan='4')
+                  button(type="submit" id="submit-button") Save
+
+    
+script(src='/edit-order-script-pg.js')

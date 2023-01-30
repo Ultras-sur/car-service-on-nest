@@ -60,4 +60,18 @@ export class OrderServicePG {
     await this.orderRepository.save(newOrder);
     return newOrder;
   }
+
+  async updateOrder(orderId, updateOrderDTO) {
+    /*const updatedOrder = await this.orderRepository.update(orderId, {
+      jobs: updateOrderDTO.jobs,
+    });*/
+    const updatedOrder = await this.orderRepository
+      .createQueryBuilder('order')
+      .update({ jobs: updateOrderDTO.jobs, updatedAt: new Date() })
+      .where('id = :id', { id: orderId })
+      .returning('*')
+      .execute()
+      .then(res => res.raw[0]);
+    return updatedOrder;
+  }
 }

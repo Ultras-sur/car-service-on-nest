@@ -11,10 +11,9 @@ import { CarModel } from './car-model.entity';
 import { Client } from './client.entity';
 import { Order } from './order.entity';
 
-
 @Entity()
 export class Car {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn('uuid')
   public id: number;
 
   @ManyToOne(() => CarBrand)

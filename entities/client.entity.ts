@@ -9,7 +9,7 @@ import { Car } from './car.entity';
 
 @Entity()
 export class Client {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn('uuid')
   public id: number;
 
   @Column({ nullable: true })

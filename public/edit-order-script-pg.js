@@ -1,5 +1,5 @@
 async function getJobsAndCategories() {
-  const response = await fetch('/job/jobsandcategories');
+  const response = await fetch('/pgjob/categoriesandjobs');
   const collection = await response.json();
   console.log(collection);
   jobs = collection.jobsAndCategories;
@@ -167,7 +167,7 @@ function calculateTotal() {
 
 async function getOrderJobs() {
   const orderId = document.getElementById('orderid').value;
-  const response = await fetch(`/order/res/${orderId}`);
+  const response = await fetch(`/pgorder/res/${orderId}`);
   const order = await response.json();
   const jobs = order.jobs;
   return jobs;
@@ -187,7 +187,8 @@ function getJobsPart(job, collection) {
 async function loadSelectedJobs() {
   const orderJobs = await getOrderJobs();
   console.log(orderJobs);
-  orderJobs.forEach(([job, cost]) => {
+  orderJobs.forEach((jobData) => {
+    const { job, cost } = jobData;
     const jobsPart = getJobsPart(job, jobs); // jobs is full collection of jobs
     const jobTable = document.querySelector('#jobtable');
     const newRow = jobTable.insertRow(-1);
@@ -268,14 +269,14 @@ submitButton.onclick = async (event) => {
       `#job-selection${index + 1}`,
     ).options;
     const selectedJobIndex = jobSelectionOptions.selectedIndex;
-    const jobName = jobSelectionOptions[selectedJobIndex].value;
+    const jobId = jobSelectionOptions[selectedJobIndex].value;
     const jobCost = jobRow.querySelector(`#job-cost${index + 1}`).value;
-    updatedJobs.push([jobName, jobCost]);
+    updatedJobs.push({ job: jobId, cost: jobCost });
   });
 
   const orderId = document.getElementById('orderid').value;
   try {
-    const response = await fetch(`/order/update/${orderId}`, {
+    const response = await fetch(`/pgorder/update/${orderId}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json;charset=utf-8',
@@ -283,7 +284,7 @@ submitButton.onclick = async (event) => {
       body: JSON.stringify({ jobs: updatedJobs }),
     });
     const result = await response.json();
-    location.href = `/order/${orderId}`;
+    location.href = `/pgorder/${orderId}`;
     return;
   } catch (e) {
     console.log('Request failed', e);
