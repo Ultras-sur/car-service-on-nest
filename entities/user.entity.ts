@@ -21,5 +21,4 @@ export class User {
 
   @Column({ type: 'set', enum: UserRole, default:[UserRole.USER], nullable: true })
   roles: UserRole[];
-  
-}  
+}

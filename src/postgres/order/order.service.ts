@@ -1,14 +1,22 @@
 import { Injectable } from '@nestjs/common';
 import { Order } from 'entities/order.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Like, Repository } from 'typeorm';
+import { DataSource, Like, Repository } from 'typeorm';
 import { CreateOrderDTO } from './dto/create-order.dto';
 import { createOrderNumber } from 'helpers/number-generator';
+import { WorkPostServicePG } from '../workpost/pg-workpost.service';
+import { OrderPageOptionsDTO } from './dto/order-page-options';
+import { PageMetaDTO } from './dto/page-meta.dto';
+import { PageDTO } from './dto/page.dto';
+import { JobServicePG } from '../job/pg-job.service';
 
 @Injectable()
 export class OrderServicePG {
   constructor(
     @InjectRepository(Order) private orderRepository: Repository<Order>,
+    private dataSource: DataSource,
+    private workPostServicePG: WorkPostServicePG,
+    private jobServicePG: JobServicePG,
   ) {}
 
   async findOrder(condition = {}): Promise<Order> {
@@ -16,8 +24,12 @@ export class OrderServicePG {
     return findedOrder;
   }
 
-  async findOrdersPaginate(carPageOptions) {
-    console.log(carPageOptions);
+  async findOrders(condition = {}): Promise<Order[]> {
+    const findedOrders = await this.orderRepository.find(condition);
+    return findedOrders;
+  }
+
+  async findOrdersPaginate(orderPageOptions: OrderPageOptionsDTO) {
     const ordersAndCount = await this.orderRepository.findAndCount({
       select: {
         id: true,
@@ -28,22 +40,44 @@ export class OrderServicePG {
       relations: {
         car: { brand: true, model: true },
         client: true,
+        workPost: true,
       },
       where: {
         client: {
-          name: carPageOptions.name ? Like(`%${carPageOptions.name}%`) : null,
+          name: orderPageOptions.name
+            ? Like(`%${orderPageOptions.name}%`)
+            : null,
         },
-        number: carPageOptions.orderNumber
-          ? Like(`%${carPageOptions.orderNumber}%`)
+        number: orderPageOptions.orderNumber
+          ? Like(`%${orderPageOptions.orderNumber}%`)
           : null,
+        workPost: orderPageOptions.workPost ?? null,
       },
+      order: { createdAt: orderPageOptions.order },
+      skip: orderPageOptions.skip,
+      take: orderPageOptions.take,
     });
 
     const [orders, ordersCount] = ordersAndCount;
-    return orders;
+    const pageMeta = new PageMetaDTO(ordersCount, orderPageOptions);
+    return new PageDTO(orders, pageMeta);
   }
 
   async createOrder(createOrderDTO: CreateOrderDTO) {
+    console.log(createOrderDTO)
+    const queryRunner = this.dataSource.createQueryRunner();
+    const orderJobs = await Promise.all(
+      createOrderDTO.jobs.map(async (jobData) => {
+        const findedJob = await this.jobServicePG.findJob({
+          where: { id: jobData.job },
+        });
+        return {
+          job: findedJob.id.toString(),
+          cost: jobData.cost,
+          name: findedJob.name,
+        };
+      }),
+    );
     const orderNumber = createOrderNumber(
       {
         _id: createOrderDTO.car.id,
@@ -53,25 +87,46 @@ export class OrderServicePG {
       { name: createOrderDTO.client.name },
     );
 
-    const newOrder = this.orderRepository.create({
-      ...createOrderDTO,
-      number: orderNumber,
-    });
-    await this.orderRepository.save(newOrder);
-    return newOrder;
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+    let newOrder;
+    try {
+      newOrder = queryRunner.manager.create(Order, {
+        ...createOrderDTO,
+        number: orderNumber,
+        jobs: orderJobs,
+      });
+      await queryRunner.manager.save(Order, newOrder)
+      if (newOrder.workPost) {
+        await this.workPostServicePG.setToWorkPost(newOrder, queryRunner);
+      }
+      await queryRunner.commitTransaction();
+      return newOrder;
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+      throw new Error(error);
+    } finally {
+      await queryRunner.release();
+    }
   }
 
   async updateOrder(orderId, updateOrderDTO) {
-    /*const updatedOrder = await this.orderRepository.update(orderId, {
-      jobs: updateOrderDTO.jobs,
-    });*/
+    const jobList = await Promise.all(
+      updateOrderDTO.jobs.map(async (jobData) => {
+        const findedJob = await this.jobServicePG.findJob({
+          where: { id: jobData.job },
+        });
+        return { ...jobData, name: findedJob.name };
+      }),
+    );
+
     const updatedOrder = await this.orderRepository
       .createQueryBuilder('order')
-      .update({ jobs: updateOrderDTO.jobs, updatedAt: new Date() })
+      .update({ jobs: jobList, updatedAt: new Date() })
       .where('id = :id', { id: orderId })
       .returning('*')
       .execute()
-      .then(res => res.raw[0]);
+      .then((res) => res.raw[0]);
     return updatedOrder;
   }
 }

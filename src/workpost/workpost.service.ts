@@ -6,7 +6,9 @@ import * as mongoose from 'mongoose';
 
 @Injectable()
 export class WorkPostService {
-  constructor(@InjectModel(WorkPost.name) private workPostModel: Model<WorkPostDocument>) { }
+  constructor(
+    @InjectModel(WorkPost.name) private workPostModel: Model<WorkPostDocument>,
+  ) {}
 
   async createWorkPost(): Promise<WorkPost> {
     const createdWorkPost = new this.workPostModel({ number: 'queue' });
@@ -18,12 +20,24 @@ export class WorkPostService {
     return workPosts;
   }
 
-  async setToWorkPost(order, session: mongoose.ClientSession | null = null): Promise<WorkPost> {
-    return this.workPostModel.findOneAndUpdate({ number: order.workPost }, { car: order.car, order: order._id }).session(session);
+  async setToWorkPost(
+    order,
+    session: mongoose.ClientSession | null = null,
+  ): Promise<WorkPost> {
+    return this.workPostModel
+      .findOneAndUpdate(
+        { number: order.workPost },
+        { car: order.car, order: order._id },
+      )
+      .session(session);
   }
 
-  async unsetWorkPost(workpostNumber, session: mongoose.ClientSession | null = null): Promise<WorkPost> {
-      return this.workPostModel.
-        findOneAndReplace({ number: workpostNumber }, { number: workpostNumber }).session(session);
+  async unsetWorkPost(
+    workpostNumber,
+    session: mongoose.ClientSession | null = null,
+  ): Promise<WorkPost> {
+    return this.workPostModel
+      .findOneAndReplace({ number: workpostNumber }, { number: workpostNumber })
+      .session(session);
   }
 }

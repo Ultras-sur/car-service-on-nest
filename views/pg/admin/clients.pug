@@ -4,7 +4,7 @@ include ../../mixins/pages
 block content
     h1 Clients
     div.find
-      form(method="GET" action='/pgclient/clients')
+      form(method="GET" action='/pgclient/admin/clients')
         div(style="padding-bottom: 1px;padding-top: 1px;padding-left: 1px;")
           p(style='margin-bottom:2px; margin-top: 2px;') Licens number:
           input.number(type='text' name='licensNumber')
@@ -23,15 +23,15 @@ block content
             td
               strong Licens number
         if clients
-          each client, index in clients.data
+          each client, index in clients
             tr
-              td #{clients.meta.take * (clients.meta.page - 1) + (index + 1)}
+              td #{step * (page - 1) + (index + 1)}
               td 
                 a(href=`/pgclient/${client.id}`) #{client.name}
               td #{client.licensNumber}
     div
       if clients
-        +pages(clients.meta.page, clients.meta.totalPages, '/pgclient/clients', searchString)
+        +pages(page, totalPages, '/pgclient/getclients')
     div
       button 
         a(href=`/pgclient/create`) Добавить клиента

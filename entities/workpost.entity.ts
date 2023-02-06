@@ -4,6 +4,7 @@ import {
   OneToOne,
   PrimaryGeneratedColumn,
   ManyToOne,
+  JoinColumn,
 } from 'typeorm';
 import { Car } from './car.entity';
 import { Order } from './order.entity';
@@ -16,9 +17,7 @@ export class WorkPost {
   @Column({ unique: true, nullable: true })
   public number: string;
 
-  @OneToOne(() => Car)
-  public car: Car;
-
-  @ManyToOne(() => Order, (order: Order) => order.workPost)
+  @OneToOne(() => Order, (order: Order) => order.workPost)
+  @JoinColumn()
   public order: Order;
 }

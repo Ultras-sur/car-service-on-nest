@@ -39,11 +39,11 @@ export class CarControllerPG {
     const cars = await this.carServicePG.findCarsPaginate(pageOptions);
     const carBrands = await this.carModelServicePG.findCarBrands();
     const isAdmin = req.user.roles.includes(Role.ADMIN);
-    const serchString = `${req.url.replace(
+    const searchString = `${req.url.replace(
       /\/pgcar\/cars\??(page=\d+\&?)?/im,
       '',
     )}`;
-    return { cars, isAdmin, carBrands, serchString };
+    return { cars, isAdmin, carBrands, searchString };
   }
 
   @Get(':id')
@@ -59,7 +59,6 @@ export class CarControllerPG {
       .where('car.id = :id', { id: carId })
       .getOne();
     const isAdmin = req.user.roles.includes(Role.ADMIN);
-    console.log(car);
     return { car, isAdmin };
   }
 

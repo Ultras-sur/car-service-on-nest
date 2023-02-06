@@ -1,4 +1,4 @@
-import { Controller, Get, Render, Post, Res, Req, UseGuards, UseFilters, Query } from '@nestjs/common';
+import { Controller, Get, Render, Post, Res, Req, UseGuards, UseFilters, Query, HttpStatus } from '@nestjs/common';
 import { CarService } from './car/car.service';
 import { OrderService } from './order/order.service';
 import { WorkPostService } from './workpost/workpost.service';
@@ -9,14 +9,22 @@ import { RolesGuard } from './auth/common/guards/roles.guard';
 import { AuthExceptionFilter } from 'src/auth/common/filters/auth-exceptions.filter';
 import { Role } from '../schemas/user.schema';
 import { Roles } from './auth/roles.decorator';
+import { WorkPostServicePG } from './postgres/workpost/pg-workpost.service';
+import { OrderServicePG } from './postgres/order/order.service';
+import { OrderPageOptionsDTO } from './postgres/order/dto/order-page-options';
 
 
 @Controller()
 @UseFilters(AuthExceptionFilter)
 
 export class AppController {
-  constructor(private orderService: OrderService, private carService: CarService, private workPostService: WorkPostService) { }
-
+  constructor(
+    private orderService: OrderService,
+    private orderServicePG: OrderServicePG,
+    private carService: CarService,
+    private workPostService: WorkPostService,
+    private workPostServicePG: WorkPostServicePG,
+  ) {}
 
   @Get('/login')
   @Render('auth/auth')
@@ -93,4 +101,23 @@ export class AppController {
     return { workPosts, ordersInQueue, isAdmin };
   }
 
+  @Get('pgmonitor')
+  @Render('pg/workpost/monitor')
+  async getPgMonitor(@Res() res, @Req() req, @Query() query) {
+    const workPosts = await this.workPostServicePG.findWorkPosts({
+      relations: { order: { car: { brand: true, model: true } } },
+      order: { number: 'ASC' },
+    });
+
+    const orderPageOptions = new OrderPageOptionsDTO(query);
+    const ordersInQueue = await this.orderServicePG.findOrdersPaginate(
+      orderPageOptions,
+    );
+    const isAdmin = req.user.roles.includes(Role.ADMIN);
+    return {
+      workPosts,
+      ordersInQueue,
+      isAdmin,
+    };
+  }
 }

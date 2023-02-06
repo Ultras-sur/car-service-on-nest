@@ -212,6 +212,7 @@ async function loadSelectedJobs() {
     newInput.setAttribute("id", costId);
     newInput.setAttribute("min", 0);
     newInput.setAttribute("value", cost);
+
     newRow.insertCell(-1).appendChild(newSelect);
     newRow.insertCell(-1).appendChild(newInput);
     getJobMenu(jobsPart, newSelect);

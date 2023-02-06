@@ -30,9 +30,9 @@ block content
           strong Status
            
     if orders 
-      each order, index in orders
+      each order, index in orders.data
          tr
-            td #{step * (Number(page) - 1) + (index + 1)}
+            td #{orders.meta.take * (Number(orders.meta.page) - 1) + (index + 1)}
             td #{new Date(order.createdAt).toLocaleString('en-US', {day: 'numeric', month: 'numeric', year: 'numeric'})}
             td 
               a(href=`/pgclient/${order.client.id}`) #{order.client.name}

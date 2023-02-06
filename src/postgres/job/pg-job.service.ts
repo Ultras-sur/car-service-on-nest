@@ -38,8 +38,8 @@ export class JobServicePG {
     return categories;
   }
 
-  async findJob(id): Promise<Job> {
-    const job = this.jobRepository.findOne(id);
+  async findJob(condition = {}): Promise<Job> {
+    const job = this.jobRepository.findOne(condition);
     return job;
   }
 

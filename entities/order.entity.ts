@@ -1,9 +1,9 @@
 import {
   Column,
   Entity,
-  OneToMany,
   PrimaryGeneratedColumn,
   ManyToOne,
+  OneToOne,
 } from 'typeorm';
 import { Car } from './car.entity';
 import { Client } from './client.entity';
@@ -24,7 +24,7 @@ export class Order {
   @Column({ nullable: true })
   public updatedAt: Date;
 
-  @OneToMany(() => WorkPost, (workPost: WorkPost) => workPost.order)
+  @OneToOne(() => WorkPost, (workPost: WorkPost) => workPost.order)
   public workPost: WorkPost;
 
   @ManyToOne(() => Car, (car: Car) => car.orders)

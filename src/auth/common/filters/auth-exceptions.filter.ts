@@ -14,7 +14,6 @@ export class AuthExceptionFilter implements ExceptionFilter {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
     const request = ctx.getRequest<Request>();
-    console.log(exception);
     if (exception instanceof UnauthorizedException) {
       request.flash('loginError', 'Email or password is incorrect!');
       return response.redirect('/login');
@@ -25,4 +24,4 @@ export class AuthExceptionFilter implements ExceptionFilter {
       return response.redirect('/error');
     }
   }
-}  
+}

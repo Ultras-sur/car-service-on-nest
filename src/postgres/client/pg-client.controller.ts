@@ -17,19 +17,32 @@ import { ClientServisePG } from './pg-client.service';
 import { Role } from 'schemas/user.schema';
 import { CreateClientDTO } from './dto/createClient.dto';
 import { CarServicePG } from '../car/car.service';
+import { ClientPageOptionsDTO } from './dto/client-page-options.dto';
 
 @Controller('pgclient')
 export class ClientControllerPG {
   constructor(
     private clientServisePG: ClientServisePG,
-    private carServicePG: CarServicePG) { }
+    private carServicePG: CarServicePG,
+  ) {}
 
-  @Get('getclients')
+  @Get('clients')
   @Render('pg/client/clients')
-  async getClients(@Res() res, @Req() req) {
-    const clients = await this.clientServisePG.findAll();
+  async getClients(
+    @Res() res,
+    @Req() req,
+    @Query() query: ClientPageOptionsDTO,
+  ) {
+    const carPageOptions = new ClientPageOptionsDTO(query);
+    const clients = await this.clientServisePG.findClientsPaginate(
+      carPageOptions,
+    );
+    const searchString = `${req.url.replace(
+      /\/pgclient\/clients\??(page=\d+\&?)?/im,
+      '',
+    )}`;
     const isAdmin = req.user.roles.includes(Role.ADMIN);
-    return { clients, totalPages: 1, page: 1, step: 20, isAdmin };
+    return { clients, isAdmin, searchString };
   }
 
   @Get('create')
@@ -54,7 +67,6 @@ export class ClientControllerPG {
       relations: { brand: true, model: true },
       where: { owner: client },
     });
-    console.log(cars);
     const isAdmin = req.user.roles.includes(Role.ADMIN);
     return { client, isAdmin, cars };
   }

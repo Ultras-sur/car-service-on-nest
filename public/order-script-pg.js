@@ -169,10 +169,11 @@ function calculateTotal() {
 
 
 async function getStatusOfWorkPosts() {
-  const response = await fetch('/workpost/workposts');
+  const response = await fetch('/pgworkpost/res/status');
   const workPosts = await response.json();
+  console.log(workPosts);
   const workPostSelection = Array.from(document.getElementsByClassName('workpost-selection'))
-  const busyWorkPosts = workPosts.filter(workPost => workPost.hasOwnProperty('car'));
+  const busyWorkPosts = workPosts.filter(workPost => workPost.order !== null);
   busyWorkPosts.forEach(workPost => {
     workPostSelection.forEach(WorkPostSelection => {
       if (WorkPostSelection.value === String(workPost.number)) {

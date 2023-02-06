@@ -5,6 +5,7 @@ import { OrderPageOptionsDTO } from './dto/order-page-options';
 import { OrderServicePG } from './order.service';
 import { ClientServisePG } from '../client/pg-client.service';
 import { WorkPostServicePG } from '../workpost/pg-workpost.service';
+import { UpdateOrderDTO } from './dto/update-order.dto';
 
 @Controller('pgorder')
 export class OrderControllerPG {
@@ -17,15 +18,13 @@ export class OrderControllerPG {
 
   @Get('/')
   @Render('pg/order/orders')
-  async getOrders(
-    @Req() req,
-    @Query() orderPageOptionsDTO: OrderPageOptionsDTO,
-  ) {
+  async getOrders(@Req() req, @Query() query) {
+    const orderPageOptions = new OrderPageOptionsDTO(query);
     const orders = await this.orderServicePG.findOrdersPaginate(
-      orderPageOptionsDTO,
+      orderPageOptions,
     );
     const isAdmin = req.user.roles.includes(Role.ADMIN);
-    return { orders, isAdmin, step: 10, page: 1, totalPages: 1 };
+    return { orders, isAdmin };
   }
 
   @Get('/res/:orderId')
@@ -40,7 +39,11 @@ export class OrderControllerPG {
   @Render('pg/order/edit-order')
   async getOrder(@Res() res, @Req() req, @Param('orderId') id) {
     const order = await this.orderServicePG.findOrder({
-      relations: { client: true, car: { brand: true, model: true } },
+      relations: {
+        client: true,
+        car: { brand: true, model: true },
+        workPost: true,
+      },
       where: { id },
     });
     const isAdmin = req.user.roles.includes(Role.ADMIN);
@@ -61,7 +64,6 @@ export class OrderControllerPG {
 
   @Post('new')
   async createNewOrder(@Res() res, @Body() orderData) {
-    console.log(orderData);
     const car = await this.carServicePG.findCar({
       where: { id: orderData.car },
       relations: { brand: true, model: true },
@@ -84,12 +86,12 @@ export class OrderControllerPG {
   async updateOrder(
     @Res() res,
     @Param('orderId') orderId,
-    @Body() updateOrderDTO,
+    @Body() updateOrderDTO: UpdateOrderDTO,
   ) {
     const updatedOrder = await this.orderServicePG.updateOrder(
       orderId,
       updateOrderDTO,
     );
-    return res.status(HttpStatus.OK).json({ message: 'OK' });
+    return res.status(HttpStatus.OK).json({ message: 'OK', updatedOrder });
   }
 }

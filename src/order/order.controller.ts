@@ -53,39 +53,55 @@ export class OrderController {
   @Roles(Role.ADMIN)
   async getOrdersForAdmin(@Query('name') name: string,
     @Query('orderNumber') orderNumber: string,
-    @Query('page') page: number, @Req() req) {
+    @Query('page') page: number,
+    @Req() req,
+  ) {
     const condition = {};
-    const serchString = `${req.url.replace(/\/order\/admin\/orders\??(page=\d+\&?)?/mi, '')}`;
-    orderNumber ? condition['number'] = orderNumber : null;
+    const serchString = `${req.url.replace(
+      /\/order\/admin\/orders\??(page=\d+\&?)?/im,
+      '',
+    )}`;
+    orderNumber ? (condition['number'] = orderNumber) : null;
     if (name) {
-      const clients = await this.clientService.find({ name: new RegExp(name, 'gmi') });
-      const potencialClientsId = clients.map(client => client['_id']);
+      const clients = await this.clientService.find({
+        name: new RegExp(name, 'gmi'),
+      });
+      const potencialClientsId = clients.map((client) => client['_id']);
       condition['client'] = potencialClientsId;
     }
     const currentPage = page ?? 1;
     const step = 10;
     const sortCondition = { createdAt: 'desc' };
-    const orders = await this.orderService.showAll(currentPage, step, sortCondition, condition);
+    const orders = await this.orderService.showAll(
+      currentPage,
+      step,
+      sortCondition,
+      condition,
+    );
     return { ...orders, isAdmin: true, serchString };
   }
-
 
   @Get(':orderId')
   @Render('order/edit-order')
   @UseGuards(RolesGuard)
   @Roles(Role.ADMIN, Role.MANAGER)
-  async getOrderForEdit(@Res() res: Response, @Param('orderId', new ValidateObjectId()) orderId, @Req() req) {
+  async getOrderForEdit(
+    @Res() res: Response,
+    @Param('orderId', new ValidateObjectId()) orderId,
+    @Req() req,
+  ) {
     const order = await this.orderService.findOrder(orderId);
-    const fullJobsInfo = await Promise.all(order.jobs.map(async job => {
-      const findedJob = await this.jobService.findJob(job[0]);
-      return [...job, findedJob.name];
-    }))
+    const fullJobsInfo = await Promise.all(
+      order.jobs.map(async (job) => {
+        const findedJob = await this.jobService.findJob(job[0]);
+        return [...job, findedJob.name];
+      }),
+    );
     const car = await this.carService.findCar(order.car);
     const client = await this.clientService.findOne(order.client);
     const isAdmin = req.user.roles.includes(Role.ADMIN);
     return { car, client, order, fullJobsInfo, isAdmin };
   }
-
 
   @Get('/res/queue')
   @UseGuards(RolesGuard)
@@ -95,26 +111,31 @@ export class OrderController {
     return res.status(HttpStatus.OK).json(ordersInQueue);
   }
 
-
   @Get('/res/:orderId')
   @UseGuards(RolesGuard)
   @Roles(Role.ADMIN, Role.MANAGER)
-  async getOrder(@Res() res: Response, @Param('orderId', new ValidateObjectId()) orderId) {
+  async getOrder(
+    @Res() res: Response,
+    @Param('orderId', new ValidateObjectId()) orderId,
+  ) {
     const order = await this.orderService.findOrder(orderId);
     return res.status(HttpStatus.OK).json(order);
   }
-
-
 
   @Get('/create/:clientId/:carId')
   @Render('order/create-order')
   @UseGuards(RolesGuard)
   @Roles(Role.ADMIN, Role.MANAGER)
-  async createOrder(@Res() res: Response, @Param('clientId', new ValidateObjectId()) clientId, @Param('carId', new ValidateObjectId()) carId, @Req() req) {
+  async createOrder(
+    @Res() res: Response,
+    @Param('clientId', new ValidateObjectId()) clientId,
+    @Param('carId', new ValidateObjectId()) carId,
+    @Req() req,
+  ) {
     const car = await this.carService.findCar(carId);
     const client = await this.clientService.findOne(clientId);
     const isAdmin = req.user.roles.includes(Role.ADMIN);
-    return { car, client, isAdmin }
+    return { car, client, isAdmin };
   }
 
   @Post('/set')

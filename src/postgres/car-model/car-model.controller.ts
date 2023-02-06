@@ -42,7 +42,6 @@ export class CarModelControllerPG {
           where: { brand: brand },
           order: { name: 'ASC' },
         });
-        //const modelBrands = findedModels.map(model => model.name);
         const models = findedModels.map((model) => [model.id, model.name]);
         carModelsAndBrands[brand.name] = models;
       }),

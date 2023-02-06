@@ -100,7 +100,11 @@ export class OrderService {
     let setedOrder;
     const session = await this.connection.startSession();
     await session.withTransaction(async () => {
-      setedOrder = await this.orderModel.findByIdAndUpdate({ _id: orderId }, { workPost }, { new: true });
+      setedOrder = await this.orderModel.findByIdAndUpdate(
+        { _id: orderId },
+        { workPost },
+        { new: true },
+      );
       await this.workPostService.setToWorkPost(setedOrder, session);
     });
     session.endSession();
@@ -110,11 +114,14 @@ export class OrderService {
   async unsetWorkPost(orderId, workpost, completeCondition) {
     let unsetedOrder;
     const session = await this.connection.startSession();
-     await session.withTransaction(async () => {
-       unsetedOrder = await this.orderModel.
-         findByIdAndUpdate({ _id: orderId }, { workPost: 'queue', ...completeCondition }, { new: true });
-       await this.workPostService.unsetWorkPost(workpost);
-     });
+    await session.withTransaction(async () => {
+      unsetedOrder = await this.orderModel.findByIdAndUpdate(
+        { _id: orderId },
+        { workPost: 'queue', ...completeCondition },
+        { new: true },
+      );
+      await this.workPostService.unsetWorkPost(workpost);
+    });
     session.endSession();
     return unsetedOrder;
   }

@@ -16,7 +16,7 @@ export class Client {
   public name: string;
 
   @Column({ unique: true, nullable: true })
-  public licensNumber: number;
+  public licensNumber: string;
 
   @OneToMany(() => Car, (car: Car) => car.owner)
   @JoinTable()

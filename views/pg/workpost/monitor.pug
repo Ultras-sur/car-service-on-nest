@@ -1,0 +1,61 @@
+extends ../../layouts/layout.pug
+include ../../mixins/pages
+
+block content
+  div
+   table#workposts-table(border='2'  width='20%' cellpadding='4' cellspacing='1')
+    tbody
+      tr(style="background-color: #f7f7f7")
+        td(colspan='4')
+          strong Work Posts:  
+      tr
+        td
+          strong №
+        td
+          strong Order №
+        td
+          strong Car
+        td   
+          strong Status  
+    if workPosts 
+      each workPost in workPosts
+          if workPost.order !== null
+            tr
+                td #{workPost.number}
+                td 
+                  a(href=`/pgorder/${workPost.order.id}`) #{workPost.order.number}
+                td 
+                  a(href=`/pgcar/${workPost.order.car.id}`) #{workPost.order.car.brand.name} #{workPost.order.car.model.name} #{workPost.order.car.releaseYear}
+                td(style="background-color: #ffbdbd") #{'working'}  
+            
+          else
+            tr
+                td #{workPost.number}
+                td
+                td
+                td(style="background-color: #d4fdc9") #{'free'}
+  div
+   table#queuestatus-table(border='2'  width='20%' cellpadding='4' cellspacing='1')
+    tbody
+      tr(style="background-color: #f7f7f7")
+        td(colspan='6')
+          strong Queue:  
+      tr
+        td
+          strong №
+        td
+          strong Order
+        td   
+          strong Car
+
+    if ordersInQueue 
+      each order, index in ordersInQueue.data
+         tr
+            td #{ordersInQueue.meta.take * (Number(ordersInQueue.meta.page) - 1) + (index + 1)}
+            td 
+              a(href=`/order/${order.id}`) #{order.number}
+            td 
+              a(href=`/car/${order.car.id}`) #{order.car.brand.name} #{order.car.model.name} #{order.car.releaseYear}      
+  div
+    if ordersInQueue
+      +pages(ordersInQueue.meta.page, ordersInQueue.meta.totalPages, '')         

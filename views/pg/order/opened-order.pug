@@ -23,7 +23,7 @@ div.inner
                     a(href=`/pgclient/${order.client.id}`) #{order.client.name}
               tr
                 td(colspan='4')
-                  strong WORK POST: #{order.workPost}
+                  strong WORK POST: #{order.workPost === null ? 'queue' : order.workPost.number}
         div
           table#jobtable(border='0'  width='20%' cellpadding='4' cellspacing='1')
             tbody

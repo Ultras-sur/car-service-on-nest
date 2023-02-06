@@ -44,7 +44,7 @@ export class ClientController {
     const step = 12;
     const clients = await this.clientService.findAll(currentPage, step);
     const isAdmin = req.user.roles.includes(Role.ADMIN);
-    return { ...clients, isAdmin }
+    return { ...clients, isAdmin };
   }
 
 
@@ -92,7 +92,7 @@ export class ClientController {
     if (!editedClient) throw new NotFoundException('Client does not exist!');
     return res.status(HttpStatus.OK).json({
       message: 'Client has been successfully updated',
-      client: editedClient
+      client: editedClient,
     })
   }
 
