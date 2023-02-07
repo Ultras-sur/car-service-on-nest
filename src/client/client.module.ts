@@ -11,7 +11,9 @@ import { ClientController } from './client.controller';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([{ name: Client.name, schema: ClientSchema }]), forwardRef(() => CarModule)],
+    MongooseModule.forFeature([{ name: Client.name, schema: ClientSchema }]),
+    forwardRef(() => CarModule),
+  ],
   controllers: [ClientController],
   providers: [ClientService],
   exports: [ClientService],

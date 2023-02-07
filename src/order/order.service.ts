@@ -9,7 +9,11 @@ import * as mongoose from 'mongoose';
 
 @Injectable()
 export class OrderService {
-  constructor(@InjectModel(Order.name) private orderModel: Model<OrderDocument>, private workPostService: WorkPostService, @InjectConnection() private readonly connection: mongoose.Connection) { }
+  constructor(
+    @InjectModel(Order.name) private orderModel: Model<OrderDocument>,
+    private workPostService: WorkPostService,
+    @InjectConnection() private readonly connection: mongoose.Connection,
+  ) {}
 
   async findCarOrders(carId): Promise<Order[]> {
     const carOrders = await this.orderModel.find({ car: carId });

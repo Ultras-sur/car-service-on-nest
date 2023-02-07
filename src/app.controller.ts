@@ -110,9 +110,15 @@ export class AppController {
     });
 
     const orderPageOptions = new OrderPageOptionsDTO(query);
-    const ordersInQueue = await this.orderServicePG.findOrdersPaginate(
-      orderPageOptions,
-    );
+    const ordersInQueue = await this.orderServicePG
+      .findOrdersPaginate(orderPageOptions)
+      .then((orderData) => {
+        const { data, meta } = orderData;
+        const filteredData = data.filter(
+          (order) => order.orderStatus === 'opened' && order.workPost === null,
+        );
+        return { data: filteredData, meta };
+      });
     const isAdmin = req.user.roles.includes(Role.ADMIN);
     return {
       workPosts,

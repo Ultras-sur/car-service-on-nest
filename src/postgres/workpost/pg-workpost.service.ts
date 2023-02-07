@@ -1,13 +1,17 @@
-import { Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { WorkPost } from 'entities/workpost.entity';
-import { QueryRunner, Repository } from 'typeorm';
+import { QueryRunner, Repository, DataSource } from 'typeorm';
+import { OrderServicePG } from '../order/order.service';
 
 @Injectable()
 export class WorkPostServicePG {
   constructor(
     @InjectRepository(WorkPost)
     private workPostRepository: Repository<WorkPost>,
+    @Inject(forwardRef(() => OrderServicePG))
+    private orderServicePG: OrderServicePG,
+    private dataSource: DataSource,
   ) {}
 
   async findWorkPost(condition = {}): Promise<WorkPost> {
@@ -20,7 +24,7 @@ export class WorkPostServicePG {
     return findedWorkPosts;
   }
 
-  async setToWorkPost(order, queryRunner: QueryRunner) {
+  async setToWorkPostWhithTransaction(order, queryRunner: QueryRunner) {
     const updatedWorkPost = await queryRunner.manager.update(
       WorkPost,
       { id: order.workPost.id },
@@ -29,12 +33,42 @@ export class WorkPostServicePG {
     return updatedWorkPost;
   }
 
-  async unsetWorkPost(workPostId, queryRunner: QueryRunner) {
-    const workPost = await queryRunner.manager.update(
-      WorkPost,
-      { number: workPostId },
-      { order: null },
-    );
-    return workPost;
+  async setToWorkPost(order, workPost) {
+    const updatedWorkPost = await this.workPostRepository
+      .createQueryBuilder('workPost')
+      .update({ order })
+      .where('id = :id', { id: workPost.id })
+      .execute()
+      .then((res) => res.raw[0]);
+    return updatedWorkPost;
+  }
+
+  async unsetWorkPostWhithTransaction(order, workPost, completeCondition) {
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+    let updatedWorkPost;
+    let updatedOrder;
+    try {
+      updatedWorkPost = await queryRunner.manager.update(
+        WorkPost,
+        workPost.id,
+        { order: null },
+      );
+      if (completeCondition?.orderStatus === 'closed') {
+        updatedOrder = await this.orderServicePG.updateWithTransaction(
+          order,
+          completeCondition,
+          queryRunner,
+        );
+      }
+      await queryRunner.commitTransaction();
+      return { updatedWorkPost, updatedOrder };
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+      throw new Error(error);
+    } finally {
+      await queryRunner.release();
+    }
   }
 }

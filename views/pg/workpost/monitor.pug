@@ -53,9 +53,9 @@ block content
          tr
             td #{ordersInQueue.meta.take * (Number(ordersInQueue.meta.page) - 1) + (index + 1)}
             td 
-              a(href=`/order/${order.id}`) #{order.number}
+              a(href=`/pgorder/${order.id}`) #{order.number}
             td 
-              a(href=`/car/${order.car.id}`) #{order.car.brand.name} #{order.car.model.name} #{order.car.releaseYear}      
+              a(href=`/pgcar/${order.car.id}`) #{order.car.brand.name} #{order.car.model.name} #{order.car.releaseYear}      
   div
     if ordersInQueue
       +pages(ordersInQueue.meta.page, ordersInQueue.meta.totalPages, '')         

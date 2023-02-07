@@ -1,4 +1,16 @@
-import { Controller, Get, Render, Req, Query, Param, Post, Res, Body, HttpStatus, Put } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Render,
+  Req,
+  Query,
+  Param,
+  Post,
+  Res,
+  Body,
+  HttpStatus,
+  Put,
+} from '@nestjs/common';
 import { Role } from 'schemas/user.schema';
 import { CarServicePG } from '../car/car.service';
 import { OrderPageOptionsDTO } from './dto/order-page-options';
@@ -47,7 +59,6 @@ export class OrderControllerPG {
       where: { id },
     });
     const isAdmin = req.user.roles.includes(Role.ADMIN);
-    //return res.status(HttpStatus.OK).json(order);
     return { order, isAdmin };
   }
 
@@ -79,7 +90,6 @@ export class OrderControllerPG {
       jobs: orderData.jobs,
     });
     return res.redirect(`${newOrder.id}`);
-    //return res.status(HttpStatus.OK).json(newOrder);
   }
 
   @Put('/update/:orderId')

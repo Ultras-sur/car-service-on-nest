@@ -1,7 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { Order } from 'entities/order.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DataSource, Like, Repository } from 'typeorm';
+import { DataSource, Like, QueryRunner, Repository } from 'typeorm';
 import { CreateOrderDTO } from './dto/create-order.dto';
 import { createOrderNumber } from 'helpers/number-generator';
 import { WorkPostServicePG } from '../workpost/pg-workpost.service';
@@ -15,6 +15,7 @@ export class OrderServicePG {
   constructor(
     @InjectRepository(Order) private orderRepository: Repository<Order>,
     private dataSource: DataSource,
+    @Inject(forwardRef(() => WorkPostServicePG))
     private workPostServicePG: WorkPostServicePG,
     private jobServicePG: JobServicePG,
   ) {}
@@ -64,7 +65,6 @@ export class OrderServicePG {
   }
 
   async createOrder(createOrderDTO: CreateOrderDTO) {
-    console.log(createOrderDTO)
     const queryRunner = this.dataSource.createQueryRunner();
     const orderJobs = await Promise.all(
       createOrderDTO.jobs.map(async (jobData) => {
@@ -96,9 +96,12 @@ export class OrderServicePG {
         number: orderNumber,
         jobs: orderJobs,
       });
-      await queryRunner.manager.save(Order, newOrder)
+      await queryRunner.manager.save(Order, newOrder);
       if (newOrder.workPost) {
-        await this.workPostServicePG.setToWorkPost(newOrder, queryRunner);
+        await this.workPostServicePG.setToWorkPostWhithTransaction(
+          newOrder,
+          queryRunner,
+        );
       }
       await queryRunner.commitTransaction();
       return newOrder;
@@ -127,6 +130,19 @@ export class OrderServicePG {
       .returning('*')
       .execute()
       .then((res) => res.raw[0]);
+    return updatedOrder;
+  }
+
+  async updateWithTransaction(
+    order,
+    completeCondition,
+    queryRunner: QueryRunner,
+  ) {
+    const updatedOrder = await queryRunner.manager.update(
+      Order,
+      order.id,
+      completeCondition,
+    );
     return updatedOrder;
   }
 }

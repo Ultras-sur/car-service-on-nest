@@ -3,10 +3,8 @@ import {
   Entity,
   OneToOne,
   PrimaryGeneratedColumn,
-  ManyToOne,
   JoinColumn,
 } from 'typeorm';
-import { Car } from './car.entity';
 import { Order } from './order.entity';
 
 @Entity()
