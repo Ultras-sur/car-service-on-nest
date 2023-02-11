@@ -1,7 +1,7 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { Order } from 'entities/order.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DataSource, Like, QueryRunner, Repository } from 'typeorm';
+import { DataSource, ILike, QueryRunner, Repository } from 'typeorm';
 import { CreateOrderDTO } from './dto/create-order.dto';
 import { createOrderNumber } from 'helpers/number-generator';
 import { WorkPostServicePG } from '../workpost/pg-workpost.service';
@@ -30,7 +30,9 @@ export class OrderServicePG {
     return findedOrders;
   }
 
-  async findOrdersPaginate(orderPageOptions: OrderPageOptionsDTO) {
+  async findOrdersPaginate(
+    orderPageOptions: OrderPageOptionsDTO,
+  ): Promise<PageDTO<Order>> {
     const ordersAndCount = await this.orderRepository.findAndCount({
       select: {
         id: true,
@@ -46,11 +48,11 @@ export class OrderServicePG {
       where: {
         client: {
           name: orderPageOptions.name
-            ? Like(`%${orderPageOptions.name}%`)
+            ? ILike(`%${orderPageOptions.name}%`)
             : null,
         },
         number: orderPageOptions.orderNumber
-          ? Like(`%${orderPageOptions.orderNumber}%`)
+          ? ILike(`%${orderPageOptions.orderNumber}%`)
           : null,
         workPost: orderPageOptions.workPost ?? null,
       },
@@ -64,7 +66,7 @@ export class OrderServicePG {
     return new PageDTO(orders, pageMeta);
   }
 
-  async createOrder(createOrderDTO: CreateOrderDTO) {
+  async createOrder(createOrderDTO: CreateOrderDTO): Promise<Order> {
     const queryRunner = this.dataSource.createQueryRunner();
     const orderJobs = await Promise.all(
       createOrderDTO.jobs.map(async (jobData) => {
@@ -113,7 +115,7 @@ export class OrderServicePG {
     }
   }
 
-  async updateOrder(orderId, updateOrderDTO) {
+  async updateOrderJobs(orderId, updateOrderDTO): Promise<Order> {
     const jobList = await Promise.all(
       updateOrderDTO.jobs.map(async (jobData) => {
         const findedJob = await this.jobServicePG.findJob({
@@ -143,6 +145,17 @@ export class OrderServicePG {
       order.id,
       completeCondition,
     );
+    return updatedOrder;
+  }
+
+  async updateStatus(orderId, orderStatus): Promise<Order> {
+    const updatedOrder = await this.orderRepository
+      .createQueryBuilder('order')
+      .update({ orderStatus, updatedAt: new Date() })
+      .where('id = :id', { id: orderId })
+      .returning('*')
+      .execute()
+      .then((res) => res.raw[0]);
     return updatedOrder;
   }
 }

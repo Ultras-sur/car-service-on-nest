@@ -35,8 +35,9 @@ export class OrderControllerPG {
     const orders = await this.orderServicePG.findOrdersPaginate(
       orderPageOptions,
     );
+    const serchString = `${req.url.replace(/\/order\??(page=\d+\&?)?/mi, '')}`;
     const isAdmin = req.user.roles.includes(Role.ADMIN);
-    return { orders, isAdmin };
+    return { orders, serchString, isAdmin };
   }
 
   @Get('/res/:orderId')
@@ -98,9 +99,23 @@ export class OrderControllerPG {
     @Param('orderId') orderId,
     @Body() updateOrderDTO: UpdateOrderDTO,
   ) {
-    const updatedOrder = await this.orderServicePG.updateOrder(
+    const updatedOrder = await this.orderServicePG.updateOrderJobs(
       orderId,
       updateOrderDTO,
+    );
+    return res.status(HttpStatus.OK).json({ message: 'OK', updatedOrder });
+  }
+
+  @Put('setstatus/:orderId')
+  async setOrderStatus(
+    @Res() res,
+    @Param('orderId') orderId,
+    @Body() UpdateOrderDTO: UpdateOrderDTO,
+  ) {
+    const { orderStatus } = UpdateOrderDTO;
+    const updatedOrder = await this.orderServicePG.updateStatus(
+      orderId,
+      orderStatus,
     );
     return res.status(HttpStatus.OK).json({ message: 'OK', updatedOrder });
   }

@@ -58,6 +58,6 @@ block content
             td.admin 
               a(href=`/pgclient/${car.owner.id}`) #{car.owner.name}
   div
-    if cars 
+    if cars.meta.totalPages > 1 
       +pages(cars.meta.page, cars.meta.totalPages, 'cars', serchString)
   script(src='/pgmodels.js')

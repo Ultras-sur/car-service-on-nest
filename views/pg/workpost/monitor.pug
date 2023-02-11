@@ -57,5 +57,5 @@ block content
             td 
               a(href=`/pgcar/${order.car.id}`) #{order.car.brand.name} #{order.car.model.name} #{order.car.releaseYear}      
   div
-    if ordersInQueue
+    if ordersInQueue.totalPages > 1
       +pages(ordersInQueue.meta.page, ordersInQueue.meta.totalPages, '')         

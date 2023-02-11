@@ -1,5 +1,5 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
-import { Like, Repository } from 'typeorm';
+import { ILike, Repository } from 'typeorm';
 import { Client } from 'entities/client.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateClientDTO } from './dto/createClient.dto';
@@ -16,10 +16,10 @@ export class ClientServisePG {
     const clientsAndCount = await this.clientRepository.findAndCount({
       where: {
         licensNumber: clientPageOptions.licensNumber
-          ? Like(`%${clientPageOptions.licensNumber}%`)
+          ? ILike(`%${clientPageOptions.licensNumber}%`)
           : null,
         name: clientPageOptions.name
-          ? Like(`%${clientPageOptions.name}%`)
+          ? ILike(`%${clientPageOptions.name}%`)
           : null,
       },
       order: { name: clientPageOptions.order },

@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Between, Like, Repository } from 'typeorm';
+import { Between, ILike, Repository } from 'typeorm';
 import { Car } from 'entities/car.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateCarDTO } from './dto/create-car.dto';
@@ -27,7 +27,7 @@ export class CarServicePG {
       where: {
         brand: { name: pageOptions.brand || null },
         model: { id: pageOptions.model || null },
-        vin: pageOptions.vin ? Like(`%${pageOptions.vin}%`) : null,
+        vin: pageOptions.vin ? ILike(`%${pageOptions.vin}%`) : null,
         releaseYear: Between(
           pageOptions.releaseYearBefore || 0,
           pageOptions.releaseYearTo || new Date().getUTCFullYear(),

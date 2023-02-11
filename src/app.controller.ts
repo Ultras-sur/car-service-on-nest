@@ -103,7 +103,7 @@ export class AppController {
 
   @Get('pgmonitor')
   @Render('pg/workpost/monitor')
-  async getPgMonitor(@Res() res, @Req() req, @Query() query) {
+  async getPgMonitor(@Req() req, @Query() query: OrderPageOptionsDTO) {
     const workPosts = await this.workPostServicePG.findWorkPosts({
       relations: { order: { car: { brand: true, model: true } } },
       order: { number: 'ASC' },

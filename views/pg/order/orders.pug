@@ -45,7 +45,7 @@ block content
             else
               td(style="background-color: #ffbdbd") #{order.orderStatus}
   div
-    if orders
-      +pages(page, totalPages, '/pgorder/all', serchString)
+    if orders.meta.totalPages > 1
+      +pages(orders.meta.page, orders.meta.totalPages, '/pgorder', serchString)
      
               

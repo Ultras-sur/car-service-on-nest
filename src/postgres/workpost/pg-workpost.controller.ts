@@ -12,7 +12,6 @@ import {
   Put,
 } from '@nestjs/common';
 import { Role } from 'schemas/user.schema';
-import { IsNull } from 'typeorm';
 import { OrderServicePG } from '../order/order.service';
 import { WorkPostServicePG } from '../workpost/pg-workpost.service';
 
