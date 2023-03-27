@@ -43,18 +43,16 @@ export class WorkPostServicePG {
     return updatedWorkPost;
   }
 
-  async unsetWorkPostWhithTransaction(order, workPost, completeCondition) {
+  async unsetWorkPostWhithTransaction(order, workPostId, completeCondition) {
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
     let updatedWorkPost;
     let updatedOrder;
     try {
-      updatedWorkPost = await queryRunner.manager.update(
-        WorkPost,
-        workPost.id,
-        { order: null },
-      );
+      updatedWorkPost = await queryRunner.manager.update(WorkPost, workPostId, {
+        order: null,
+      });
       if (completeCondition?.orderStatus === 'closed') {
         updatedOrder = await this.orderServicePG.updateWithTransaction(
           order,
@@ -70,5 +68,14 @@ export class WorkPostServicePG {
     } finally {
       await queryRunner.release();
     }
+  }
+
+  async unSetWithDeleteOrderAndTransaction(
+    workPostId,
+    queryRunner: QueryRunner,
+  ) {
+    return queryRunner.manager.update(WorkPost, workPostId, {
+      order: null,
+    });
   }
 }

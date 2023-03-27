@@ -1,5 +1,5 @@
-extends ../../layouts/layout.pug
-include ../../mixins/pages
+extends ../../../layouts/layout.pug
+include ../../../mixins/pages
 
 block content
     h1 Clients
@@ -29,12 +29,9 @@ block content
               td 
                 a(href=`/pgclient/${client.id}`) #{client.name}
               td #{client.licensNumber}
-              td  
-                button(type='button' id=`${client.id}_client_${client.name}` style='color: red;' onclick='deleteItem(this.id)' title="delete") X
     div
       if clients
         +pages(clients.meta.page, clients.meta.totalPages, '/pgclient', searchString)
     div
       button 
         a(href=`/pgclient/create`) Добавить клиента
-    script(src='/delete-config-pg.js')    

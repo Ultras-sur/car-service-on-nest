@@ -12,6 +12,7 @@ import {
   HttpStatus,
   Param,
   Body,
+  Delete,
 } from '@nestjs/common';
 import { ClientServisePG } from './pg-client.service';
 import { Role } from 'schemas/user.schema';
@@ -26,7 +27,7 @@ export class ClientControllerPG {
     private carServicePG: CarServicePG,
   ) {}
 
-  @Get('clients')
+  @Get('/')
   @Render('pg/client/clients')
   async getClients(
     @Res() res,
@@ -38,7 +39,7 @@ export class ClientControllerPG {
       carPageOptions,
     );
     const searchString = `${req.url.replace(
-      /\/pgclient\/clients\??(page=\d+\&?)?/im,
+      /\/pgclient\??(page=\d+\&?)?/im,
       '',
     )}`;
     const isAdmin = req.user.roles.includes(Role.ADMIN);
@@ -76,5 +77,25 @@ export class ClientControllerPG {
     const newClient = await this.clientServisePG.createClient(clientData);
     if (!newClient) throw new NotFoundException('New client is not created!');
     return res.redirect('getclients');
+  }
+
+  @Delete(':clientId')
+  async deleteClient(@Res() res, @Param('clientId') clientId) {
+    let deletedClient;
+    try {
+      const findedClient = await this.clientServisePG.findClient(clientId);
+      deletedClient = await this.clientServisePG.deleteClientWithTransaction(
+        findedClient,
+      );
+      return res.status(HttpStatus.OK).json({
+        message: 'Client successfully deleted',
+        client: deletedClient,
+      });
+    } catch (error) {
+      console.log(error);
+      return res
+        .status(HttpStatus.BAD_REQUEST)
+        .json({ message: error.message });
+    }
   }
 }

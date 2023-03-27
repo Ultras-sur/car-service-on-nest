@@ -1,7 +1,13 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { Order } from 'entities/order.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DataSource, ILike, QueryRunner, Repository } from 'typeorm';
+import {
+  DataSource,
+  DeleteResult,
+  ILike,
+  QueryRunner,
+  Repository,
+} from 'typeorm';
 import { CreateOrderDTO } from './dto/create-order.dto';
 import { createOrderNumber } from 'helpers/number-generator';
 import { WorkPostServicePG } from '../workpost/pg-workpost.service';
@@ -135,20 +141,16 @@ export class OrderServicePG {
     return updatedOrder;
   }
 
-  async updateWithTransaction(
-    order,
-    completeCondition,
-    queryRunner: QueryRunner,
-  ) {
+  async updateWithTransaction(order, updateData, queryRunner: QueryRunner) {
     const updatedOrder = await queryRunner.manager.update(
       Order,
       order.id,
-      completeCondition,
+      updateData,
     );
     return updatedOrder;
   }
 
-  async updateStatus(orderId, orderStatus): Promise<Order> {
+  async updateStatus(orderId: string, orderStatus: string): Promise<Order> {
     const updatedOrder = await this.orderRepository
       .createQueryBuilder('order')
       .update({ orderStatus, updatedAt: new Date() })
@@ -157,5 +159,54 @@ export class OrderServicePG {
       .execute()
       .then((res) => res.raw[0]);
     return updatedOrder;
+  }
+
+  async deleteOrder(orderId: string): Promise<Order> {
+    const deletedOrder = await this.orderRepository
+      .createQueryBuilder('order')
+      .delete()
+      .from(Order)
+      .where('id = :id', { id: orderId })
+      .returning('*')
+      .execute()
+      .then((res) => res.raw[0]);
+    return deletedOrder;
+  }
+
+  async deleteOrdersWithTransaction(orders, queryRunner: QueryRunner) {
+    return Promise.all(
+      orders.map(async (order) => {
+        if (order.workPost !== null) {
+          await this.workPostServicePG.unSetWithDeleteOrderAndTransaction(
+            order.workPost.id,
+            queryRunner,
+          );
+        }
+        await queryRunner.manager.delete(Order, order.id);
+      }),
+    );
+  }
+
+  async deleteOrderWithTransaction(order: Order): Promise<Order> {
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+    let deletedOrder;
+    try {
+      if (order.workPost !== null) {
+        await this.workPostServicePG.unSetWithDeleteOrderAndTransaction(
+          order.workPost,
+          queryRunner,
+        );
+      }
+      deletedOrder = await queryRunner.manager.delete(Order, order.id);
+      await queryRunner.commitTransaction();
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+      throw new Error(error.message);
+    } finally {
+      await queryRunner.release();
+    }
+    return deletedOrder;
   }
 }

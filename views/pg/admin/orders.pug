@@ -1,0 +1,54 @@
+extends ../../layouts/layout.pug
+include ../../mixins/pages
+
+block content
+  h1 Orders
+  div.find
+    form(method="GET" action='/pgorder')
+      div(style="padding-bottom: 1px;padding-top: 1px;padding-left: 1px;")
+        p(style='margin-bottom:2px; margin-top: 2px;') Number:
+        input.number(type='text' name='orderNumber')
+        p(style='margin-bottom:2px; margin-top: 2px;') Client name:
+        input.clientname(type='text' name='name') 
+        br
+        button(style="margin-top: 5px;") Find
+  div
+   table#orderstatuses-table(border='2'  width='20%' cellpadding='4' cellspacing='1')
+    tbody 
+      tr
+        td
+          strong №
+        td
+          strong Date
+        td 
+          strong Client name
+        td
+          strong Number
+        td   
+          strong Car 
+        td   
+          strong Status
+           
+    if orders 
+      each order, index in orders.data
+         tr
+            td #{orders.meta.take * (Number(orders.meta.page) - 1) + (index + 1)}
+            td #{new Date(order.createdAt).toLocaleString('en-US', {day: 'numeric', month: 'numeric', year: 'numeric'})}
+            td 
+              a(href=`/pgclient/${order.client.id}`) #{order.client.name}
+            td 
+              a(href=`/pgorder/${order.id}`) #{order.number}
+            td 
+              a(href=`/pgcar/${order.car.id}`) #{order.car.brand.name} #{order.car.model.name} #{order.car.releaseYear}
+            if order.orderStatus === 'opened'
+              td(style="background-color: #d4fdc9") #{order.orderStatus}
+            else
+              td(style="background-color: #ffbdbd") #{order.orderStatus}
+            td  
+                button(type='button' id=`${order.id}_order_${order.number}` style='color: red;' onclick='deleteItem(this.id)' title="delete") X
+  div
+    if orders.meta.totalPages > 1
+      +pages(orders.meta.page, orders.meta.totalPages, '/pgorder', serchString)
+  script(src='/delete-config-pg.js')    
+     
+              

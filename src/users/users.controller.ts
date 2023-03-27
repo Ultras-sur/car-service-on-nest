@@ -19,14 +19,22 @@ export class UsersController {
   @Render('admin/users')
   @UseGuards(RolesGuard)
   @Roles(Role.ADMIN)
-  async getUsers(@Query('page') page: number, @Query('email') email: string, @Query('roles') roles: [string], @Query('name') name: string, @Req() req) {
+  async getUsers(
+    @Query('page') page: number,
+    @Query('email') email: string,
+    @Query('roles') roles: [string],
+    @Query('name') name: string,
+    @Req() req,
+  ) {
     const currentPage = page ?? 1;
     const step = 6;
     const condition = {};
-    email ? condition['email'] = email : null;
-    name ? condition['name'] = name : null;
+    email ? (condition['email'] = email) : null;
+    name ? (condition['name'] = name) : null;
     if (roles) {
-      Array.isArray(roles) ? condition['roles'] = roles : condition['roles'] = [roles];
+      Array.isArray(roles)
+        ? (condition['roles'] = roles)
+        : (condition['roles'] = [roles]);
     }
     const users = await this.usersService.findUsers(currentPage, step, condition);
     return { ...users, isAdmin: true };
@@ -52,7 +60,7 @@ export class UsersController {
   @Post('/admin/create')
   async createUser(@Body() createUserDTO: CreateUserDTO, @Res() res) {
     const createdUser = await this.usersService.create(createUserDTO);
-    console.log(createdUser)
+    console.log(createdUser);
     return res.redirect(`/user`);
   }
 

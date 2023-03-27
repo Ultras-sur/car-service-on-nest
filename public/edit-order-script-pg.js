@@ -1,7 +1,6 @@
 async function getJobsAndCategories() {
   const response = await fetch('/pgjob/categoriesandjobs');
   const collection = await response.json();
-  console.log(collection);
   jobs = collection.jobsAndCategories;
   startJobSelection = collection.categories;
 }

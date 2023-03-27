@@ -1,24 +1,33 @@
-import { Column, Entity, JoinColumn, OneToOne, OneToMany, PrimaryGeneratedColumn, Generated, PrimaryColumn, ManyToOne } from 'typeorm';
-
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 export enum UserRole {
-  ADMIN = "ADMIN",
-  USER = "USER",
-  MANAGER = "MANAGER",
+  ADMIN = 'ADMIN',
+  USER = 'USER',
+  MANAGER = 'MANAGER',
   SUPERADMIN = 'SUPERADMIN',
 }
 
 @Entity()
 export class User {
   @PrimaryGeneratedColumn('uuid')
-  public id: number;
+  public id: string;
 
-  @Column({ unique: true, nullable: true })
-  public email: string;
+  @Column({ unique: true })
+  public login: string;
 
-  @Column({ nullable: true })
+  @Column()
+  public name: string;
+
+  @Column()
   public password: string;
 
-  @Column({ type: 'set', enum: UserRole, default:[UserRole.USER], nullable: true })
+  @Column({
+    type: 'text',
+    array: true,
+    default: [UserRole.USER],
+  })
   roles: UserRole[];
+
+  @Column({ nullable: true })
+  currentHashedRefreshToken: string;
 }

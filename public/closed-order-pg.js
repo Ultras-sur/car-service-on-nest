@@ -41,11 +41,16 @@ function changeStatusHandler() {
   if (selectedOptionValue === 'opened') {
     const divSelection = document.querySelector('#div-status');
     const submitButton = document.createElement('input');
-    submitButton.setAttribute('type', 'button');
-    submitButton.setAttribute('value', 'ok');
-    submitButton.setAttribute('id', 'submit-status');
-    submitButton.setAttribute('style', "margin-left:5px;");
-    submitButton.setAttribute('onclick', "sendStatus()");
+    const submitButtonAttributes = [
+      ['type', 'button'],
+      ['value', 'ok'],
+      ['id', 'submit-status'],
+      ['style', 'margin-left:5px;'],
+      ['onclick', 'sendStatus()'],
+    ];
+    submitButtonAttributes.forEach(([type, value]) =>
+      submitButton.setAttribute(type, value),
+    );
     divSelection.append(submitButton);
   } else {
     const submitButton = document.querySelector('#submit-status');

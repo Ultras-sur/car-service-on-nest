@@ -10,6 +10,7 @@ import {
   Body,
   HttpStatus,
   Put,
+  Delete,
 } from '@nestjs/common';
 import { Role } from 'schemas/user.schema';
 import { CarServicePG } from '../car/car.service';
@@ -35,7 +36,7 @@ export class OrderControllerPG {
     const orders = await this.orderServicePG.findOrdersPaginate(
       orderPageOptions,
     );
-    const serchString = `${req.url.replace(/\/order\??(page=\d+\&?)?/mi, '')}`;
+    const serchString = `${req.url.replace(/\/pgorder\??(page=\d+\&?)?/mi, '')}`;
     const isAdmin = req.user.roles.includes(Role.ADMIN);
     return { orders, serchString, isAdmin };
   }
@@ -118,5 +119,27 @@ export class OrderControllerPG {
       orderStatus,
     );
     return res.status(HttpStatus.OK).json({ message: 'OK', updatedOrder });
+  }
+
+  @Delete(':orderId')
+  async deleteOrder(@Param('orderId') orderId, @Res() res) {
+    let deletedOrder;
+    try {
+      const findedOrder = await this.orderServicePG.findOrder({
+        where: { id: orderId },
+        relations: { workPost: true },
+      });
+      deletedOrder = await this.orderServicePG.deleteOrderWithTransaction(
+        findedOrder,
+      );
+      return res
+        .status(HttpStatus.OK)
+        .json({ message: 'Order successfully deleted', order: deletedOrder });
+    } catch (error) {
+      console.log(error)
+      return res
+        .status(HttpStatus.BAD_REQUEST)
+        .json({ message: error.message });
+    }
   }
 }

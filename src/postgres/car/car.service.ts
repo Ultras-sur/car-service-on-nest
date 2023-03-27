@@ -1,15 +1,20 @@
 import { Injectable } from '@nestjs/common';
-import { Between, ILike, Repository } from 'typeorm';
+import { Between, ILike, Repository, DataSource, QueryRunner } from 'typeorm';
 import { Car } from 'entities/car.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateCarDTO } from './dto/create-car.dto';
 import { PageOptionsDTO } from './dto/page-options.dto';
 import { PageMetaDTO } from './dto/page-meta.dto';
 import { PageDTO } from './dto/page.dto';
+import { OrderServicePG } from '../order/order.service';
 
 @Injectable()
 export class CarServicePG {
-  constructor(@InjectRepository(Car) private carRepository: Repository<Car>) { }
+  constructor(
+    @InjectRepository(Car) private carRepository: Repository<Car>,
+    private orderServicePG: OrderServicePG,
+    private dataSource: DataSource,
+  ) {}
 
   async findCars(condition = {}): Promise<Car[]> {
     const cars = await this.carRepository.find(condition);
@@ -51,5 +56,30 @@ export class CarServicePG {
     const newCar = this.carRepository.create(carData);
     await this.carRepository.save(newCar);
     return newCar;
+  }
+
+  async deleteWithTransaction(carId: string): Promise<Car> {
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+    const carOrders = await this.orderServicePG.findOrders({
+      relations: { car: true, workPost: true },
+      where: { car: { id: carId } },
+    });
+    let deletedCar;
+    try {
+      await this.orderServicePG.deleteOrdersWithTransaction(
+        carOrders,
+        queryRunner,
+      );
+      deletedCar = await queryRunner.manager.delete(Car, carId);
+      await queryRunner.commitTransaction();
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+      throw new Error(error);
+    } finally {
+      await queryRunner.release();
+    }
+    return deletedCar;
   }
 }

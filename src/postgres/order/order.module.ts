@@ -12,8 +12,8 @@ import { JobModulePG } from '../job/pg-job.module';
 @Module({
   imports: [
     TypeOrmModule.forFeature([Order]),
-    CarModulePG,
-    ClientModulePG,
+    forwardRef(() => CarModulePG),
+    forwardRef(() => ClientModulePG),
     forwardRef(() => WorkPostModulePG),
     JobModulePG,
   ],

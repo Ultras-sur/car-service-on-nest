@@ -1,0 +1,62 @@
+extends ../../layouts/layout.pug
+
+block content
+  div
+    if workPosts 
+      each workPost in workPosts
+        if workPost.order !== null
+          div
+            table(id=`workpost${workPost.number}-table` border='2'  width='20%' cellpadding='4' cellspacing='1')
+              tbody
+                tr
+                  td(rowspan='4' style="width: 216px;")
+                    strong Work Post № #{workPost.number}
+                    form(method="POST" action=`/pgworkpost/unset` name=`workPost${workPost.number}`)
+                        div
+                            input.workpost(type='hidden' name='workPost' value=`${workPost.id}`)
+                            input.order-id(type='hidden' name='order' value=`${workPost.order.id}`)
+                            label
+                              input.order-checkboxes(type='checkbox' name='complete' value='false' id=`order-checkbox${workPost.number}`)
+                            | Order completed
+                            br
+                            br
+                            button(type='submit')  Take out car
+                  td Status: #{'working'}     
+                if workPost.order.jobs
+                  tr
+                    td Order №: 
+                      a(href=`/pgorder/${workPost.order.id}`) #{workPost.order.number}
+                  tr
+                    td Car: 
+                      a(href=`/pgcar/${workPost.order.car.id}`) #{workPost.order.car.brand.name} #{workPost.order.car.model.name} #{workPost.order.car.releaseYear}
+                  tr
+                    td 
+                      details
+                        summary Jobs:
+                        table(id=`workpost${workPost.number}-job-table` style='width:auto')
+                          each job in workPost.order.jobs
+                            tbody
+                               tr
+                                 td #{job.name}
+        else 
+          div
+            table(id=`workpost${workPost.number}-table` border='2'  width='20%' cellpadding='4' cellspacing='1')
+              tbody
+                tr
+                  td(colspan='4')
+                    strong Work Post № #{workPost.number}
+                    form(method="POST" action="/pgworkpost/set" name=`workPost${workPost.number}`)
+                          div
+                              input.workpost(type='hidden' name='workPost' value=`${workPost.id}`)
+                              select.order-selection(required='' id=`order-selection${workPost.number}` name='order')
+                                option
+                                if ordersInQueue
+                                  each order in ordersInQueue
+                                    option(value=`${order.id}`) #{order.number} - #{order.car.brand.name} #{order.car.model.name} 
+                              br
+                              br
+                              button.workpost-submit(id=`workpost-submit${workPost.number}`) Set order
+                tr
+                  td Status: #{workPost.status}
+   
+  script(src='/workpost.js')           

@@ -1,4 +1,15 @@
-import { Controller, Get, Render, Post, Res, Req, UseGuards, UseFilters, Query, HttpStatus } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Render,
+  Post,
+  Res,
+  Req,
+  UseGuards,
+  UseFilters,
+  Query,
+  HttpStatus,
+} from '@nestjs/common';
 import { CarService } from './car/car.service';
 import { OrderService } from './order/order.service';
 import { WorkPostService } from './workpost/workpost.service';
@@ -12,11 +23,11 @@ import { Roles } from './auth/roles.decorator';
 import { WorkPostServicePG } from './postgres/workpost/pg-workpost.service';
 import { OrderServicePG } from './postgres/order/order.service';
 import { OrderPageOptionsDTO } from './postgres/order/dto/order-page-options';
-
+import { Order } from 'entities/order.entity';
+import { PageMetaDTO } from './postgres/order/dto/page-meta.dto';
 
 @Controller()
 @UseFilters(AuthExceptionFilter)
-
 export class AppController {
   constructor(
     private orderService: OrderService,
@@ -28,9 +39,12 @@ export class AppController {
 
   @Get('/login')
   @Render('auth/auth')
-  index(@Req() req, @Res() res: Response): { message: string, loginPage: boolean } | void {
+  index(
+    @Req() req,
+    @Res() res: Response,
+  ): { message: string; loginPage: boolean } | void {
     if (req.isAuthenticated()) {
-      return res.redirect('/');
+      return res.redirect('/pgmonitor');
     }
     return { message: req.flash('loginError'), loginPage: true };
   }
@@ -40,7 +54,6 @@ export class AppController {
   login(@Res() res: Response) {
     return res.redirect('/');
   }
-
 
   @Get('/logout')
   logout(@Req() req, @Res() res: Response) {
@@ -55,14 +68,13 @@ export class AppController {
     }) */
 
     res.cookie('connect.sid', null, {
-      path: "/",
+      path: '/',
       httpOnly: true,
       maxAge: 0,
-      expires: new Date(0)
-    })
+      expires: new Date(0),
+    });
     return res.redirect('/login');
   }
-
 
   @Get('/')
   @Render('workpost/monitor')
@@ -101,6 +113,7 @@ export class AppController {
     return { workPosts, ordersInQueue, isAdmin };
   }
 
+  @UseGuards(AuthenticatedGuard)
   @Get('pgmonitor')
   @Render('pg/workpost/monitor')
   async getPgMonitor(@Req() req, @Query() query: OrderPageOptionsDTO) {
@@ -110,7 +123,8 @@ export class AppController {
     });
 
     const orderPageOptions = new OrderPageOptionsDTO(query);
-    const ordersInQueue = await this.orderServicePG
+    type FilteredDataPage = { data: Order[]; meta: PageMetaDTO };
+    const ordersInQueue: FilteredDataPage = await this.orderServicePG
       .findOrdersPaginate(orderPageOptions)
       .then((orderData) => {
         const { data, meta } = orderData;

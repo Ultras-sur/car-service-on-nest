@@ -9,6 +9,7 @@ import { CarModel } from 'entities/car-model.entity';
 import { JobCategory } from 'entities/job-category.entity';
 import { Job } from 'entities/job.entity';
 import { WorkPost } from 'entities/workpost.entity';
+import { User } from 'entities/user.entity';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { WorkPost } from 'entities/workpost.entity';
           JobCategory,
           Job,
           WorkPost,
+          User,
         ],
         synchronize: true,
       }),

@@ -21,13 +21,13 @@ function changeOption() {
   removeOptions(modelSelection);
   const selectedBrand = brandSelection.options[selectedIndex].value;
   modelSelection.add(new Option());
-  models[selectedBrand].sort().forEach(model => {
+  models[selectedBrand].sort().forEach((model) => {
     const text = model.toUpperCase();
     const value = model;
     const newOption = new Option(text, value);
     newOption.name = value;
     modelSelection.add(newOption);
-  })
+  });
 }
 
 //Elements
@@ -38,4 +38,3 @@ document.addEventListener("DOMContentLoaded", async () => {
   await getCarBrandsAndModels();
 });
 brandSelection.addEventListener('change', changeOption);
-

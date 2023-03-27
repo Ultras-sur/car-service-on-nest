@@ -1,18 +1,18 @@
 import { Injectable } from '@nestjs/common';
-import { UsersService } from 'src/users/users.service';
 import { LoginDTO } from 'dto/login.dto';
 import bcrypt = require('bcrypt');
-import { User } from 'schemas/user.schema';
+import { UserServicePG } from 'src/postgres/user/pg-user.service';
 
 @Injectable()
 export class AuthService {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(private readonly userServicePG: UserServicePG) {}
 
-  async validateUser(userData: LoginDTO): Promise<User | null> {
+  async validateUser(userData: LoginDTO) {
     const { email, password } = userData;
-    const user = await this.usersService.findUser({ email });
+    //const user = await this.usersService.findUser({ email });
+    const user = await this.userServicePG.findUser({ where: { login: email } });
     if (user && (await bcrypt.compare(password, user.password.toString()))) {
-      return this.usersService.sanitizeUser(user, 'password');
+      return this.userServicePG.sanitizeUser(user);
     }
     return null;
   }

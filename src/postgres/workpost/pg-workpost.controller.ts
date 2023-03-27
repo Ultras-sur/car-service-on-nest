@@ -23,7 +23,7 @@ export class WorkPostControllerPG {
   ) {}
 
   @Get('/')
-  @Render('pg/workpost/workposts')
+  @Render('pg/workpost/workposts2')
   async getWorkPosts(@Req() req) {
     const workPosts = await this.workPostServicePG.findWorkPosts({
       relations: { order: { car: { brand: true, model: true } } },
@@ -74,7 +74,7 @@ export class WorkPostControllerPG {
     });
     await this.workPostServicePG.unsetWorkPostWhithTransaction(
       findedOrder,
-      findedWorkPost,
+      findedWorkPost.id,
       completeCondition,
     );
     return res.redirect('/pgworkpost');

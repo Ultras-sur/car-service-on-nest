@@ -13,6 +13,7 @@ import {
   Param,
   UsePipes,
   ValidationPipe,
+  Delete,
 } from '@nestjs/common';
 import { ClientServisePG } from '../client/pg-client.service';
 import { CarModelServicePG } from '../car-model/car-model.service';
@@ -22,8 +23,14 @@ import { DataSource, Like } from 'typeorm';
 import { Car } from 'entities/car.entity';
 import { PageOptionsDTO } from './dto/page-options.dto';
 import { CreateCarDTO } from './dto/create-car.dto';
+import { AuthExceptionFilter } from 'src/auth/common/filters/auth-exceptions.filter';
+import { AuthenticatedGuard } from 'src/auth/common/guards/authenticated.guard';
+import { RolesGuard } from 'src/auth/common/guards/roles.guard';
+import { Roles } from 'src/auth/roles.decorator';
 
 @Controller('pgcar')
+@UseFilters(AuthExceptionFilter)
+@UseGuards(AuthenticatedGuard)
 export class CarControllerPG {
   constructor(
     private carServicePG: CarServicePG,
@@ -32,22 +39,23 @@ export class CarControllerPG {
     private dataSource: DataSource,
   ) { }
 
-  @Get('cars')
+  @Get('/')
   @Render('pg/car/cars')
+  @UseGuards(RolesGuard)
+  @Roles(Role.ADMIN, Role.MANAGER)
   async getCars(@Res() res, @Req() req, @Query() query: PageOptionsDTO) {
     const pageOptions = new PageOptionsDTO(query);
     const cars = await this.carServicePG.findCarsPaginate(pageOptions);
     const carBrands = await this.carModelServicePG.findCarBrands();
     const isAdmin = req.user.roles.includes(Role.ADMIN);
-    const searchString = `${req.url.replace(
-      /\/pgcar\/cars\??(page=\d+\&?)?/im,
-      '',
-    )}`;
+    const searchString = `${req.url.replace(/\/pgcar\??(page=\d+\&?)?/im, '')}`;
     return { cars, isAdmin, carBrands, searchString };
   }
 
   @Get(':id')
   @Render('pg/car/car')
+  @UseGuards(RolesGuard)
+  @Roles(Role.ADMIN, Role.MANAGER)
   async getCar(@Param('id') carId, @Req() req) {
     const car = await this.dataSource
       .getRepository(Car)
@@ -64,6 +72,8 @@ export class CarControllerPG {
 
   @Get('createcar/:ownerId')
   @Render('pg/car/create-car')
+  @UseGuards(RolesGuard)
+  @Roles(Role.ADMIN, Role.MANAGER)
   async getCreteCarForm(@Param('ownerId') ownerId, @Req() req) {
     const owner = { id: ownerId };
     const carBrands = await this.carModelServicePG.findCarBrands({
@@ -74,6 +84,8 @@ export class CarControllerPG {
   }
 
   @Post('createcar')
+  @UseGuards(RolesGuard)
+  @Roles(Role.ADMIN, Role.MANAGER)
   async createCar(@Res() res, @Body() createCarDTO: CreateCarDTO) {
     const carOwner = await this.clientServicePG.findClient(createCarDTO.owner);
     const carBrand = await this.carModelServicePG.findCarBrandById(
@@ -90,5 +102,15 @@ export class CarControllerPG {
       vin: createCarDTO.vin,
     });
     return res.redirect(`${newCar.id}`);
+  }
+
+  @Delete(':carId')
+  @UseGuards(RolesGuard)
+  @Roles(Role.ADMIN)
+  async deleteCar(@Param('carId') carId: string, @Res() res) {
+    const deletedCar = await this.carServicePG.deleteWithTransaction(carId);
+    return res
+      .status(HttpStatus.OK)
+      .json({ message: 'Car deleted successfully', car: deletedCar });
   }
 }

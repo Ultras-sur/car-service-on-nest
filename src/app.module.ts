@@ -19,6 +19,7 @@ import { CarModulePG } from './postgres/car/car.module';
 import { JobModulePG } from './postgres/job/pg-job.module';
 import { OrderModulePG } from './postgres/order/order.module';
 import { WorkPostModulePG } from './postgres/workpost/pg-workpost.module';
+import { UserModulePG } from './postgres/user/pg-user.module';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 require('dotenv').config();
 
@@ -49,6 +50,7 @@ require('dotenv').config();
     JobModulePG,
     OrderModulePG,
     WorkPostModulePG,
+    UserModulePG,
   ],
   controllers: [AppController],
   providers: [AppService],

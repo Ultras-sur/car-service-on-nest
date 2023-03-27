@@ -1,37 +1,4 @@
-extends ../../layouts/layout.pug
-include ../../mixins/pages
-
-block content
-    h1 Clients
-    div.find
-      form(method="GET" action='/pgclient/clients')
-        div(style="padding-bottom: 1px;padding-top: 1px;padding-left: 1px;")
-          p(style='margin-bottom:2px; margin-top: 2px;') Licens number:
-          input.number(type='text' name='licensNumber')
-          p(style='margin-bottom:2px; margin-top: 2px;') Client name:
-          input.clientname(type='text' name='name') 
-          br
-          button(style="margin-top: 5px;") Find
-    div
-      table#orderstatuses-table(border='2'  width='20%' cellpadding='4' cellspacing='1')
-        tbody
-          tr
-            td
-              strong №
-            td
-              strong Name
-            td
-              strong Licens number
-        if clients
-          each client, index in clients.data
-            tr
-              td #{clients.meta.take * (clients.meta.page - 1) + (index + 1)}
-              td 
-                a(href=`/pgclient/${client.id}`) #{client.name}
-              td #{client.licensNumber}
-    div
-      if clients
-        +pages(clients.meta.page, clients.meta.totalPages, '/pgclient/clients', searchString)
-    div
-      button 
-        a(href=`/pgclient/create`) Добавить клиента
+if isAdmin === true     
+    include ../admin/clients.pug
+else 
+    include ./includes/clients_simple.pug    

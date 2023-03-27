@@ -1,21 +1,21 @@
-extends ../layouts/layout.pug
-include ../mixins/pages
+extends ../../layouts/layout.pug
+include ../../mixins/pages
 
 block content
     h1 Users
     div.find
-      form(method="GET" action='/user')
+      form(method="GET" action='/pguser')
         div(style="padding-bottom: 1px;padding-top: 1px;padding-left: 1px;")
           p(style='margin-bottom:2px; margin-top: 2px;') Login:
-          input.login(type='text' name='email')
+          input.login(type='text' name='login')
           p(style='margin-bottom:2px; margin-top: 2px;') Name:
-          input.login(type='text' name='name')
+          input.name(type='text' name='name')
           p(style='margin-bottom:2px; margin-top: 2px;') Roles:
-          select#model-selection(autofocus name='roles' size='4' multiple='true' title='Ctrl + Click for few options')
+          select#roles-selection(autofocus name='roles' size='4' multiple='true' title='Ctrl + Click for few options')
             option(autofocus)
-            option(value='admin') ADMIN
-            option(value='manager') MANAGER
-            option(value='user') USER
+            option(value='ADMIN') ADMIN
+            option(value='MANAGER') MANAGER
+            option(value='USER') USER
           br
           button(style="margin-top: 5px;") Find
     div
@@ -32,21 +32,20 @@ block content
               strong Roles
             td.admin
               strong Action
-        if users
-          each user, index in users
+        if users.data
+          each user, index in users.data
             tr
-              td.admin #{step * (page - 1) + (index + 1)} 
-              td.admin 
-                a(href=`/user/${user._id}`) #{user.email}
+              td.admin #{users.meta.take * (users.meta.page - 1) + (index + 1)} 
+              td.admin #{user.login}
               td.admin #{user.name}
               td.admin #{user.roles.sort()}
               td.admin 
-                button(type='button' id=`${user._id}_user` style='color: red;' onclick='deleteItem(this.id)' title="delete") X
+                button(type='button' id=`${user.id}_user` style='color: red;' onclick='deleteItem(this.id)' title="delete") X
                 
     div
       if users 
-        +pages(page, totalPages, '/user')
+        +pages(users.meta.page, users.meta.totalPages, '/pguser')
     div
       button 
-        a(href="/pguser/admin/create") Add user
+        a(href="/pguser/create") Add user
     script(src='/delete-config.js')
