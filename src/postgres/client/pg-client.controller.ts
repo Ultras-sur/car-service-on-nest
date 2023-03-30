@@ -48,9 +48,9 @@ export class ClientControllerPG {
 
   @Get('create')
   @Render('pg/client/create-client')
-  getForm(@Req() req): { isAdmin: boolean } {
+  getForm(@Req() req) {
     const isAdmin = req.user.roles.includes(Role.ADMIN);
-    return { isAdmin };
+    return { message: req.flash('message'), isAdmin };
   }
 
   @Get(':id')
@@ -73,10 +73,18 @@ export class ClientControllerPG {
   }
 
   @Post('create')
-  async createClient(@Res() res, @Body() clientData: CreateClientDTO) {
-    const newClient = await this.clientServisePG.createClient(clientData);
-    if (!newClient) throw new NotFoundException('New client is not created!');
-    return res.redirect('getclients');
+  async createClient(
+    @Res() res,
+    @Req() req,
+    @Body() clientData: CreateClientDTO,
+  ) {
+    try {
+      const newClient = await this.clientServisePG.createClient(clientData);
+      return res.redirect(`${newClient.id}`);
+    } catch (error) {
+      req.flash('message', error.message);
+      return res.redirect('create');
+    }
   }
 
   @Delete(':clientId')

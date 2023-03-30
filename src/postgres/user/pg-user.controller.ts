@@ -37,9 +37,8 @@ export class UserControllerPG {
     return { message: req.flash('message'), isAdmin };
   }
 
-  @Post('/create')
+  @Post('create')
   async create(@Res() res, @Req() req, @Body() userData: CreateUserDTO) {
-    console.log(userData)
     try {
       await this.userServicePG.createUser(userData);
       return res.status(HttpStatus.OK).redirect('/');

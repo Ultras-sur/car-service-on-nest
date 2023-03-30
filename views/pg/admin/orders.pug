@@ -47,7 +47,7 @@ block content
             td  
                 button(type='button' id=`${order.id}_order_${order.number}` style='color: red;' onclick='deleteItem(this.id)' title="delete") X
   div
-    if orders.meta.totalPages > 1
+    if orders
       +pages(orders.meta.page, orders.meta.totalPages, '/pgorder', serchString)
   script(src='/delete-config-pg.js')    
      

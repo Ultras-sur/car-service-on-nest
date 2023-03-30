@@ -6,7 +6,7 @@ export class UserPageOptionsDTO {
   readonly name?: string;
   readonly roles?: UserRole[];
   readonly page?: number;
-  readonly take?: number = 2;
+  readonly take?: number = 10;
   readonly order: OrderEnum = OrderEnum.ASC;
   get skip(): number {
     return (this.page - 1) * this.take;

@@ -44,6 +44,16 @@ export class ClientServisePG {
   }
 
   async createClient(clientData: CreateClientDTO): Promise<Client> {
+    const { licensNumber } = clientData;
+    const client = await this.clientRepository.findOne({
+      where: { licensNumber },
+    });
+    if (client) {
+      throw new HttpException(
+        `Client with licens number ${licensNumber} is already exists!`,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
     const newClient = this.clientRepository.create(clientData);
     await this.clientRepository.save(newClient);
     return newClient;

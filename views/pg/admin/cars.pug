@@ -60,7 +60,7 @@ block content
             td  
                 button(type='button' id=`${car.id}_car_${car.brand.name} ${car.model.name} vin: ${car.vin}` style='color: red;' onclick='deleteItem(this.id)' title="delete") X 
   div
-    if cars.meta.totalPages > 1 
+    if cars
       +pages(cars.meta.page, cars.meta.totalPages, '/pgcar', serchString)
   script(src='/pgmodels.js')
   script(src='/delete-config-pg.js')
