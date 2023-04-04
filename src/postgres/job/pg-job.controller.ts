@@ -13,17 +13,26 @@ import {
   Param,
   Body,
 } from '@nestjs/common';
+import { UserRole } from 'entities/user.entity';
 import { Role } from 'schemas/user.schema';
+import { AuthExceptionFilter } from 'src/auth/common/filters/auth-exceptions.filter';
+import { AuthenticatedGuard } from 'src/auth/common/guards/authenticated.guard';
+import { RolesGuard } from 'src/auth/common/guards/roles.guard';
+import { RolesPG } from 'src/auth/roles.decorator';
 import { JobServicePG } from 'src/postgres/job/pg-job.service';
 import { CreateJobCategoryDTO } from './dto/create-job-category.dto';
 import { CreateJobDTO } from './dto/create-job.dto';
 
 @Controller('pgjob')
+@UseFilters(AuthExceptionFilter)
+@UseGuards(AuthenticatedGuard)
 export class JobControllerPG {
   constructor(private jobServicePG: JobServicePG) {}
 
   @Get('/')
   @Render('pg/admin/jobs-directory')
+  @UseGuards(RolesGuard)
+  @RolesPG(UserRole.ADMIN)
   async getCategoriesAndJobs(@Res() res, @Req() req) {
     const categoriesAndJobs = await this.jobServicePG.findJobCategories({
       relations: { jobs: true },
@@ -33,6 +42,8 @@ export class JobControllerPG {
   }
 
   @Get('categoriesandjobs')
+  @UseGuards(RolesGuard)
+  @RolesPG(UserRole.ADMIN)
   async getCategoriesAndJobsFetch(@Res() res) {
     const allCategories = await this.jobServicePG.findJobCategories();
     const jobsAndCategories = {};
@@ -60,6 +71,8 @@ export class JobControllerPG {
   }
 
   @Post('newcategory')
+  @UseGuards(RolesGuard)
+  @RolesPG(UserRole.ADMIN)
   async createJobCategory(
     @Body() createJobCategoryDTO: CreateJobCategoryDTO,
     @Res() res,
@@ -71,6 +84,8 @@ export class JobControllerPG {
   }
 
   @Post('newjob')
+  @UseGuards(RolesGuard)
+  @RolesPG(UserRole.ADMIN)
   async createJob(@Body() createJob: CreateJobDTO, @Res() res) {
     const newJob = await this.jobServicePG.createJob(createJob);
     return res.redirect('/pgjob');

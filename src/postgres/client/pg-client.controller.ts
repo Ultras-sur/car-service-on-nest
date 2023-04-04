@@ -19,8 +19,15 @@ import { Role } from 'schemas/user.schema';
 import { CreateClientDTO } from './dto/createClient.dto';
 import { CarServicePG } from '../car/car.service';
 import { ClientPageOptionsDTO } from './dto/client-page-options.dto';
+import { AuthExceptionFilter } from 'src/auth/common/filters/auth-exceptions.filter';
+import { AuthenticatedGuard } from 'src/auth/common/guards/authenticated.guard';
+import { RolesGuard } from 'src/auth/common/guards/roles.guard';
+import { RolesPG } from 'src/auth/roles.decorator';
+import { UserRole } from 'entities/user.entity';
 
 @Controller('pgclient')
+@UseFilters(AuthExceptionFilter)
+@UseGuards(AuthenticatedGuard)
 export class ClientControllerPG {
   constructor(
     private clientServisePG: ClientServisePG,
@@ -29,6 +36,8 @@ export class ClientControllerPG {
 
   @Get('/')
   @Render('pg/client/clients')
+  @UseGuards(RolesGuard)
+  @RolesPG(UserRole.ADMIN, UserRole.MANAGER)
   async getClients(
     @Res() res,
     @Req() req,
@@ -48,6 +57,8 @@ export class ClientControllerPG {
 
   @Get('create')
   @Render('pg/client/create-client')
+  @UseGuards(RolesGuard)
+  @RolesPG(UserRole.ADMIN, UserRole.MANAGER)
   getForm(@Req() req) {
     const isAdmin = req.user.roles.includes(Role.ADMIN);
     return { message: req.flash('message'), isAdmin };
@@ -55,6 +66,8 @@ export class ClientControllerPG {
 
   @Get(':id')
   @Render('pg/client/client')
+  @UseGuards(RolesGuard)
+  @RolesPG(UserRole.ADMIN, UserRole.MANAGER)
   async getClient(@Param('id') id, @Req() req) {
     const client = await this.clientServisePG.findClient(id);
     const cars = await this.carServicePG.findCars({
@@ -73,6 +86,8 @@ export class ClientControllerPG {
   }
 
   @Post('create')
+  @UseGuards(RolesGuard)
+  @RolesPG(UserRole.ADMIN, UserRole.MANAGER)
   async createClient(
     @Res() res,
     @Req() req,
@@ -88,6 +103,8 @@ export class ClientControllerPG {
   }
 
   @Delete(':clientId')
+  @UseGuards(RolesGuard)
+  @RolesPG(UserRole.ADMIN)
   async deleteClient(@Res() res, @Param('clientId') clientId) {
     let deletedClient;
     try {

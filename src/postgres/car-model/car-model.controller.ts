@@ -11,26 +11,36 @@ import {
   HttpStatus,
   Body,
 } from '@nestjs/common';
-import { Role } from 'schemas/user.schema';
+import { UserRole } from 'entities/user.entity';
+import { AuthExceptionFilter } from 'src/auth/common/filters/auth-exceptions.filter';
+import { AuthenticatedGuard } from 'src/auth/common/guards/authenticated.guard';
+import { RolesGuard } from 'src/auth/common/guards/roles.guard';
+import { RolesPG } from 'src/auth/roles.decorator';
 import { CarModelServicePG } from '../car-model/car-model.service';
 import { CreateCarBrandDTO } from './dto/create-car-brand.dto';
 import { CreateCarModelDTO } from './dto/create-car-model.dto';
 
 @Controller('pgcarmodel')
+@UseFilters(AuthExceptionFilter)
+@UseGuards(AuthenticatedGuard)
 export class CarModelControllerPG {
   constructor(private carModelServicePG: CarModelServicePG) { }
 
   @Get('/')
   @Render('pg/admin/cars-directory')
+  @UseGuards(RolesGuard)
+  @RolesPG(UserRole.ADMIN)
   async getCarBrands(@Res() res, @Req() req) {
     const carBrandsAndModels = await this.carModelServicePG.findCarBrands({
       relations: { models: true },
     });
-    const isAdmin = req.user.roles.includes(Role.ADMIN);
+    const isAdmin = req.user.roles.includes(UserRole.ADMIN);
     return { carBrandsAndModels, isAdmin };
   }
 
   @Get('carbrandsandmodels')
+  @UseGuards(RolesGuard)
+  @RolesPG(UserRole.ADMIN, UserRole.MANAGER, UserRole.USER)
   async getCarbrandsForFetch(@Res() res) {
     const carBrands = await this.carModelServicePG.findCarBrands({
       order: { name: 'ASC' },
@@ -50,6 +60,8 @@ export class CarModelControllerPG {
   }
 
   @Post('newbrand')
+  @UseGuards(RolesGuard)
+  @RolesPG(UserRole.ADMIN)
   async createCarBrand(
     @Body() createCarBrandDTO: CreateCarBrandDTO,
     @Res() res,
@@ -61,6 +73,8 @@ export class CarModelControllerPG {
   }
 
   @Post('newmodel')
+  @UseGuards(RolesGuard)
+  @RolesPG(UserRole.ADMIN)
   async createCarModel(@Body() createCarModel: CreateCarModelDTO, @Res() res) {
     const newCarModel = await this.carModelServicePG.createCarModel(
       createCarModel,

@@ -3,6 +3,7 @@
 /node_modules
 .env
 /src/auth/deprecated
+/doc
 
 # Logs
 logs

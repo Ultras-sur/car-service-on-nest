@@ -26,7 +26,8 @@ import { CreateCarDTO } from './dto/create-car.dto';
 import { AuthExceptionFilter } from 'src/auth/common/filters/auth-exceptions.filter';
 import { AuthenticatedGuard } from 'src/auth/common/guards/authenticated.guard';
 import { RolesGuard } from 'src/auth/common/guards/roles.guard';
-import { Roles } from 'src/auth/roles.decorator';
+import { RolesPG } from 'src/auth/roles.decorator';
+import { UserRole } from 'entities/user.entity';
 
 @Controller('pgcar')
 @UseFilters(AuthExceptionFilter)
@@ -42,7 +43,7 @@ export class CarControllerPG {
   @Get('/')
   @Render('pg/car/cars')
   @UseGuards(RolesGuard)
-  @Roles(Role.ADMIN, Role.MANAGER)
+  @RolesPG(UserRole.ADMIN, UserRole.MANAGER)
   async getCars(@Res() res, @Req() req, @Query() query: PageOptionsDTO) {
     const pageOptions = new PageOptionsDTO(query);
     const cars = await this.carServicePG.findCarsPaginate(pageOptions);
@@ -55,7 +56,7 @@ export class CarControllerPG {
   @Get(':id')
   @Render('pg/car/car')
   @UseGuards(RolesGuard)
-  @Roles(Role.ADMIN, Role.MANAGER)
+  @RolesPG(UserRole.ADMIN, UserRole.MANAGER)
   async getCar(@Param('id') carId, @Req() req) {
     const car = await this.dataSource
       .getRepository(Car)
@@ -73,7 +74,7 @@ export class CarControllerPG {
   @Get('createcar/:ownerId')
   @Render('pg/car/create-car')
   @UseGuards(RolesGuard)
-  @Roles(Role.ADMIN, Role.MANAGER)
+  @RolesPG(UserRole.ADMIN, UserRole.MANAGER)
   async getCreteCarForm(@Param('ownerId') ownerId, @Req() req) {
     const owner = { id: ownerId };
     const carBrands = await this.carModelServicePG.findCarBrands({
@@ -85,7 +86,7 @@ export class CarControllerPG {
 
   @Post('createcar')
   @UseGuards(RolesGuard)
-  @Roles(Role.ADMIN, Role.MANAGER)
+  @RolesPG(UserRole.ADMIN, UserRole.MANAGER)
   async createCar(@Res() res, @Body() createCarDTO: CreateCarDTO) {
     const carOwner = await this.clientServicePG.findClient(createCarDTO.owner);
     const carBrand = await this.carModelServicePG.findCarBrandById(
@@ -106,7 +107,7 @@ export class CarControllerPG {
 
   @Delete(':carId')
   @UseGuards(RolesGuard)
-  @Roles(Role.ADMIN)
+  @RolesPG(UserRole.ADMIN)
   async deleteCar(@Param('carId') carId: string, @Res() res) {
     const deletedCar = await this.carServicePG.deleteWithTransaction(carId);
     return res
