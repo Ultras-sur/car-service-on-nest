@@ -47,7 +47,10 @@ export class OrderControllerPG {
     const orders = await this.orderServicePG.findOrdersPaginate(
       orderPageOptions,
     );
-    const serchString = `${req.url.replace(/\/pgorder\??(page=\d+\&?)?/mi, '')}`;
+    const serchString = `${req.url.replace(
+      /\/pgorder\??(page=\d+\&?)?/im,
+      '',
+    )}`;
     const isAdmin = req.user.roles.includes(Role.ADMIN);
     return { orders, serchString, isAdmin };
   }

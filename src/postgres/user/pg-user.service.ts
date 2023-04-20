@@ -81,53 +81,6 @@ export class UserServicePG {
     }
   }
 
-  async setCurrentRefreshToken(
-    refreshToken: string,
-    userId: string,
-  ): Promise<User> {
-    const currentHashedRefreshToken = await bcrypt.hash(refreshToken, 10);
-    console.log('refreshToken: ' + refreshToken);
-    const updatedUser = await this.userRepository
-      .createQueryBuilder('user')
-      .update({ currentHashedRefreshToken })
-      .where('id = :id', { id: userId })
-      .returning('*')
-      .execute()
-      .then((res) => res.raw[0]);
-    return updatedUser;
-  }
-
-  async removeRefreshToken(userId: string): Promise<User> {
-    console.log('RemoveRefreshToken');
-    const updatedUser = await this.userRepository
-      .createQueryBuilder('user')
-      .update({ currentHashedRefreshToken: null })
-      .where('id = :id', { id: userId })
-      .returning('*')
-      .execute()
-      .then((res) => res.raw[0]);
-    return updatedUser;
-  }
-
-  async getUserIfRefreshTokenMatches(refreshToken: any, userId: string) {
-    console.log('UserServicePG: getUserIfRefreshTokenMatches');
-    const user = await this.userRepository.findOne({ where: { id: userId } });
-    if (!user.currentHashedRefreshToken) throw new ForbiddenException();
-    const isRefreshTokenMatched = this.isRefreshTokenMatched(
-      refreshToken,
-      user.currentHashedRefreshToken,
-    );
-    if (isRefreshTokenMatched) {
-      return user;
-    } else {
-      throw new ForbiddenException();
-    }
-  }
-
-  async isRefreshTokenMatched(refreshToken, currentHashedRefreshToken) {
-    return bcrypt.compare(refreshToken, currentHashedRefreshToken);
-  }
-
   sanitizeUser(user) {
     const { password, ...sanitizedUser } = user;
     return sanitizedUser;

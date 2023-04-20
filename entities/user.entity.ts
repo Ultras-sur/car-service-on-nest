@@ -27,7 +27,4 @@ export class User {
     default: [UserRole.USER],
   })
   roles: UserRole[];
-
-  @Column({ nullable: true })
-  currentHashedRefreshToken: string;
 }

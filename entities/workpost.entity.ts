@@ -12,7 +12,7 @@ export class WorkPost {
   @PrimaryGeneratedColumn('uuid')
   public id: number;
 
-  @Column({ unique: true, nullable: true })
+  @Column({ unique: true })
   public number: string;
 
   @OneToOne(() => Order, (order: Order) => order.workPost)

@@ -14,6 +14,7 @@ async function bootstrap() {
   // app.setBaseViewsDir(join(__dirname, '..', 'views'));
   app.setBaseViewsDir(resolve('./views'));
   app.useStaticAssets(resolve('./public'));
+  app.useStaticAssets(resolve('./public/car_images'));
   app.setViewEngine('pug');
 
   app.use(

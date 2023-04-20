@@ -36,4 +36,7 @@ export class Car {
 
   @OneToMany(() => Order, (order: Order) => order.car)
   public orders: Order[];
+
+  @Column({ nullable: true })
+  public imagePath: string;
 }

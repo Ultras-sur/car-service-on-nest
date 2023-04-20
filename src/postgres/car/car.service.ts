@@ -52,6 +52,17 @@ export class CarServicePG {
     return car;
   }
 
+  async findCarAndUpdate(carId, condition): Promise<Car> {
+    const updatedCar = await this.carRepository
+      .createQueryBuilder('car')
+      .update(condition)
+      .where('id = :id', { id: carId })
+      .returning('*')
+      .execute()
+      .then((res) => res.raw[0]);
+    return updatedCar;
+  }
+
   async createCar(carData: CreateCarDTO): Promise<Car> {
     const newCar = this.carRepository.create(carData);
     await this.carRepository.save(newCar);

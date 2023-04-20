@@ -11,8 +11,6 @@ import {
   HttpStatus,
   Body,
   Param,
-  UsePipes,
-  ValidationPipe,
   Delete,
 } from '@nestjs/common';
 import { ClientServisePG } from '../client/pg-client.service';
@@ -28,6 +26,9 @@ import { AuthenticatedGuard } from 'src/auth/common/guards/authenticated.guard';
 import { RolesGuard } from 'src/auth/common/guards/roles.guard';
 import { RolesPG } from 'src/auth/roles.decorator';
 import { UserRole } from 'entities/user.entity';
+import * as fs from 'node:fs';
+import busboy = require('busboy');
+import * as path from 'path';
 
 @Controller('pgcar')
 @UseFilters(AuthExceptionFilter)
@@ -38,7 +39,7 @@ export class CarControllerPG {
     private clientServicePG: ClientServisePG,
     private carModelServicePG: CarModelServicePG,
     private dataSource: DataSource,
-  ) { }
+  ) {}
 
   @Get('/')
   @Render('pg/car/cars')
@@ -54,7 +55,7 @@ export class CarControllerPG {
   }
 
   @Get(':id')
-  @Render('pg/car/car')
+  @Render('pg/car/car2')
   @UseGuards(RolesGuard)
   @RolesPG(UserRole.ADMIN, UserRole.MANAGER)
   async getCar(@Param('id') carId, @Req() req) {
@@ -67,8 +68,13 @@ export class CarControllerPG {
       .leftJoinAndSelect('car.orders', 'orders')
       .where('car.id = :id', { id: carId })
       .getOne();
+    const imagePath =
+      car.imagePath
+        ?.split('/')
+        .filter((elem) => elem !== 'public')
+        .join('/') ?? null;
     const isAdmin = req.user.roles.includes(Role.ADMIN);
-    return { car, isAdmin };
+    return { car, imagePath, isAdmin, message: req.flash('message') };
   }
 
   @Get('createcar/:ownerId')
@@ -103,6 +109,39 @@ export class CarControllerPG {
       vin: createCarDTO.vin,
     });
     return res.redirect(`${newCar.id}`);
+  }
+
+  @Post('/upload/:carId')
+  @UseGuards(RolesGuard)
+  @RolesPG(UserRole.ADMIN, UserRole.MANAGER)
+  async uploadCarImage(@Res() res, @Req() req, @Param('carId') carId) {
+    const bb = busboy({ headers: req.headers });
+    bb.on('file', async (name, file, info) => {
+      const { filename } = info;
+      if (filename.length === 0) {
+        req.flash('message', 'No file selected');
+        return res.redirect(`/pgcar/${carId}`);
+      }
+      const newFileName = `car_${carId}${path.extname(filename)}`;
+      const filePath = path.join('car_images', newFileName);
+      try {
+        const fstream = fs.createWriteStream(path.join('public', filePath));
+        file.pipe(fstream);
+        await this.carServicePG.findCarAndUpdate(carId, {
+          imagePath: filePath,
+        });
+        req.flash('message', 'OK');
+        return res.redirect(`/pgcar/${carId}`);
+      } catch (error) {
+        req.flash('message', error.message);
+        return res.redirect(`/pgcar/${carId}`);
+      }
+    });
+    bb.on('error', (error) => {
+      req.flash('message', error);
+      return res.redirect(`/pgcar/${carId}`);
+    });
+    req.pipe(bb);
   }
 
   @Delete(':carId')

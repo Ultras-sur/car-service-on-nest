@@ -4,6 +4,7 @@
 .env
 /src/auth/deprecated
 /doc
+/public/car_images
 
 # Logs
 logs
