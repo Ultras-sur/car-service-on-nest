@@ -1,6 +1,6 @@
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'entities/user.entity';
-import { ArrayContains, ILike, Repository } from 'typeorm';
+import { ArrayContainedBy, ArrayContains, Equal, ILike, Repository } from 'typeorm';
 import { CreateUserDTO } from './dto/create-user.dto';
 import bcrypt = require('bcrypt');
 import { ForbiddenException, HttpException, HttpStatus } from '@nestjs/common';
@@ -26,7 +26,7 @@ export class UserServicePG {
   async findUsersPaginate(
     userPageOptions: UserPageOptionsDTO,
   ): Promise<PageDTO<User>> {
-    const { login, name, roles, order, skip, take } = userPageOptions;
+    const { login, name, roles, order, skip, take, roles_choosed } = userPageOptions;
     const usersAndCount = await this.userRepository.findAndCount({
       select: {
         id: true,
@@ -37,7 +37,8 @@ export class UserServicePG {
       where: {
         name: name ? ILike(`%${name}%`) : null,
         login: login ? ILike(`%${login}%`) : null,
-        roles: roles ? ArrayContains(roles) : null,
+        // eslint-disable-next-line prettier/prettier
+        roles: roles ? (roles_choosed ? Equal(roles) : ArrayContains(roles)) : null,
       },
       order: { name: order },
       skip: skip,

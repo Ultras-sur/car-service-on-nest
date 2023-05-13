@@ -14,7 +14,7 @@ import {
   Body,
   Delete,
 } from '@nestjs/common';
-import { ClientServisePG } from './pg-client.service';
+import { ClientServicePG } from './pg-client.service';
 import { Role } from 'schemas/user.schema';
 import { CreateClientDTO } from './dto/createClient.dto';
 import { CarServicePG } from '../car/car.service';
@@ -30,7 +30,7 @@ import { UserRole } from 'entities/user.entity';
 @UseGuards(AuthenticatedGuard)
 export class ClientControllerPG {
   constructor(
-    private clientServisePG: ClientServisePG,
+    private clientServicePG: ClientServicePG,
     private carServicePG: CarServicePG,
   ) {}
 
@@ -44,7 +44,7 @@ export class ClientControllerPG {
     @Query() query: ClientPageOptionsDTO,
   ) {
     const carPageOptions = new ClientPageOptionsDTO(query);
-    const clients = await this.clientServisePG.findClientsPaginate(
+    const clients = await this.clientServicePG.findClientsPaginate(
       carPageOptions,
     );
     const searchString = `${req.url.replace(
@@ -69,7 +69,7 @@ export class ClientControllerPG {
   @UseGuards(RolesGuard)
   @RolesPG(UserRole.ADMIN, UserRole.MANAGER)
   async getClient(@Param('id') id, @Req() req) {
-    const client = await this.clientServisePG.findClient(id);
+    const client = await this.clientServicePG.findClient(id);
     const cars = await this.carServicePG.findCars({
       select: {
         id: true,
@@ -94,7 +94,7 @@ export class ClientControllerPG {
     @Body() clientData: CreateClientDTO,
   ) {
     try {
-      const newClient = await this.clientServisePG.createClient(clientData);
+      const newClient = await this.clientServicePG.createClient(clientData);
       return res.redirect(`${newClient.id}`);
     } catch (error) {
       req.flash('message', error.message);
@@ -108,8 +108,8 @@ export class ClientControllerPG {
   async deleteClient(@Res() res, @Param('clientId') clientId) {
     let deletedClient;
     try {
-      const findedClient = await this.clientServisePG.findClient(clientId);
-      deletedClient = await this.clientServisePG.deleteClientWithTransaction(
+      const findedClient = await this.clientServicePG.findClient(clientId);
+      deletedClient = await this.clientServicePG.deleteClientWithTransaction(
         findedClient,
       );
       return res.status(HttpStatus.OK).json({

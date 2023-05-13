@@ -17,7 +17,11 @@ block content
             option(value='MANAGER') MANAGER
             option(value='USER') USER
           br
-          button(style="margin-top: 5px;") Find
+          label
+            input.users-checkbox(type='checkbox' name='roles_choosed' value='true' id=`users-checkbox` style="margin-left: 0px;margin-top: 8px;")
+            | only choosed
+          br  
+          button(style="margin-top: 8px;") Find
     div
       table#users-table(border='2'  width='20%' cellpadding='4' cellspacing='1')
         tbody

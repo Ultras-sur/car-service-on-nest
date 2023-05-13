@@ -7,6 +7,7 @@ export class UserPageOptionsDTO {
   readonly roles?: UserRole[];
   readonly page?: number;
   readonly take?: number = 10;
+  readonly roles_choosed?: boolean;
   readonly order: OrderEnum = OrderEnum.ASC;
   get skip(): number {
     return (this.page - 1) * this.take;
@@ -23,5 +24,6 @@ export class UserPageOptionsDTO {
     this.name = query.name ?? null;
     this.login = query.login ?? null;
     this.roles = this.getRoles(query.roles);
+    this.roles_choosed = query.roles_choosed === 'true' ? true : false;
   }
 }

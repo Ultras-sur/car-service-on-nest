@@ -5,6 +5,7 @@
 /src/auth/deprecated
 /doc
 /public/car_images
+/migrations
 
 # Logs
 logs

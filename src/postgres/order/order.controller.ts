@@ -18,7 +18,7 @@ import { Role } from 'schemas/user.schema';
 import { CarServicePG } from '../car/car.service';
 import { OrderPageOptionsDTO } from './dto/order-page-options';
 import { OrderServicePG } from './order.service';
-import { ClientServisePG } from '../client/pg-client.service';
+import { ClientServicePG } from '../client/pg-client.service';
 import { WorkPostServicePG } from '../workpost/pg-workpost.service';
 import { UpdateOrderDTO } from './dto/update-order.dto';
 import { AuthExceptionFilter } from 'src/auth/common/filters/auth-exceptions.filter';
@@ -34,7 +34,7 @@ export class OrderControllerPG {
   constructor(
     private orderServicePG: OrderServicePG,
     private carServicePG: CarServicePG,
-    private clientServicePG: ClientServisePG,
+    private clientServicePG: ClientServicePG,
     private workPostServicePG: WorkPostServicePG,
   ) {}
 
@@ -164,7 +164,7 @@ export class OrderControllerPG {
         .status(HttpStatus.OK)
         .json({ message: 'Order successfully deleted', order: deletedOrder });
     } catch (error) {
-      console.log(error)
+      console.log(error);
       return res
         .status(HttpStatus.BAD_REQUEST)
         .json({ message: error.message });

@@ -10,7 +10,7 @@ import { Order } from 'entities/order.entity';
 import { WorkPost } from 'entities/workpost.entity';
 
 @Injectable()
-export class ClientServisePG {
+export class ClientServicePG {
   constructor(
     @InjectRepository(Client) private clientRepository: Repository<Client>,
     private dataSource: DataSource,
@@ -34,7 +34,7 @@ export class ClientServisePG {
     const clientMeta = new ClientPageMetaDTO(clientsCount, clientPageOptions);
     return new ClientPageDTO(clients, clientMeta);
   }
-  
+
   async findClient(id): Promise<Client> {
     const client = await this.clientRepository.findOne({ where: { id } });
     if (!client) {

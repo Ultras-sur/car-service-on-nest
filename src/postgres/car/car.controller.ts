@@ -13,7 +13,7 @@ import {
   Param,
   Delete,
 } from '@nestjs/common';
-import { ClientServisePG } from '../client/pg-client.service';
+import { ClientServicePG } from '../client/pg-client.service';
 import { CarModelServicePG } from '../car-model/car-model.service';
 import { CarServicePG } from './car.service';
 import { Role } from 'schemas/user.schema';
@@ -36,7 +36,7 @@ import * as path from 'path';
 export class CarControllerPG {
   constructor(
     private carServicePG: CarServicePG,
-    private clientServicePG: ClientServisePG,
+    private clientServicePG: ClientServicePG,
     private carModelServicePG: CarModelServicePG,
     private dataSource: DataSource,
   ) {}
