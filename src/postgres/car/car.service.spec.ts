@@ -3,7 +3,7 @@ import { OrderServicePG } from '../order/order.service';
 import { CarServicePG } from './car.service';
 import { DataSource, Entity, Repository } from 'typeorm';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { Car } from 'entities/car.entity';
+import { Car } from '../../../entities/car.entity';
 import { carStub } from './test/car.stub';
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment

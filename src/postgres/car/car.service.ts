@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Between, ILike, Repository, DataSource, QueryRunner } from 'typeorm';
-import { Car } from 'entities/car.entity';
+import { Car } from '../../../entities/car.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateCarDTO } from './dto/create-car.dto';
 import { PageOptionsDTO } from './dto/page-options.dto';

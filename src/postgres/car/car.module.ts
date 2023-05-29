@@ -1,6 +1,6 @@
 import { forwardRef } from '@nestjs/common';
 import { Module } from '@nestjs/common';
-import { Car } from 'entities/car.entity';
+import { Car } from '../../../entities/car.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CarServicePG } from './car.service';
 import { CarControllerPG } from './car.controller';
