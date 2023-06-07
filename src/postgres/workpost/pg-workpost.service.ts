@@ -1,6 +1,6 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { WorkPost } from 'entities/workpost.entity';
+import { WorkPost } from '../../../entities/workpost.entity';
 import { QueryRunner, Repository, DataSource } from 'typeorm';
 import { OrderServicePG } from '../order/order.service';
 

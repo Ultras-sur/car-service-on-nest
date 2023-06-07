@@ -15,15 +15,15 @@ import {
   Delete,
 } from '@nestjs/common';
 import { ClientServicePG } from './pg-client.service';
-import { Role } from 'schemas/user.schema';
+import { Role } from '../../../schemas/user.schema';
 import { CreateClientDTO } from './dto/createClient.dto';
 import { CarServicePG } from '../car/car.service';
 import { ClientPageOptionsDTO } from './dto/client-page-options.dto';
-import { AuthExceptionFilter } from 'src/auth/common/filters/auth-exceptions.filter';
-import { AuthenticatedGuard } from 'src/auth/common/guards/authenticated.guard';
-import { RolesGuard } from 'src/auth/common/guards/roles.guard';
-import { RolesPG } from 'src/auth/roles.decorator';
-import { UserRole } from 'entities/user.entity';
+import { AuthExceptionFilter } from '../../../src/auth/common/filters/auth-exceptions.filter';
+import { AuthenticatedGuard } from '../../../src/auth/common/guards/authenticated.guard';
+import { RolesGuard } from '../../../src/auth/common/guards/roles.guard';
+import { RolesPG } from '../../../src/auth/roles.decorator';
+import { UserRole } from '../../../entities/user.entity';
 
 @Controller('pgclient')
 @UseFilters(AuthExceptionFilter)
@@ -38,11 +38,7 @@ export class ClientControllerPG {
   @Render('pg/client/clients')
   @UseGuards(RolesGuard)
   @RolesPG(UserRole.ADMIN, UserRole.MANAGER)
-  async getClients(
-    @Res() res,
-    @Req() req,
-    @Query() query: ClientPageOptionsDTO,
-  ) {
+  async getClients(@Req() req, @Query() query: ClientPageOptionsDTO) {
     const carPageOptions = new ClientPageOptionsDTO(query);
     const clients = await this.clientServicePG.findClientsPaginate(
       carPageOptions,
@@ -53,6 +49,24 @@ export class ClientControllerPG {
     )}`;
     const isAdmin = req.user.roles.includes(Role.ADMIN);
     return { clients, isAdmin, searchString };
+  }
+
+  @Get('admin')
+  @Render('pg/client/admin/clients')
+  @UseGuards(RolesGuard)
+  @RolesPG(UserRole.ADMIN)
+  async getClientsForAdmin(@Req() req, @Query() query: ClientPageOptionsDTO) {
+    const carPageOptions = new ClientPageOptionsDTO(query);
+    const clients = await this.clientServicePG.findClientsPaginate(
+      carPageOptions,
+    );
+    const searchString = `${req.url.replace(
+      /\/pgclient\??(page=\d+\&?)?/im,
+      '',
+    )}`;
+    const isAdmin = req.user.roles.includes(Role.ADMIN);
+    const message = req.flash('message');
+    return { message, clients, isAdmin, searchString };
   }
 
   @Get('create')
@@ -105,22 +119,21 @@ export class ClientControllerPG {
   @Delete(':clientId')
   @UseGuards(RolesGuard)
   @RolesPG(UserRole.ADMIN)
-  async deleteClient(@Res() res, @Param('clientId') clientId) {
+  async deleteClient(@Req() req, @Res() res, @Param('clientId') clientId) {
     let deletedClient;
     try {
       const findedClient = await this.clientServicePG.findClient(clientId);
       deletedClient = await this.clientServicePG.deleteClientWithTransaction(
         findedClient,
       );
+      req.flash('message', `Client ${deletedClient.name} is deleted`);
       return res.status(HttpStatus.OK).json({
         message: 'Client successfully deleted',
         client: deletedClient,
       });
     } catch (error) {
-      console.log(error);
-      return res
-        .status(HttpStatus.BAD_REQUEST)
-        .json({ message: error.message });
+      req.message('message', error);
+      return res.redirect('/pgclient/admin');
     }
   }
 }

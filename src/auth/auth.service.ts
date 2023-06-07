@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { LoginDTO } from 'dto/login.dto';
+import { LoginDTO } from '../../dto/login.dto';
 import bcrypt = require('bcrypt');
-import { UserServicePG } from 'src/postgres/user/pg-user.service';
+import { UserServicePG } from '../../src/postgres/user/pg-user.service';
 
 @Injectable()
 export class AuthService {

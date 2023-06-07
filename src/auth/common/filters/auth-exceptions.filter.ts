@@ -19,9 +19,11 @@ export class AuthExceptionFilter implements ExceptionFilter {
       request.flash('loginError', 'You are not logged in!');
       return response.redirect('/login');
     } else if (exception instanceof UnauthorizedException) {
+      console.log('Exeption: ' + exception);
       request.flash('loginError', 'Email or password is incorrect!');
       return response.redirect('/login');
     } else {
+      console.log('Exeption: ' + exception);
       return response.redirect('/error');
     }
   }

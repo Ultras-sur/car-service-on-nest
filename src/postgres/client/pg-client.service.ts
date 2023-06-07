@@ -1,13 +1,13 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { DataSource, ILike, Repository } from 'typeorm';
-import { Client } from 'entities/client.entity';
+import { Client } from '../../../entities/client.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateClientDTO } from './dto/createClient.dto';
 import { ClientPageMetaDTO } from './dto/client-page-meta.dto';
 import { ClientPageDTO } from './dto/client-page.dto';
-import { Car } from 'entities/car.entity';
-import { Order } from 'entities/order.entity';
-import { WorkPost } from 'entities/workpost.entity';
+import { Car } from '../../../entities/car.entity';
+import { Order } from '../../../entities/order.entity';
+import { WorkPost } from '../../../entities/workpost.entity';
 
 @Injectable()
 export class ClientServicePG {

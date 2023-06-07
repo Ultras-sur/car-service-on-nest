@@ -1,4 +1,4 @@
-import { Order } from 'src/postgres/car/dto/order.enum';
+import { Order } from '../../../../src/postgres/car/dto/order.enum';
 
 export class ClientPageOptionsDTO {
   readonly licensNumber?: number;

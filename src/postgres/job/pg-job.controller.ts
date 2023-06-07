@@ -13,13 +13,13 @@ import {
   Param,
   Body,
 } from '@nestjs/common';
-import { UserRole } from 'entities/user.entity';
-import { Role } from 'schemas/user.schema';
-import { AuthExceptionFilter } from 'src/auth/common/filters/auth-exceptions.filter';
-import { AuthenticatedGuard } from 'src/auth/common/guards/authenticated.guard';
-import { RolesGuard } from 'src/auth/common/guards/roles.guard';
-import { RolesPG } from 'src/auth/roles.decorator';
-import { JobServicePG } from 'src/postgres/job/pg-job.service';
+import { UserRole } from '../../../entities/user.entity';
+import { Role } from '../../../schemas/user.schema';
+import { AuthExceptionFilter } from '../../../src/auth/common/filters/auth-exceptions.filter';
+import { AuthenticatedGuard } from '../../../src/auth/common/guards/authenticated.guard';
+import { RolesGuard } from '../../../src/auth/common/guards/roles.guard';
+import { RolesPG } from '../../../src/auth/roles.decorator';
+import { JobServicePG } from '../../../src/postgres/job/pg-job.service';
 import { CreateJobCategoryDTO } from './dto/create-job-category.dto';
 import { CreateJobDTO } from './dto/create-job.dto';
 

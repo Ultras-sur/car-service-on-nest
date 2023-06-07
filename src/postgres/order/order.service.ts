@@ -1,5 +1,5 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
-import { Order } from 'entities/order.entity';
+import { Order } from '../../../entities/order.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
   DataSource,
@@ -9,7 +9,7 @@ import {
   Repository,
 } from 'typeorm';
 import { CreateOrderDTO } from './dto/create-order.dto';
-import { createOrderNumber } from 'helpers/number-generator';
+import { createOrderNumber } from '../../../helpers/number-generator';
 import { WorkPostServicePG } from '../workpost/pg-workpost.service';
 import { OrderPageOptionsDTO } from './dto/order-page-options';
 import { PageMetaDTO } from './dto/page-meta.dto';

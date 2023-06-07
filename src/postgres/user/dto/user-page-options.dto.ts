@@ -1,12 +1,12 @@
-import { OrderEnum } from 'entities/dto/order.enum';
-import { UserRole } from 'entities/user.entity';
+import { OrderEnum } from '../../../../entities/dto/order.enum';
+import { UserRole } from '../../../../entities/user.entity';
 
 export class UserPageOptionsDTO {
   readonly login?: string;
   readonly name?: string;
   readonly roles?: UserRole[];
   readonly page?: number;
-  readonly take?: number = 10;
+  readonly take?: number;
   readonly roles_choosed?: boolean;
   readonly order: OrderEnum = OrderEnum.ASC;
   get skip(): number {
@@ -25,5 +25,6 @@ export class UserPageOptionsDTO {
     this.login = query.login ?? null;
     this.roles = this.getRoles(query.roles);
     this.roles_choosed = query.roles_choosed === 'true' ? true : false;
+    this.take = query.take ?? 10;
   }
 }

@@ -3,7 +3,7 @@ import { AuthService } from './auth.service';
 import { PassportModule } from '@nestjs/passport';
 import { LocalStrategy } from './local.strategy';
 import { SessionSerializer } from './session.serializer';
-import { UserModulePG } from 'src/postgres/user/pg-user.module';
+import { UserModulePG } from '../../src/postgres/user/pg-user.module';
 
 @Module({
   imports: [PassportModule, UserModulePG],

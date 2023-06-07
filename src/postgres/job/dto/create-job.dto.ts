@@ -1,4 +1,4 @@
-import { JobCategory } from 'entities/job-category.entity';
+import { JobCategory } from '../../../../entities/job-category.entity';
 
 export class CreateJobDTO {
   readonly name: string;

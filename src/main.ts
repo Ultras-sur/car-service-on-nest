@@ -7,11 +7,18 @@ import * as session from 'express-session';
 import flash = require('connect-flash');
 import passport = require('passport');
 import cookieParser = require('cookie-parser');
+import { ValidationPipe } from '@nestjs/common';
 
+let app;
 const PORT = process.env.PORT || 5000;
 async function bootstrap() {
-  const app = await NestFactory.create<NestExpressApplication>(AppModule);
-  // app.setBaseViewsDir(join(__dirname, '..', 'views'));
+  app = await NestFactory.create<NestExpressApplication>(AppModule);
+  /*app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      forbidNonWhitelisted: true,
+    }),
+  );*/
   app.setBaseViewsDir(resolve('./views'));
   app.useStaticAssets(resolve('./public'));
   app.useStaticAssets(resolve('./public/car_images'));
@@ -19,7 +26,7 @@ async function bootstrap() {
 
   app.use(
     session({
-      secret: process.env.SESSION_KEY,
+      secret: 'process.env.SESSION_KEY',
       resave: false,
       saveUninitialized: false,
     }),
@@ -28,7 +35,9 @@ async function bootstrap() {
   app.use(passport.initialize());
   app.use(passport.session());
   app.use(flash());
-
+  console.log('*****' + PORT);
   await app.listen(PORT);
 }
 bootstrap();
+
+export default app;

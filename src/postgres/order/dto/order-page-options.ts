@@ -1,6 +1,6 @@
-import { Client } from 'entities/client.entity';
-import { OrderEnum } from 'entities/dto/order.enum';
-import { WorkPost } from 'entities/workpost.entity';
+import { Client } from '../../../../entities/client.entity';
+import { OrderEnum } from '../../../../entities/dto/order.enum';
+import { WorkPost } from '../../../../entities/workpost.entity';
 
 export class OrderPageOptionsDTO {
   readonly name?: Client;
@@ -14,9 +14,9 @@ export class OrderPageOptionsDTO {
   }
 
   constructor(query) {
-    this.name = query.name ?? null;
-    this.orderNumber = query.orderNumber ?? null;
-    this.workPost = query.workPost ?? null;
-    this.page = query.page ?? 1;
+    this.name = query?.name ?? null;
+    this.orderNumber = query?.orderNumber ?? null;
+    this.workPost = query?.workPost ?? null;
+    this.page = query?.page ?? 1;
   }
 }

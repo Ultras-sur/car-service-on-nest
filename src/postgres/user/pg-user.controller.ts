@@ -13,15 +13,17 @@ import {
   UseFilters,
   UseGuards,
 } from '@nestjs/common';
-import { Role } from 'schemas/user.schema';
+import { Role } from '../../../schemas/user.schema';
 import { UserServicePG } from './pg-user.service';
 import { CreateUserDTO } from './dto/create-user.dto';
 import { UserPageOptionsDTO } from './dto/user-page-options.dto';
-import { AuthExceptionFilter } from 'src/auth/common/filters/auth-exceptions.filter';
-import { AuthenticatedGuard } from 'src/auth/common/guards/authenticated.guard';
-import { RolesGuard } from 'src/auth/common/guards/roles.guard';
-import { RolesPG } from 'src/auth/roles.decorator';
-import { UserRole } from 'entities/user.entity';
+import { AuthExceptionFilter } from '../../../src/auth/common/filters/auth-exceptions.filter';
+import { AuthenticatedGuard } from '../../../src/auth/common/guards/authenticated.guard';
+import { RolesGuard } from '../../../src/auth/common/guards/roles.guard';
+import { RolesPG } from '../../../src/auth/roles.decorator';
+import { UserRole } from '../../../entities/user.entity';
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const debug = require('debug')('UserController');
 
 @Controller('pguser')
 @UseFilters(AuthExceptionFilter)
@@ -34,11 +36,13 @@ export class UserControllerPG {
   @RolesPG(UserRole.ADMIN)
   @Render('pg/admin/users')
   async getUsers(@Req() req, @Query() query) {
+    debug('getUsers');
     const pageOptions = new UserPageOptionsDTO(query);
     const users = await this.userServicePG.findUsersPaginate(pageOptions);
     const serchString = `${req.url.replace(/\/pguser\??(page=\d+\&?)?/mi, '')}`;
     const isAdmin = req.user.roles.includes(Role.ADMIN);
-    return { users, serchString, isAdmin };
+    const message = req.flash('message');
+    return { message, users, serchString, isAdmin };
   }
 
   @Get('create')
@@ -47,7 +51,8 @@ export class UserControllerPG {
   @Render('pg/admin/create-user')
   async getCreateForm(@Req() req) {
     const isAdmin = req.user.roles.includes(Role.ADMIN);
-    return { message: req.flash('message'), isAdmin };
+    const message = req.flash('message');
+    return { message, isAdmin };
   }
 
   @Post('create')

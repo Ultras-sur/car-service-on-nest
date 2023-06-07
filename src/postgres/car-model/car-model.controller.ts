@@ -7,15 +7,14 @@ import {
   Req,
   UseGuards,
   UseFilters,
-  Query,
   HttpStatus,
   Body,
 } from '@nestjs/common';
-import { UserRole } from 'entities/user.entity';
-import { AuthExceptionFilter } from 'src/auth/common/filters/auth-exceptions.filter';
-import { AuthenticatedGuard } from 'src/auth/common/guards/authenticated.guard';
-import { RolesGuard } from 'src/auth/common/guards/roles.guard';
-import { RolesPG } from 'src/auth/roles.decorator';
+import { UserRole } from '../../../entities/user.entity';
+import { AuthExceptionFilter } from '../../../src/auth/common/filters/auth-exceptions.filter';
+import { AuthenticatedGuard } from '../../../src/auth/common/guards/authenticated.guard';
+import { RolesGuard } from '../../../src/auth/common/guards/roles.guard';
+import { RolesPG } from '../../../src/auth/roles.decorator';
 import { CarModelServicePG } from '../car-model/car-model.service';
 import { CreateCarBrandDTO } from './dto/create-car-brand.dto';
 import { CreateCarModelDTO } from './dto/create-car-model.dto';

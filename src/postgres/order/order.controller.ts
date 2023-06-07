@@ -14,18 +14,18 @@ import {
   UseGuards,
   UseFilters,
 } from '@nestjs/common';
-import { Role } from 'schemas/user.schema';
+import { Role } from '../../../schemas/user.schema';
 import { CarServicePG } from '../car/car.service';
 import { OrderPageOptionsDTO } from './dto/order-page-options';
 import { OrderServicePG } from './order.service';
 import { ClientServicePG } from '../client/pg-client.service';
 import { WorkPostServicePG } from '../workpost/pg-workpost.service';
 import { UpdateOrderDTO } from './dto/update-order.dto';
-import { AuthExceptionFilter } from 'src/auth/common/filters/auth-exceptions.filter';
-import { AuthenticatedGuard } from 'src/auth/common/guards/authenticated.guard';
-import { RolesGuard } from 'src/auth/common/guards/roles.guard';
-import { UserRole } from 'entities/user.entity';
-import { RolesPG } from 'src/auth/roles.decorator';
+import { AuthExceptionFilter } from '../../../src/auth/common/filters/auth-exceptions.filter';
+import { AuthenticatedGuard } from '../../../src/auth/common/guards/authenticated.guard';
+import { RolesGuard } from '../../../src/auth/common/guards/roles.guard';
+import { UserRole } from '../../../entities/user.entity';
+import { RolesPG } from '../../../src/auth/roles.decorator';
 
 @Controller('pgorder')
 @UseFilters(AuthExceptionFilter)

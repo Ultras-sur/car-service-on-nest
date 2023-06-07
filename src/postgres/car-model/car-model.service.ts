@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
-import { CarModel } from 'entities/car-model.entity';
-import { CarBrand } from 'entities/car-brand.entity';
+import { CarModel } from '../../../entities/car-model.entity';
+import { CarBrand } from '../../../entities/car-brand.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateCarBrandDTO } from './dto/create-car-brand.dto';
 import { CreateCarModelDTO } from './dto/create-car-model.dto';

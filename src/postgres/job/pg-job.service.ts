@@ -1,7 +1,7 @@
 import { Injectable, Inject, HttpException, HttpStatus } from '@nestjs/common';
 import { Repository } from 'typeorm';
-import { Job } from 'entities/job.entity';
-import { JobCategory } from 'entities/job-category.entity';
+import { Job } from '../../../entities/job.entity';
+import { JobCategory } from '../../../entities/job-category.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateJobDTO } from './dto/create-job.dto';
 import { CreateJobCategoryDTO } from './dto/create-job-category.dto';
