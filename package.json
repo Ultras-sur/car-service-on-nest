@@ -32,6 +32,7 @@
     "@nestjs/mongoose": "^9.2.0",
     "@nestjs/passport": "^9.0.0",
     "@nestjs/platform-express": "^9.0.0",
+    "@nestjs/swagger": "^7.1.12",
     "@nestjs/typeorm": "^9.0.1",
     "@types/bcrypt": "^5.0.0",
     "@types/connect-flash": "^0.0.37",
@@ -50,6 +51,7 @@
     "passport-local": "^1.0.0",
     "pg": "^8.8.0",
     "pug": "^3.0.2",
+    "swagger-ui-express": "^5.0.0",
     "typeorm": "^0.3.11"
   },
   "devDependencies": {
@@ -76,7 +78,7 @@
     "ts-loader": "^9.2.3",
     "ts-node": "^10.0.0",
     "tsconfig-paths": "4.0.0",
-    "typescript": "^4.3.5"
+    "typescript": "^4.9.5"
   },
   "jest": {
     "moduleFileExtensions": [

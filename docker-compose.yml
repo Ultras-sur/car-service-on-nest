@@ -7,6 +7,9 @@ services:
       - POSTGRES_USER=admin
       - POSTGRES_PASSWORD=root
       - POSTGRES_HOST=postgres_db
+      - POSTGRES_DB=motora
+      - POSTGRES_PORT=5432
+
     depends_on: 
       - dbase
     ports:
@@ -22,7 +25,7 @@ services:
       - POSTGRES_DB=motora
     volumes:
       - ./database-seed.sql:/docker-entrypoint-initdb.d/database-seed.sql
-    image: postgres:14.3-alpine
+    image: postgres:14.9-alpine
   pgadmin:
     image: dpage/pgadmin4
     environment:

@@ -95,6 +95,18 @@ export class UserServicePG {
     }
   }
 
+  async deleteUser(userId): Promise<User> {
+    const deletedUser = this.userRepository
+      .createQueryBuilder('user')
+      .delete()
+      .from(User)
+      .where('id = :id', { id: userId })
+      .returning('*')
+      .execute()
+      .then((res) => res.raw[0]);
+    return deletedUser;
+  }
+
   sanitizeUser(user) {
     debug('sanitizeUser');
     const { password, ...sanitizedUser } = user;

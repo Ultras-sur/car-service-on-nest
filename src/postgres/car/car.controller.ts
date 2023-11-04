@@ -29,6 +29,7 @@ import { UserRole } from '../../../entities/user.entity';
 import * as fs from 'node:fs';
 import busboy = require('busboy');
 import * as path from 'path';
+import { ApiTags } from '@nestjs/swagger';
 
 @Controller('pgcar')
 @UseFilters(AuthExceptionFilter)

@@ -1,12 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { INestApplication, LoggerService } from '@nestjs/common';
+import { HttpException, INestApplication, LoggerService } from '@nestjs/common';
 import { AppModule } from 'src/app.module';
 import { UserServicePG } from './pg-user.service';
 import { User } from '../../../entities/user.entity';
 import { UserPageOptionsDTO } from './dto/user-page-options.dto';
 import { UserRole } from 'entities/user.entity';
 import { PageMetaDTO } from './dto/page-meta.dto';
-import { type } from 'os';
 
 describe('UserServicePG', () => {
   let app: INestApplication;
@@ -92,12 +91,12 @@ describe('UserServicePG', () => {
       });
     });
 
-    describe('PageMeta', () => {
+    describe('Page meta information', () => {
       it('Returned page meta information', async () => {
         const result = await userServicePG.findUsersPaginate(
           new UserPageOptionsDTO({}),
         );
-        expect(result.meta instanceof PageMetaDTO).toBe(true);
+        expect(result.meta).toBeInstanceOf(PageMetaDTO);
       });
       it('Returned total pages', async () => {
         const takes = [1, 2, 3];
@@ -112,5 +111,35 @@ describe('UserServicePG', () => {
           }));
         });
       });
+    describe('Create and delete user', () => {
+      let createdUser;
+      let userData;
+      it('Create user', async () => {
+        userData = {
+          name: 'user1',
+          login: 'user1',
+          password: 'pass',
+          roles: [UserRole.USER],
+        };
+        createdUser = await userServicePG.createUser(userData);
+        const findedUser = await userServicePG.findUser({
+          where: { login: userData.name },
+        });
+        expect(findedUser).not.toBeNull();
+      });
+
+      it('Not create if exists', async () => {
+        expect(async () => {
+          await userServicePG.createUser(userData);
+        }).rejects.toThrow('user is already exists');
+      });
+
+      it('Delete created user', async () => {
+        const deletedUser = await userServicePG.deleteUser(createdUser.id);
+        expect(
+          await userServicePG.findUser({ where: { id: deletedUser.id } }),
+        ).toBeNull();
+      });
     });
   });
+});

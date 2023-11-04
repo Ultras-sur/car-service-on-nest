@@ -11,5 +11,4 @@ export class CarBrand {
 
   @OneToMany(() => CarModel, (carModel: CarModel) => carModel.brand)
   public models: CarModel[];
-  
-}  
+}

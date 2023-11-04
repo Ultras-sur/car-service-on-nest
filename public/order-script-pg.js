@@ -169,20 +169,41 @@ function calculateTotal() {
 
 
 async function getStatusOfWorkPosts() {
-  const response = await fetch('/pgworkpost/res/status');
-  const workPosts = await response.json();
-  console.log(workPosts);
-  const workPostSelection = Array.from(document.getElementsByClassName('workpost-selection'))
-  const busyWorkPosts = workPosts.filter(workPost => workPost.order !== null);
-  busyWorkPosts.forEach(workPost => {
-    workPostSelection.forEach(WorkPostSelection => {
-      if (WorkPostSelection.value === String(workPost.number)) {
-        WorkPostSelection.style.backgroundColor = 'LightCoral';
-        WorkPostSelection.disabled = true;
-        WorkPostSelection.text = `${WorkPostSelection.value} (busy)`;
+  async function setStatus() {
+    const response = await fetch('/pgworkpost/res/status');
+    const workPosts = await response.json();
+    console.log(workPosts);
+    const workPostSelection = Array.from(
+      document.getElementsByClassName('workpost-selection'),
+    );
+    const busyWorkPosts = workPosts.filter(
+      (workPost) => workPost.order !== null,
+    );
+
+    workPosts.forEach((workPost) => {
+      if (workPost.order !== null) {
+        workPostSelection.forEach((element) => {
+          if (element.value === String(workPost.number)) {
+            element.style.backgroundColor = 'LightCoral';
+            element.disabled = true;
+            element.text = `${element.value} (busy)`;
+            console.log(element.text);
+          }
+        });
+      } else {
+        workPostSelection.forEach((element) => {
+          if (element.value === String(workPost.number)) {
+            element.style.backgroundColor = 'White';
+            element.disabled = false;
+            element.text = element.value;
+            console.log(element.text);
+          }
+        });
       }
-    })
-  })
+    });
+    
+  }
+  setInterval(setStatus, 5000);
 }
 
 //DOM elements

@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
@@ -12,6 +12,7 @@ import { JobModulePG } from './postgres/job/pg-job.module';
 import { OrderModulePG } from './postgres/order/order.module';
 import { WorkPostModulePG } from './postgres/workpost/pg-workpost.module';
 import { UserModulePG } from './postgres/user/pg-user.module';
+import LogsMiddleware from 'middlewares/logs.middleware';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 require('dotenv').config();
 
@@ -39,4 +40,8 @@ require('dotenv').config();
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(LogsMiddleware).forRoutes('*');
+  }
+}

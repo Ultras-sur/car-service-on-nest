@@ -19,6 +19,7 @@ import { OrderPageOptionsDTO } from './postgres/order/dto/order-page-options';
 import { Order } from '../entities/order.entity';
 import { PageMetaDTO } from './postgres/order/dto/page-meta.dto';
 import { UserRole } from '../entities/user.entity';
+import { ApiExcludeEndpoint } from '@nestjs/swagger';
 
 @Controller()
 @UseFilters(AuthExceptionFilter)

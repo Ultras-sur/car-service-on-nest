@@ -52,7 +52,7 @@ export class ClientControllerPG {
   }
 
   @Get('admin')
-  @Render('pg/client/admin/clients')
+  @Render('pg/client/clients')
   @UseGuards(RolesGuard)
   @RolesPG(UserRole.ADMIN)
   async getClientsForAdmin(@Req() req, @Query() query: ClientPageOptionsDTO) {
