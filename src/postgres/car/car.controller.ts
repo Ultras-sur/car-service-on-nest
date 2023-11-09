@@ -29,7 +29,6 @@ import { UserRole } from '../../../entities/user.entity';
 import * as fs from 'node:fs';
 import busboy = require('busboy');
 import * as path from 'path';
-import { ApiTags } from '@nestjs/swagger';
 
 @Controller('pgcar')
 @UseFilters(AuthExceptionFilter)
@@ -56,10 +55,9 @@ export class CarControllerPG {
   }
 
   @Get(':id')
-  @Render('pg/car/car2')
   @UseGuards(RolesGuard)
   @RolesPG(UserRole.ADMIN, UserRole.MANAGER)
-  async getCar(@Param('id') carId, @Req() req) {
+  async getCar(@Param('id') carId, @Req() req, @Res() res) {
     const car = await this.dataSource
       .getRepository(Car)
       .createQueryBuilder('car')
@@ -75,7 +73,25 @@ export class CarControllerPG {
         .filter((elem) => elem !== 'public')
         .join('/') ?? null;
     const isAdmin = req.user.roles.includes(Role.ADMIN);
-    return { car, imagePath, isAdmin, message: req.flash('message') };
+    if (imagePath) {
+      return fs.access(car.imagePath, fs.constants.R_OK, (err) => {
+        if (err) {
+          req.flash('message', 'Car image is not found');
+          return res.render('pg/car/car2', {
+            car,
+            isAdmin,
+            message: req.flash('message'),
+          });
+        } else {
+          return res.render('pg/car/car2', {
+            car,
+            imagePath,
+            isAdmin,
+            message: req.flash('message'),
+          });
+        }
+      });
+    }
   }
 
   @Get('createcar/:ownerId')
