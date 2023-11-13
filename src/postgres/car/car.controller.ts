@@ -74,22 +74,32 @@ export class CarControllerPG {
         .join('/') ?? null;
     const isAdmin = req.user.roles.includes(Role.ADMIN);
     if (imagePath) {
-      return fs.access(car.imagePath, fs.constants.R_OK, (err) => {
-        if (err) {
-          req.flash('message', 'Car image is not found');
-          return res.render('pg/car/car2', {
-            car,
-            isAdmin,
-            message: req.flash('message'),
-          });
-        } else {
-          return res.render('pg/car/car2', {
-            car,
-            imagePath,
-            isAdmin,
-            message: req.flash('message'),
-          });
-        }
+      return fs.access(
+        path.join('public', car.imagePath),
+        fs.constants.R_OK,
+        (err) => {
+          if (err) {
+            req.flash('message', 'Car image is not found');
+            return res.render('pg/car/car2', {
+              car,
+              isAdmin,
+              message: req.flash('message'),
+            });
+          } else {
+            return res.render('pg/car/car2', {
+              car,
+              imagePath,
+              isAdmin,
+              message: req.flash('message'),
+            });
+          }
+        },
+      );
+    } else {
+      return res.render('pg/car/car2', {
+        car,
+        isAdmin,
+        message: req.flash('message'),
       });
     }
   }
@@ -142,6 +152,16 @@ export class CarControllerPG {
       const newFileName = `car_${carId}${path.extname(filename)}`;
       const filePath = path.join('car_images', newFileName);
       try {
+        const folderAccessToWrite = (path: string): boolean => {
+          let result = true;
+          fs.access(path, (err) => {
+            if (err) result = false;
+          });
+          return result;
+        };
+        if (!folderAccessToWrite(path.join('public', 'car_images'))) {
+          throw new Error('Image is not saved');
+        }
         const fstream = fs.createWriteStream(path.join('public', filePath));
         file.pipe(fstream);
         await this.carServicePG.findCarAndUpdate(carId, {

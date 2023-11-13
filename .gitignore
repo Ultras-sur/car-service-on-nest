@@ -6,6 +6,7 @@
 /doc
 /public/car_images
 /migrations
+/.vscode
 
 # Logs
 logs

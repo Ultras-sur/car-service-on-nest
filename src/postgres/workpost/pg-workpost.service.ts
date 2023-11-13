@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { WorkPost } from '../../../entities/workpost.entity';
 import { QueryRunner, Repository, DataSource } from 'typeorm';
 import { OrderServicePG } from '../order/order.service';
+import { Order } from 'entities/order.entity';
 
 @Injectable()
 export class WorkPostServicePG {
@@ -24,7 +25,7 @@ export class WorkPostServicePG {
     return findedWorkPosts;
   }
 
-  async setToWorkPostWhithTransaction(order, queryRunner: QueryRunner) {
+  async setToWorkPostWhithTransaction(order: Order, queryRunner: QueryRunner) {
     const updatedWorkPost = await queryRunner.manager.update(
       WorkPost,
       { id: order.workPost.id },
@@ -33,7 +34,7 @@ export class WorkPostServicePG {
     return updatedWorkPost;
   }
 
-  async setToWorkPost(order, workPost) {
+  async setToWorkPost(order: Order, workPost: WorkPost) {
     const updatedWorkPost = await this.workPostRepository
       .createQueryBuilder('workPost')
       .update({ order })
@@ -43,7 +44,11 @@ export class WorkPostServicePG {
     return updatedWorkPost;
   }
 
-  async unsetWorkPostWhithTransaction(order, workPostId, completeCondition) {
+  async unsetWorkPostWhithTransaction(
+    order: Order,
+    workPostId,
+    completeCondition,
+  ) {
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();

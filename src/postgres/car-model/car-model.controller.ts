@@ -23,7 +23,7 @@ import { CreateCarModelDTO } from './dto/create-car-model.dto';
 @UseFilters(AuthExceptionFilter)
 @UseGuards(AuthenticatedGuard)
 export class CarModelControllerPG {
-  constructor(private carModelServicePG: CarModelServicePG) { }
+  constructor(private carModelServicePG: CarModelServicePG) {}
 
   @Get('/')
   @Render('pg/admin/cars-directory')

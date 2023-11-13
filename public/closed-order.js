@@ -7,10 +7,10 @@ async function sendStatus() {
     const response = await fetch(`/order/update/${orderId}`, {
       method: 'PUT',
       headers: {
-        'Content-Type': 'application/json;charset=utf-8'
+        'Content-Type': 'application/json;charset=utf-8',
       },
       body: JSON.stringify({ orderStatus }),
-    })
+    });
     const result = await response.json();
     location.href = `/order/${orderId}`;
     return;
@@ -28,11 +28,12 @@ function calculateTotal() {
       const numberOfRow = row.querySelectorAll('td')[0].innerHTML;
       result += Number(row.querySelector(`#job-cost${numberOfRow}`).innerHTML);
     }
-  })
-  document.querySelector('#jobcost').querySelector('#total')
+  });
+  document
+    .querySelector('#jobcost')
+    .querySelector('#total')
     .setAttribute('value', result);
 }
-
 
 function changeStatusHandler() {
   const selectionOptions = statusSelector.options;
@@ -44,8 +45,8 @@ function changeStatusHandler() {
     submitButton.setAttribute('type', 'button');
     submitButton.setAttribute('value', 'ok');
     submitButton.setAttribute('id', 'submit-status');
-    submitButton.setAttribute('style', "margin-left:5px;");
-    submitButton.setAttribute('onclick', "sendStatus()");
+    submitButton.setAttribute('style', 'margin-left:5px;');
+    submitButton.setAttribute('onclick', 'sendStatus()');
     divSelection.append(submitButton);
   } else {
     const submitButton = document.querySelector('#submit-status');
@@ -56,12 +57,11 @@ function changeStatusHandler() {
   return;
 }
 
-
 // Elements
 const statusSelector = document.querySelector('#status-selection');
 
 // Events
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener('DOMContentLoaded', () => {
   calculateTotal();
 });
 

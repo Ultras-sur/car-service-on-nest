@@ -1,4 +1,3 @@
-import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../../../entities/user.entity';
 import { ArrayContains, Equal, ILike, Repository } from 'typeorm';
 import { CreateUserDTO } from './dto/create-user.dto';
@@ -7,6 +6,7 @@ import { HttpException, HttpStatus } from '@nestjs/common';
 import { UserPageOptionsDTO } from './dto/user-page-options.dto';
 import { PageMetaDTO } from './dto/page-meta.dto';
 import { PageDTO } from './dto/page.dto';
+import { InjectRepository } from '@nestjs/typeorm';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const debug = require('debug')('UserService');
 
@@ -37,7 +37,8 @@ export class UserServicePG {
     userPageOptions: UserPageOptionsDTO,
   ): Promise<PageDTO<User>> {
     debug('FindUsersPaginate');
-    const { login, name, roles, order, skip, take, roles_choosed } = userPageOptions;
+    const { login, name, roles, order, skip, take, roles_choosed } =
+      userPageOptions;
     const usersAndCount = await this.userRepository.findAndCount({
       select: {
         id: true,

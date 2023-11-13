@@ -3,13 +3,14 @@ async function getCarBrandsAndModels() {
   const responce = await fetch('/carmodel/carbrandsandmodels');
   const result = await responce.json();
   models = result.carModelsAndBrands;
-  console.log(models)
+  console.log(models);
 }
 
-let models = {}
+let models = {};
 
 function removeOptions(selectElement) {
-  var i, L = selectElement.options.length - 1;
+  var i,
+    L = selectElement.options.length - 1;
   for (i = L; i >= 0; i--) {
     selectElement.remove(i);
   }
@@ -17,7 +18,7 @@ function removeOptions(selectElement) {
 
 function changeOption() {
   const selectedIndex = brandSelection.options.selectedIndex;
-  const modelSelection = document.getElementById("model-selection");
+  const modelSelection = document.getElementById('model-selection');
   removeOptions(modelSelection);
   const selectedBrand = brandSelection.options[selectedIndex].value;
   modelSelection.add(new Option());
@@ -31,10 +32,10 @@ function changeOption() {
 }
 
 //Elements
-const brandSelection = document.getElementById("brand-selection");
+const brandSelection = document.getElementById('brand-selection');
 
 //Listeners
-document.addEventListener("DOMContentLoaded", async () => {
+document.addEventListener('DOMContentLoaded', async () => {
   await getCarBrandsAndModels();
 });
 brandSelection.addEventListener('change', changeOption);

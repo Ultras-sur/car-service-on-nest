@@ -28,11 +28,12 @@ function calculateTotal() {
       const numberOfRow = row.querySelectorAll('td')[0].innerHTML;
       result += Number(row.querySelector(`#job-cost${numberOfRow}`).innerHTML);
     }
-  })
-  document.querySelector('#jobcost').querySelector('#total')
+  });
+  document
+    .querySelector('#jobcost')
+    .querySelector('#total')
     .setAttribute('value', result);
 }
-
 
 function changeStatusHandler() {
   const selectionOptions = statusSelector.options;
@@ -61,12 +62,11 @@ function changeStatusHandler() {
   return;
 }
 
-
 // Elements
 const statusSelector = document.querySelector('#status-selection');
 
 // Events
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener('DOMContentLoaded', () => {
   calculateTotal();
 });
 

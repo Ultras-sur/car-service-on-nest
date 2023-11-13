@@ -9,7 +9,8 @@ let jobs = {};
 let startJobSelection = {};
 
 function removeOptions(selectElement) {
-  var i, L = selectElement.options.length - 1;
+  var i,
+    L = selectElement.options.length - 1;
   for (i = L; i >= 0; i--) {
     selectElement.remove(i);
   }
@@ -62,23 +63,23 @@ function addJobSelection() {
   const numberOfRow = jobTable.rows.length - 2;
   newRow.insertCell(-1).innerHTML = numberOfRow;
   const rowId = `jobrow${numberOfRow}`;
-  newRow.setAttribute("id", rowId);
-  newRow.setAttribute("class", 'jobrows');
+  newRow.setAttribute('id', rowId);
+  newRow.setAttribute('class', 'jobrows');
   const newSelect = document.createElement('select');
   const newInput = document.createElement('input');
   const selectId = `job-selection${numberOfRow}`;
   const costId = `job-cost${numberOfRow}`;
-  newSelect.setAttribute("id", selectId);
-  newSelect.setAttribute("name", 'job');
-  newSelect.setAttribute("autofocus", '');
-  newSelect.setAttribute("required", '');
-  newSelect.setAttribute("class", 'jobselection');
+  newSelect.setAttribute('id', selectId);
+  newSelect.setAttribute('name', 'job');
+  newSelect.setAttribute('autofocus', '');
+  newSelect.setAttribute('required', '');
+  newSelect.setAttribute('class', 'jobselection');
   newInput.setAttribute('type', 'number');
-  newInput.setAttribute("name", 'cost');
-  newInput.setAttribute("class", 'jobcost');
-  newInput.setAttribute("id", costId);
-  newInput.setAttribute("min", 0);
-  newInput.setAttribute("value", 0);
+  newInput.setAttribute('name', 'cost');
+  newInput.setAttribute('class', 'jobcost');
+  newInput.setAttribute('id', costId);
+  newInput.setAttribute('min', 0);
+  newInput.setAttribute('value', 0);
   newRow.insertCell(-1).appendChild(newSelect);
   newRow.insertCell(-1).appendChild(newInput);
   newSelect.add(new Option(), null);
@@ -100,11 +101,17 @@ function resetAttributes() {
   jobTable.forEach((row, index) => {
     if (row.className === 'jobrows') {
       const numberOfRow = row.querySelectorAll('td')[0].innerHTML;
-      row.querySelector(`#job-selection${numberOfRow}`).setAttribute("id", `job-selection${index - 1}`);
-      row.querySelector(`#job-cost${numberOfRow}`).setAttribute("id", `job-cost${index - 1}`);
+      row
+        .querySelector(`#job-selection${numberOfRow}`)
+        .setAttribute('id', `job-selection${index - 1}`);
+      row
+        .querySelector(`#job-cost${numberOfRow}`)
+        .setAttribute('id', `job-cost${index - 1}`);
 
       if (numberOfRow !== '1') {
-        row.querySelector(`#delete-selection${numberOfRow}`).setAttribute("id", `delete-selection${index - 1}`);
+        row
+          .querySelector(`#delete-selection${numberOfRow}`)
+          .setAttribute('id', `delete-selection${index - 1}`);
       }
       row.querySelectorAll('td')[0].innerHTML = `${index - 1}`;
       row.setAttribute('id', `jobrow${index - 1}`);
@@ -144,8 +151,12 @@ function resetSelectorNames() {
   tableRows.forEach((row, index) => {
     if (row.className === 'jobrows') {
       const numberOfRow = row.querySelectorAll('td')[0].innerHTML;
-      row.querySelector(`#job-selection${numberOfRow}`).setAttribute("name", `jobs[${numberOfRow}]`);
-      row.querySelector(`#job-cost${numberOfRow}`).setAttribute("name", `jobs[${numberOfRow}]`);
+      row
+        .querySelector(`#job-selection${numberOfRow}`)
+        .setAttribute('name', `jobs[${numberOfRow}]`);
+      row
+        .querySelector(`#job-cost${numberOfRow}`)
+        .setAttribute('name', `jobs[${numberOfRow}]`);
     }
   });
 }
@@ -160,7 +171,9 @@ function calculateTotal() {
       result += Number(row.querySelector(`#job-cost${numberOfRow}`).value);
     }
   });
-  document.querySelector('#jobcost').querySelector('#total')
+  document
+    .querySelector('#jobcost')
+    .querySelector('#total')
     .setAttribute('value', result);
 }
 
@@ -194,23 +207,23 @@ async function loadSelectedJobs() {
     const numberOfRow = jobTable.rows.length - 2;
     newRow.insertCell(-1).innerHTML = numberOfRow;
     const rowId = `jobrow${numberOfRow}`;
-    newRow.setAttribute("id", rowId);
-    newRow.setAttribute("class", 'jobrows');
+    newRow.setAttribute('id', rowId);
+    newRow.setAttribute('class', 'jobrows');
     const newSelect = document.createElement('select');
     const newInput = document.createElement('input');
     const selectId = `job-selection${numberOfRow}`;
     const costId = `job-cost${numberOfRow}`;
-    newSelect.setAttribute("id", selectId);
-    newSelect.setAttribute("name", 'job');
-    newSelect.setAttribute("autofocus", '');
-    newSelect.setAttribute("required", 'true');
-    newSelect.setAttribute("class", 'jobselection');
+    newSelect.setAttribute('id', selectId);
+    newSelect.setAttribute('name', 'job');
+    newSelect.setAttribute('autofocus', '');
+    newSelect.setAttribute('required', 'true');
+    newSelect.setAttribute('class', 'jobselection');
     newInput.setAttribute('type', 'number');
-    newInput.setAttribute("name", 'cost');
-    newInput.setAttribute("class", 'jobcost');
-    newInput.setAttribute("id", costId);
-    newInput.setAttribute("min", 0);
-    newInput.setAttribute("value", cost);
+    newInput.setAttribute('name', 'cost');
+    newInput.setAttribute('class', 'jobcost');
+    newInput.setAttribute('id', costId);
+    newInput.setAttribute('min', 0);
+    newInput.setAttribute('value', cost);
 
     newRow.insertCell(-1).appendChild(newSelect);
     newRow.insertCell(-1).appendChild(newInput);

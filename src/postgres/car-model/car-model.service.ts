@@ -13,7 +13,7 @@ export class CarModelServicePG {
     private carBrandRepository: Repository<CarBrand>,
     @InjectRepository(CarModel)
     private carModelRepository: Repository<CarModel>,
-  ) { }
+  ) {}
 
   async createCarBrand(carBrand: CreateCarBrandDTO): Promise<CarBrand> {
     const newCarBrand = this.carBrandRepository.create(carBrand);

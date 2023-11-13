@@ -108,9 +108,10 @@ describe('UserServicePG', () => {
             );
             const take_result = Math.ceil(count / take);
             expect(meta.totalPages).toBe(take_result);
-          }));
-        });
+          }),
+        );
       });
+    });
     describe('Create and delete user', () => {
       let createdUser;
       let userData;

@@ -19,7 +19,6 @@ import { OrderPageOptionsDTO } from './postgres/order/dto/order-page-options';
 import { Order } from '../entities/order.entity';
 import { PageMetaDTO } from './postgres/order/dto/page-meta.dto';
 import { UserRole } from '../entities/user.entity';
-import { ApiExcludeEndpoint } from '@nestjs/swagger';
 
 @Controller()
 @UseFilters(AuthExceptionFilter)
@@ -57,8 +56,7 @@ export class AppController {
   }
 
   @Get('/test')
-  test(@Res() res: Response, @Req() req) {
-    //console.log(req);
+  test(@Res() res: Response) {
     return res.status(200).json({ message: 'OK' });
   }
 
@@ -101,3 +99,5 @@ export class AppController {
     return res.redirect('/login');
   }
 }
+
+export default AppController;

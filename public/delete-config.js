@@ -1,17 +1,16 @@
-
 const responseConfig = {
   order: (id) => `/order/${id}`,
   client: (id) => `/client/${id}`,
   car: (id) => `/car/${id}`,
   user: (id) => `/user/admin/delete/${id}`,
-}
+};
 
 const alerts = {
   order: `Вы уверены, что хотите удалить данный заказ?`,
   client: `Вы уверены, что хотите удалить клиента? Вся информация об автомобилях и заказах будет так же удалена.`,
   car: `Вы уверены, что хотите удалить данный автомобиль? Вся информация о заказах так же будет удалена?`,
   user: `Вы уверены, что хотите удалить пользователя?`,
-}
+};
 
 async function deleteItem(itemInfo) {
   const [id, item] = itemInfo.split('_');
@@ -20,8 +19,8 @@ async function deleteItem(itemInfo) {
   const responseURL = responseConfig[item](id);
   try {
     const response = await fetch(responseURL, {
-      method: 'DELETE'
-    })
+      method: 'DELETE',
+    });
     location.href = location.href.replace(location.search, '');
     return;
   } catch (e) {
