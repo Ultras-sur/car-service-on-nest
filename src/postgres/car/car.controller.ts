@@ -170,12 +170,12 @@ export class CarControllerPG {
         req.flash('message', 'OK');
         return res.redirect(`/pgcar/${carId}`);
       } catch (error) {
-        req.flash('message', error.message);
+        req.flash('message', 'Image car is not saved');
         return res.redirect(`/pgcar/${carId}`);
       }
     });
     bb.on('error', (error) => {
-      req.flash('message', error);
+      req.flash('message', 'Image car is not saved');
       return res.redirect(`/pgcar/${carId}`);
     });
     req.pipe(bb);

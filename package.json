@@ -37,11 +37,13 @@
     "@types/bcrypt": "^5.0.0",
     "@types/connect-flash": "^0.0.37",
     "@types/cookie-parser": "^1.4.3",
+    "@types/redis": "^4.0.11",
     "bcrypt": "^5.0.1",
     "busboy": "^1.6.0",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.0",
     "connect-flash": "^0.1.1",
+    "connect-redis": "^7.1.0",
     "cookie-parser": "^1.4.6",
     "dotenv": "^16.0.3",
     "express-session": "^1.17.3",
@@ -51,8 +53,10 @@
     "passport-local": "^1.0.0",
     "pg": "^8.8.0",
     "pug": "^3.0.2",
+    "redis": "^4.6.11",
     "swagger-ui-express": "^5.0.0",
-    "typeorm": "^0.3.11"
+    "typeorm": "^0.3.11",
+    "uuid": "^9.0.1"
   },
   "devDependencies": {
     "@nestjs/cli": "^9.0.0",

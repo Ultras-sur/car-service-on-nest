@@ -1,6 +1,14 @@
 version: '3.5'
 
 services:
+  nginx:
+    container_name: nginx
+    image: nginx:latest
+    ports:
+      - '81:80'
+    restart: unless-stopped
+    volumes:
+      - ./nginx/nginx.conf://etc/nginx/nginx.conf:ro
   node:
     build: ./
     environment:
@@ -9,29 +17,37 @@ services:
       - POSTGRES_HOST=postgres_db
       - POSTGRES_DB=motora
       - POSTGRES_PORT=5432
-
-    depends_on: 
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    depends_on:
       - dbase
+      - redis
     ports:
-      - "5000:5000"
+      - '5000:5000'
   dbase:
     container_name: postgres_db
     restart: always
-    ports: 
+    ports:
       - '5431:5432'
-    environment: 
+    environment:
       - POSTGRES_USER=admin
       - POSTGRES_PASSWORD=root
       - POSTGRES_DB=motora
     volumes:
       - ./database-seed.sql:/docker-entrypoint-initdb.d/database-seed.sql
     image: postgres:14.9-alpine
+  redis:
+    container_name: redis
+    restart: always
+    ports:
+      - '6379:6379'
+    image: redis:alpine
   pgadmin:
     image: dpage/pgadmin4
     environment:
       - PGADMIN_DEFAULT_EMAIL=admin@mail.ru
       - PGADMIN_DEFAULT_PASSWORD=000999
     ports:
-      - "16543:80"
+      - '16543:80'
     depends_on:
       - dbase
