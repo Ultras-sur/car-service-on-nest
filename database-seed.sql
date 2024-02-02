@@ -65,6 +65,16 @@ CREATE TABLE work_post
     "orderId" uuid REFERENCES "order" (id)
 );
 
+CREATE Table ticket (
+    id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
+    date Date NOT NULL,
+    "clientId" uuid REFERENCES client (id),
+    "carId" uuid REFERENCES car (id),
+    "user_createdId" uuid REFERENCES "user" (id),
+    "createdAt" TIMESTAMP NOT NULL DEFAULT now(),
+    jobs JSONB 
+);
+
 INSERT INTO work_post(number) VALUES 
 ('1'),
 ('2'),

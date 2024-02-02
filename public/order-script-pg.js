@@ -181,7 +181,6 @@ async function getStatusOfWorkPosts() {
   async function setStatus() {
     const response = await fetch('/pgworkpost/res/status');
     const workPosts = await response.json();
-    console.log(workPosts);
     const workPostSelection = Array.from(
       document.getElementsByClassName('workpost-selection'),
     );
@@ -196,7 +195,6 @@ async function getStatusOfWorkPosts() {
             element.style.backgroundColor = 'LightCoral';
             element.disabled = true;
             element.text = `${element.value} (busy)`;
-            console.log(element.text);
           }
         });
       } else {
@@ -205,7 +203,6 @@ async function getStatusOfWorkPosts() {
             element.style.backgroundColor = 'White';
             element.disabled = false;
             element.text = element.value;
-            console.log(element.text);
           }
         });
       }

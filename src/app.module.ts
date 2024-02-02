@@ -13,6 +13,10 @@ import { OrderModulePG } from './postgres/order/order.module';
 import { WorkPostModulePG } from './postgres/workpost/pg-workpost.module';
 import { UserModulePG } from './postgres/user/pg-user.module';
 import LogsMiddleware from 'middlewares/logs.middleware';
+import { RedisModule } from './infrastructure/redis/redis.module';
+import { TicketController } from './postgres/ticket/ticket.controller';
+import { TicketService } from './postgres/ticket/ticket.service';
+import { TicketModule } from './postgres/ticket/ticket.module';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 require('dotenv').config();
 
@@ -39,6 +43,8 @@ require('dotenv').config();
     OrderModulePG,
     WorkPostModulePG,
     UserModulePG,
+    RedisModule,
+    TicketModule,
   ],
   controllers: [AppController],
   providers: [AppService],

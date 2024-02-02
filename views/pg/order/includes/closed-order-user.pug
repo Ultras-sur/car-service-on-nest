@@ -3,7 +3,7 @@ div.inner
         input(type="hidden" name="_method" value="PUT")
         div.info
           input(type="hidden" name="car" value=`${order.car.id}`)
-          input(type="hidden" name="client" value=`${client.id}`)
+          input(type="hidden" name="client" value=`${order.client.id}`)
           input#orderid(type="hidden" name="order" value=`${order.id}`)
           table#jobinfo(border='1'  width='20%' cellpadding='4' cellspacing='1')
             tbody
@@ -15,7 +15,7 @@ div.inner
                 td
                   strong Car:   
                   a(href=`/pgcar/${order.car.id}`) 
-                    p3 #{order.car.brand} #{order.car.model} (#{order.car.releaseYear})
+                    p3 #{order.car.brand.name} #{order.car.model.name} (#{order.car.releaseYear})
               tr
                 td
                   strong Owner:
@@ -40,12 +40,12 @@ div.inner
                 td
                   strong Cost
                 td   
-            if fullJobsInfo
-              each job, index in fullJobsInfo
+            if order.jobs
+              each job, index in order.jobs
                 tr.jobrows
                   td #{index + 1}
-                  td #{job[2]}
-                  td(id=`job-cost${index + 1}`) #{job[1]}
+                  td #{job.name}
+                  td(id=`job-cost${index + 1}`) #{job.cost}
         div 
           table#jobcost(border='1'  width='20%' cellpadding='4' cellspacing='1')
             tbody

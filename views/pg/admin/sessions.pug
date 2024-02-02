@@ -1,0 +1,33 @@
+extends ../../layouts/layout.pug
+include ../../mixins/pages
+
+block content
+    h1 Active sessions
+    div
+      table#users-table(border='2'  width='20%' cellpadding='4' cellspacing='1')
+        tbody
+          tr
+            td.admin
+              strong №
+            td.admin
+              strong Session  
+            td.admin
+              strong Login
+            td.admin
+              strong Name
+            td.admin
+              strong Roles
+            td.admin
+              strong Action
+        if activeClientSessions
+          each sessionInfo, index in activeClientSessions
+            tr
+              td.admin #{index + 1} 
+              td.admin 
+                a(href=`/pguser/sessions/${sessionInfo.session}`) #{sessionInfo.session} 
+              td.admin #{sessionInfo.client.login}
+              td.admin #{sessionInfo.client.name}
+              td.admin #{sessionInfo.client.roles.sort()}
+              td.admin 
+                button(type='button' id=`${sessionInfo.session}` style='color: red;' onclick=`deleteItem("${sessionInfo.session}","session","${sessionInfo.client.name}")` title="delete") X
+    script(src='/delete-config-pg.js')

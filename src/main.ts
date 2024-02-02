@@ -10,7 +10,6 @@ import passport = require('passport');
 import cookieParser = require('cookie-parser');
 import { createClient } from 'redis';
 import RedisStore from 'connect-redis';
-//import * as createRedisStore from 'connect-redis';
 
 let app;
 

@@ -12,6 +12,7 @@ import {
   Put,
   UseFilters,
   UseGuards,
+  Delete,
 } from '@nestjs/common';
 import { Role } from '../../../schemas/user.schema';
 import { UserServicePG } from './pg-user.service';
@@ -22,6 +23,7 @@ import { AuthenticatedGuard } from '../../../src/auth/common/guards/authenticate
 import { RolesGuard } from '../../../src/auth/common/guards/roles.guard';
 import { RolesPG } from '../../../src/auth/roles.decorator';
 import { UserRole } from '../../../entities/user.entity';
+import { RedisService } from 'src/infrastructure/redis/redis.service';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const debug = require('debug')('UserController');
 
@@ -29,7 +31,10 @@ const debug = require('debug')('UserController');
 @UseFilters(AuthExceptionFilter)
 @UseGuards(AuthenticatedGuard)
 export class UserControllerPG {
-  constructor(private userServicePG: UserServicePG) {}
+  constructor(
+    private userServicePG: UserServicePG,
+    private redisService: RedisService,
+  ) {}
 
   @Get('/')
   @UseGuards(RolesGuard)
@@ -55,6 +60,27 @@ export class UserControllerPG {
     return { message, isAdmin };
   }
 
+  @Get('sessions')
+  @UseGuards(RolesGuard)
+  @RolesPG(UserRole.ADMIN)
+  @Render('pg/admin/sessions')
+  async getActiveSessions(@Req() req, @Res() res) {
+    const activeClientSessions = await this.redisService.getClientSessions(
+      'sess:*',
+    );
+    const isAdmin = req.user.roles.includes(Role.ADMIN);
+    const message = req.flash('message');
+    return { activeClientSessions, isAdmin, message };
+  }
+
+  @Get('sessions/:id')
+  @UseGuards(RolesGuard)
+  @RolesPG(UserRole.ADMIN)
+  async getSession(@Param('id') sessionId, @Req() req, @Res() res) {
+    const sessionInfo = await this.redisService.getSession('sess', sessionId);
+    return res.json(sessionInfo);
+  }
+
   @Post('create')
   @UseGuards(RolesGuard)
   @RolesPG(UserRole.ADMIN)
@@ -65,6 +91,20 @@ export class UserControllerPG {
     } catch (error) {
       req.flash('message', error.message);
       return res.redirect('/pguser/create');
+    }
+  }
+  @Delete('sessions/:id')
+  @UseGuards(RolesGuard)
+  @RolesPG(UserRole.ADMIN)
+  async deleteSession(@Req() req, @Res() res, @Param('id') id: string) {
+    try {
+      await this.redisService.deleteSession('sess', id);
+      return res.status(HttpStatus.OK).redirect(303, '/pguser/sessions'); // 303 for change method to GET
+    } catch (error) {
+      req.flash('message', error.message);
+      return res
+        .status(HttpStatus.BAD_REQUEST)
+        .redirect(303, '/pguser/sessions'); // 303 for change method to GET
     }
   }
 }

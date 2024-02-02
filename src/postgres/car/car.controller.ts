@@ -152,12 +152,14 @@ export class CarControllerPG {
       const newFileName = `car_${carId}${path.extname(filename)}`;
       const filePath = path.join('car_images', newFileName);
       try {
-        const folderAccessToWrite = (path: string): boolean => {
-          let result = true;
-          fs.access(path, (err) => {
-            if (err) result = false;
+        const folderAccessToWrite = (path: string): Promise<boolean> => {
+          return new Promise((resolve) => {
+            let result = true;
+            fs.access(path, (err) => {
+              if (err) result = false;
+            });
+            resolve(result);
           });
-          return result;
         };
         if (!folderAccessToWrite(path.join('public', 'car_images'))) {
           throw new Error('Image is not saved');
