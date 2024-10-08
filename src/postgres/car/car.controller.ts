@@ -84,6 +84,7 @@ export class CarControllerPG {
               car,
               isAdmin,
               message: req.flash('message'),
+              jsuites: true,
             });
           } else {
             return res.render('pg/car/car2', {
@@ -91,6 +92,7 @@ export class CarControllerPG {
               imagePath,
               isAdmin,
               message: req.flash('message'),
+              jsuites: true,
             });
           }
         },
@@ -100,6 +102,7 @@ export class CarControllerPG {
         car,
         isAdmin,
         message: req.flash('message'),
+        jsuites: true,
       });
     }
   }
@@ -172,12 +175,12 @@ export class CarControllerPG {
         req.flash('message', 'OK');
         return res.redirect(`/pgcar/${carId}`);
       } catch (error) {
-        req.flash('message', 'Image car is not saved');
+        req.flash('message', 'Image is not saved');
         return res.redirect(`/pgcar/${carId}`);
       }
     });
     bb.on('error', (error) => {
-      req.flash('message', 'Image car is not saved');
+      req.flash('message', 'Image is not saved');
       return res.redirect(`/pgcar/${carId}`);
     });
     req.pipe(bb);

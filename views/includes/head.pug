@@ -5,5 +5,8 @@ head
     title Car Service!
     link(rel='stylesheet' href='/style.css')
     link(rel='stylesheet' href='/layout.css')
+    if calendar == true || jsuites == true
+      script(src='https://jsuites.net/v5/jsuites.js')
+      link(rel='stylesheet' href='https://jsuites.net/v5/jsuites.css' type="text/css")
     if loginPage !== true
       include ./logout.pug

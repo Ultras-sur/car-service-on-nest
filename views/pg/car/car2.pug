@@ -52,7 +52,20 @@ block content
                 td(style="background-color: #d4fdc9") #{order.orderStatus}
               else
                 td(style="background-color: #ffbdbd") #{order.orderStatus}
-
+    div#modal
+        form(method="POST" action=`/tickets/create/${car.id}` name='ticket_form')
+          div(style="width:300px;float:left;padding-bottom: 10px;padding-left: 0px;")
+            p(style="margin-left: 0px;margin-bottom: 5px;") Date from:
+            input(id='calendar_date_from' name="day_from")
+          
+            p(style="margin-left: 0px;margin-top: 5px;margin-bottom: 5px;") Date to:
+            input(id='calendar_date_to' name="day_to" )
+            br
+            button(style="margin-top: 5px;") Create
     div
       button 
-        a(href=`/pgorder/new/${car.id}`) Создать заказ
+        a(href=`/pgorder/new/${car.id}`) Create order
+      br  
+      button#modal-button(style="margin-top: 10px;height:36.65px;width:78.38px") Create ticket  
+    script(src='/calendar.js')
+    script(src='/ticket-modal.js')       

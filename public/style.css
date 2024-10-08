@@ -1,49 +1,47 @@
-body
-{
+body {
   padding: 1px;
   background-color: #f3f3f3;
 }
 
 input.jobcost {
-   width: 100px;
+  width: 100px;
 }
 
 select.jobselection {
-   width: 270px;
+  width: 270px;
 }
 
-
 h1 {
-    margin: 0em 0 0.5em 0;
-    font-weight: 100;
-    text-transform: uppercase;
-    color: #00caa6;
-    font-style: italic;
-    font-family: "Lucida Sans Unicode", "Lucida Grande";
-    font-size: 30px;
-  
-    text-align: center;
-    width: 600px;
+  margin: 0em 0 0.5em 0;
+  font-weight: 100;
+  text-transform: uppercase;
+  color: #00caa6;
+  font-style: italic;
+  font-family: 'Lucida Sans Unicode', 'Lucida Grande';
+  font-size: 30px;
+
+  text-align: center;
+  width: 600px;
 }
 
 h3 {
-    margin: 1em 0 0.5em 0;
-    font-weight: 100;
-    text-transform: uppercase;
-    color: #00caa6;
-    font-style: italic;
-    font-family: "Lucida Sans Unicode", "Lucida Grande";
-    font-size: 20px;
-    line-height: 24px;
-    text-align: left;
+  margin: 1em 0 0.5em 0;
+  font-weight: 100;
+  text-transform: uppercase;
+  color: #00caa6;
+  font-style: italic;
+  font-family: 'Lucida Sans Unicode', 'Lucida Grande';
+  font-size: 20px;
+  line-height: 24px;
+  text-align: left;
 }
 
 h3.auth {
-    text-align: center;
+  text-align: center;
 }
 
 table {
-  font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
+  font-family: 'Lucida Sans Unicode', 'Lucida Grande', Sans-Serif;
   font-size: 13px;
   background: white;
   max-width: 644px;
@@ -51,6 +49,17 @@ table {
   border-collapse: collapse;
   text-align: left;
 }
+
+table.jobtable-ticket {
+  font-family: 'Lucida Sans Unicode', 'Lucida Grande', Sans-Serif;
+  font-size: 13px;
+  background: white;
+  max-width: 644px;
+  width: 300px;
+  border-collapse: collapse;
+  text-align: left;
+}
+
 th {
   font-weight: normal;
   color: #039;
@@ -60,35 +69,35 @@ th {
 td {
   color: #669;
   padding: 7px 7px;
-  transition: .3s linear;
+  transition: 0.3s linear;
 }
 tr:hover td {
   color: #6699ff;
 }
 
 div.inner {
-    display: flex;
-    justify-content: center; /*Центрирование по горизонтали*/
-    align-items: center;     /*Центрирование по вертикали */
+  display: flex;
+  justify-content: center; /*Центрирование по горизонтали*/
+  align-items: center; /*Центрирование по вертикали */
 }
-div.auth-outer{
+div.auth-outer {
   display: flex;
   height: 600px;
 }
 div.auth-inner {
-    margin: auto;
-    justify-content: center; /*Центрирование по горизонтали*/
-    align-items: center;     /*Центрирование по вертикали */
+  margin: auto;
+  justify-content: center; /*Центрирование по горизонтали*/
+  align-items: center; /*Центрирование по вертикали */
 }
 
 div.h1 {
-    display: flex;
-    justify-content: center; /*Центрирование по горизонтали*/
-    align-items: center;     /*Центрирование по вертикали */
+  display: flex;
+  justify-content: center; /*Центрирование по горизонтали*/
+  align-items: center; /*Центрирование по вертикали */
 }
 
 a {
-  font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
+  font-family: 'Lucida Sans Unicode', 'Lucida Grande', Sans-Serif;
   outline: none;
   text-decoration: none;
   display: inline-block;
@@ -98,9 +107,8 @@ a {
   color: #039;
 }
 
-
 a.menu {
-  font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
+  font-family: 'Lucida Sans Unicode', 'Lucida Grande', Sans-Serif;
   outline: none;
   text-decoration: none;
   display: inline-block;
@@ -114,7 +122,9 @@ li:last-child a.menu {
   margin-right: 0;
 }
 
-a.menu:link, a.menu:visited, a.menu:focus {
+a.menu:link,
+a.menu:visited,
+a.menu:focus {
   background: #bae8d3;
 }
 
@@ -127,23 +137,23 @@ a.menu:active {
   color: white;
 }
 
-input[type="number"] {
-	-moz-appearance: textfield;
-	-webkit-appearance: textfield;
-	appearance: textfield;
+input[type='number'] {
+  -moz-appearance: textfield;
+  -webkit-appearance: textfield;
+  appearance: textfield;
 }
- 
-input[type="number"]::-webkit-outer-spin-button,
-input[type="number"]::-webkit-inner-spin-button {
-	display: none;
+
+input[type='number']::-webkit-outer-spin-button,
+input[type='number']::-webkit-inner-spin-button {
+  display: none;
 }
 
 input#login {
-  padding:7px;
-  border:0;
-  box-shadow:0 0 15px 4px rgba(0,0,0,0.06);
-  margin:2px 0;
-  border-radius:7px;    
+  padding: 7px;
+  border: 0;
+  box-shadow: 0 0 15px 4px rgba(0, 0, 0, 0.06);
+  margin: 2px 0;
+  border-radius: 7px;
 }
 
 div.logout {
@@ -152,7 +162,7 @@ div.logout {
 }
 
 a#admin-title {
-  font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
+  font-family: 'Lucida Sans Unicode', 'Lucida Grande', Sans-Serif;
   outline: none;
   text-decoration: none;
   display: inline-block;
@@ -164,7 +174,7 @@ a#admin-title {
 }
 
 a#admin {
-  font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
+  font-family: 'Lucida Sans Unicode', 'Lucida Grande', Sans-Serif;
   outline: none;
   text-decoration: none;
   display: inline-block;
@@ -175,7 +185,9 @@ a#admin {
   font-size: 14px;
 }
 
-a#admin:link, a.menu:visited, a.menu:focus {
+a#admin:link,
+a.menu:visited,
+a.menu:focus {
   background: #bae8d3;
 }
 
@@ -190,7 +202,9 @@ a#admin:active {
 
 /*--------------------------------------------------------*/
 /* Style the tab */
-* {box-sizing: border-box}
+* {
+  box-sizing: border-box;
+}
 .tab {
   float: left;
   border: 1px solid #ffffff;
@@ -198,7 +212,6 @@ a#admin:active {
   width: 30%;
   height: 300px;
 }
-
 
 .tab button {
   display: block;
@@ -213,11 +226,9 @@ a#admin:active {
   transition: 0.3s;
 }
 
-
 .tab button:hover {
   background-color: #ddeee7;
 }
-
 
 .tab button.active {
   background-color: #bae8d3;
@@ -234,7 +245,7 @@ a#admin:active {
 }
 /* ------------------------------------------------------------------*/
 table#orderstatusesadmin-table {
-  font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
+  font-family: 'Lucida Sans Unicode', 'Lucida Grande', Sans-Serif;
   font-size: 12px;
   background: white;
   max-width: 644px;
@@ -246,32 +257,30 @@ table#orderstatusesadmin-table {
 td.admin {
   color: #669;
   padding: 6px 6px;
-  transition: .3s linear;
+  transition: 0.3s linear;
 }
 
 td.directory {
   color: #669;
   padding: 4px 2px;
-  transition: .3s linear;
+  transition: 0.3s linear;
 }
-
 
 tr:hover a {
   color: #6699ff;
 }
 
 p {
-  font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
+  font-family: 'Lucida Sans Unicode', 'Lucida Grande', Sans-Serif;
   font-size: 14px;
   color: #669;
 }
 
 button {
-  font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
+  font-family: 'Lucida Sans Unicode', 'Lucida Grande', Sans-Serif;
   color: #669;
 }
 
 button.edit {
   margin-right: 5px;
 }
-

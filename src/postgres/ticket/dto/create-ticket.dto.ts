@@ -8,5 +8,5 @@ export class CreateTicketDTO {
   readonly client: Client;
   readonly car: Car;
   readonly user_created: User;
-  readonly jobs: Job[];
+  readonly jobs: [];
 }

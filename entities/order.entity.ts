@@ -7,7 +7,7 @@ import {
 } from 'typeorm';
 import { Car } from './car.entity';
 import { Client } from './client.entity';
-import { Job } from './interfaces/job.interface';
+import { JobInterface } from './interfaces/job.interface';
 import { WorkPost } from './workpost.entity';
 
 @Entity()
@@ -37,5 +37,5 @@ export class Order {
   public orderStatus: string;
 
   @Column({ type: 'jsonb' })
-  public jobs: Job[];
+  public jobs: JobInterface[];
 }

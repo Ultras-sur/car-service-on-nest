@@ -1,5 +1,5 @@
-export interface Job {
+export interface JobInterface {
   job: string;
-  cost: number;
+  cost?: number;
   name?: string;
 }

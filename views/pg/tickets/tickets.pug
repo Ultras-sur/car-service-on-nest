@@ -1,0 +1,41 @@
+extends ../../layouts/layout.pug
+include ../../mixins/pages
+
+block content
+  h1(style="margin-bottom: 0px;") Tickets
+  div(style="width: 450px;padding-top: 0px;")
+    form(method="GET" action="/tickets" name='ticket_form')
+        
+      div(style="width:300px;float:left;padding-bottom: 10px;padding-left: 0px;")
+          p(style="margin-left: 0px;margin-bottom: 5px;") Date from:
+          input(id='calendar_date_from' name="day_from" value=`${tickets.meta.interval[0]}`)
+          
+          p(style="margin-left: 0px;margin-top: 5px;margin-bottom: 5px;") Date to:
+          input(id='calendar_date_to' name="day_to" value=`${tickets.meta.interval[1]}`)
+          br
+          button(style="margin-top: 5px;") Find
+  div
+   table#ticket-table(border='2'  width='20%' cellpadding='2' cellspacing='1')
+    tbody 
+      tr
+        td
+          strong №
+        td
+          strong Day
+        td    
+          strong Interval
+        td 
+          strong Car 
+           
+    if tickets
+      each ticket, index in tickets.data
+         tr
+            td.admin #{tickets.meta.take * (Number(tickets.meta.page) - 1) + (index + 1)}
+            td.admin #{new Date(`${ticket.time.slice(2,-2).split('","')[0]}`).toISOString().split('T')[0].split('-').reverse().join('-')}
+            td.admin #{ticket.time.slice(2,-2).split('","').map(elem => elem.split(' ')[1].slice(0, -3)).join(' - ')}
+            td.admin 
+              a(href=`/pgcar/${ticket.car_id}`) #{ticket.brand} #{ticket.model} #{ticket.releaseYear}
+  div
+    if tickets.meta.totalPages > 0 
+      +pages(tickets.meta.page, tickets.meta.totalPages, '/ticket', serchString)
+  script(src='/calendar.js')    

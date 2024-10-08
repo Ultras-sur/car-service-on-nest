@@ -29,7 +29,7 @@ export class Ticket {
   @JoinTable()
   public car: Car;
 
-  @Column({ type: 'jsonb' })
+  @Column({ type: 'jsonb', nullable: true })
   public jobs: Job[];
 
   @ManyToOne(() => User)
